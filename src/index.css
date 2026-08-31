@@ -1,0 +1,91 @@
+@import 'tailwindcss';
+
+/* ---------------------------------------------------------------------------
+   Design tokens. One warm, calm palette; every surface and text colour comes
+   from here so the whole app stays consistent (and so a dark theme is a
+   token swap rather than a rewrite).
+--------------------------------------------------------------------------- */
+@theme {
+  --font-sans: ui-rounded, 'SF Pro Rounded', -apple-system, BlinkMacSystemFont,
+    'Segoe UI', Roboto, 'Helvetica Neue', system-ui, sans-serif;
+
+  --color-cream: #faf7f2;
+  --color-cream-deep: #f2ece2;
+  --color-ink: #221f26;
+  --color-ink-soft: #5b5563;
+  --color-line: #e6ded1;
+
+  --color-brand: #4f46e5;
+  --color-brand-dark: #3f38bb;
+  --color-brand-soft: #eeecfe;
+
+  --color-grass: #14883f;
+  --color-grass-dark: #0f6b31;
+  --color-grass-soft: #e4f5e9;
+
+  --color-sun: #d97706;
+  --color-sun-soft: #fdf0dc;
+
+  --color-berry: #c0356b;
+  --color-berry-soft: #fdeaf1;
+
+  --text-base: 1.125rem;
+}
+
+/* The "larger text" toggle scales the whole UI: every size in the app is in
+   rem, so moving the root size moves type, padding and controls together. */
+html { font-size: 17px; -webkit-text-size-adjust: 100%; }
+html[data-textsize='large'] { font-size: 20px; }
+html[data-textsize='xlarge'] { font-size: 23px; }
+
+body {
+  margin: 0;
+  background: var(--color-cream);
+  color: var(--color-ink);
+  font-family: var(--font-sans);
+  font-size: 1.0625rem;
+  line-height: 1.55;
+  -webkit-font-smoothing: antialiased;
+  overscroll-behavior-y: none;
+}
+
+/* Beginners tap unpredictably — never show a text-selection highlight or an
+   iOS long-press callout on something that is meant to be a button. */
+button, [role='button'] {
+  -webkit-tap-highlight-color: transparent;
+  -webkit-touch-callout: none;
+  user-select: none;
+  font-family: inherit;
+}
+
+#root { min-height: 100dvh; }
+
+/* --- Chunky pressable button: a solid colour with a darker "lip" beneath,
+       which compresses on press. Reads as physical, which helps. --- */
+.btn-3d { transition: transform .06s ease, box-shadow .06s ease, filter .12s ease; }
+.btn-3d:active:not(:disabled) { transform: translateY(3px); box-shadow: none !important; }
+.btn-3d:disabled { filter: saturate(.25) opacity(.55); }
+
+@keyframes pop-in { from { opacity: 0; transform: translateY(10px) scale(.98); } to { opacity: 1; transform: none; } }
+.anim-pop { animation: pop-in .28s cubic-bezier(.2,.9,.3,1.3) both; }
+
+@keyframes nudge { 0%,100% { transform: translateX(0); } 25% { transform: translateX(-5px); } 75% { transform: translateX(5px); } }
+.anim-nudge { animation: nudge .32s ease-in-out; }
+
+@keyframes rise { from { opacity: 0; transform: translateY(100%); } to { opacity: 1; transform: none; } }
+.anim-rise { animation: rise .26s cubic-bezier(.2,.8,.3,1) both; }
+
+/* A soft halo that draws the eye to the thing they are meant to tap. */
+@keyframes halo { 0%,100% { box-shadow: 0 0 0 0 rgb(79 70 229 / .45); } 50% { box-shadow: 0 0 0 12px rgb(79 70 229 / 0); } }
+.anim-halo { animation: halo 1.8s ease-out infinite; }
+
+@keyframes cursor-hint { 0%,100% { transform: translate(0,0); } 50% { transform: translate(0,-6px); } }
+.anim-cursor { animation: cursor-hint 1.4s ease-in-out infinite; }
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { animation-duration: .01ms !important; animation-iteration-count: 1 !important; transition-duration: .01ms !important; }
+}
+
+/* Horizontal scrollers (device pickers, key rows) shouldn't show a bar. */
+.no-scrollbar { scrollbar-width: none; }
+.no-scrollbar::-webkit-scrollbar { display: none; }
