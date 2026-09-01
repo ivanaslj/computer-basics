@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { RichText, Card } from './ui'
+import { RichText, Card, CopyButton } from './ui'
 import Art from './Art'
 import { getSim } from './sims'
 import { useT, useTx } from '../i18n'
@@ -21,6 +21,8 @@ export default function StepView({ step, solved, showHint, onSolved, onMistake }
       return <SortStep step={step} solved={solved} showHint={showHint} onSolved={onSolved} onMistake={onMistake} />
     case 'sim':
       return <SimStep step={step} solved={solved} showHint={showHint} onSolved={onSolved} onMistake={onMistake} />
+    case 'action':
+      return <ActionStep step={step} solved={solved} onSolved={onSolved} />
     default:
       return null
   }
@@ -230,6 +232,72 @@ function SortStep({ step, solved, showHint, onSolved, onMistake }) {
               </span>
             ))}
         </div>
+      )}
+    </div>
+  )
+}
+
+/* ----------------------------------------------------------------- Action */
+
+/**
+ * A real-world project step: instructions for something the learner does
+ * outside the app (install something, run a command, visit a page), plus an
+ * ungraded "I did this" confirmation. Unlike every other step type, this one
+ * never calls `onMistake` — there's no wrong answer to a real task, only done
+ * or not yet.
+ */
+function ActionStep({ step, solved, onSolved }) {
+  const t = useT()
+  const tx = useTx()
+  return (
+    <div className="flex flex-col gap-5">
+      {step.title && (
+        <h2 className="text-[1.4rem] leading-[1.25] font-extrabold tracking-tight text-balance">
+          {tx(step.title)}
+        </h2>
+      )}
+      <div className="flex flex-col gap-4">
+        {(Array.isArray(step.body) ? step.body : [step.body]).map((line, i) => (
+          <p key={i} className="text-[1.08rem] leading-[1.6] text-ink">
+            <RichText>{tx(line)}</RichText>
+          </p>
+        ))}
+      </div>
+
+      {step.copyText && (
+        <Card tone="brand" className="flex flex-col gap-3">
+          <code className="block text-[0.98rem] leading-relaxed break-words whitespace-pre-wrap text-ink">
+            {tx(step.copyText)}
+          </code>
+          <CopyButton
+            text={tx(step.copyText)}
+            label={tx(step.copyLabel) || t('copy')}
+            copiedLabel={t('copied')}
+            failedLabel={t('copyFailed')}
+            className="self-start"
+          />
+        </Card>
+      )}
+
+      {step.linkUrl && (
+        <a
+          href={step.linkUrl}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="btn-3d inline-block self-start rounded-xl border-2 border-b-4 border-brand-dark bg-brand px-5 py-3 text-center font-bold text-white"
+        >
+          {tx(step.linkLabel) || step.linkUrl}
+        </a>
+      )}
+
+      {!solved && (
+        <button
+          type="button"
+          onClick={onSolved}
+          className="btn-3d self-start rounded-xl border-2 border-b-4 border-grass-dark bg-grass px-5 py-3 font-bold text-white"
+        >
+          {tx(step.doneLabel) || t('actionDone')}
+        </button>
       )}
     </div>
   )

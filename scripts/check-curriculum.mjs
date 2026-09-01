@@ -5,7 +5,7 @@
  *
  * Run with `npm run check`.
  */
-import { MODULES, LESSON_ORDER } from '../src/curriculum/index.js'
+import { COURSES } from '../src/courses/index.js'
 import { SIMS } from '../src/components/sims/registry.js'
 import { ART_NAMES } from '../src/components/art-names.js'
 
@@ -53,17 +53,38 @@ const TARGET_IN_CONFIG = new Set([
   'switchtab', 'closetab', 'openbookmark', 'pickresult',
 ])
 
-const seenIds = new Set()
+let totalModules = 0
+let totalLessons = 0
+const courseIds = new Set()
 
-for (const mod of MODULES) {
-  for (const key of ['title', 'subtitle']) checkText(mod[key], `${mod.id}.${key}`)
-  if (!mod.lessons?.length) fail(mod.id, 'module has no lessons')
+for (const course of COURSES) {
+  if (courseIds.has(course.id)) fail('courses', `duplicate course id "${course.id}"`)
+  courseIds.add(course.id)
+  checkText(course.title, `${course.id}.title`)
+  checkText(course.subtitle, `${course.id}.subtitle`)
+  if (!['available', 'coming-soon'].includes(course.status))
+    fail(course.id, `unknown status "${course.status}"`)
+
+  // Coming-soon courses are stubs on purpose — only check they're well-formed
+  // enough to render in the Hub, not the full content rules below.
+  if (course.status === 'coming-soon') continue
+
+  totalModules += course.MODULES.length
+  totalLessons += course.LESSON_ORDER.length
+  // Lesson ids only need to be unique within their own course — resetting
+  // per course means one course's naming choices can never collide with
+  // another's.
+  const seenIds = new Set()
+
+  for (const mod of course.MODULES) {
+  for (const key of ['title', 'subtitle']) checkText(mod[key], `${course.id}/${mod.id}.${key}`)
+  if (!mod.lessons?.length) fail(`${course.id}/${mod.id}`, 'module has no lessons')
 
   for (const lesson of mod.lessons) {
-    const L = lesson.id
-    if (seenIds.has(L)) fail(L, 'duplicate lesson id')
-    seenIds.add(L)
-    if (!L?.startsWith(mod.id + '-')) fail(L, `lesson id should start with "${mod.id}-"`)
+    const L = `${course.id}/${lesson.id}`
+    if (seenIds.has(lesson.id)) fail(L, 'duplicate lesson id within this course')
+    seenIds.add(lesson.id)
+    if (!lesson.id?.startsWith(mod.id + '-')) fail(L, `lesson id should start with "${mod.id}-"`)
     checkText(lesson.title, `${L}.title`)
     if (!lesson.emoji) fail(L, 'missing emoji')
     if (!lesson.minutes) fail(L, 'missing minutes')
@@ -163,6 +184,16 @@ for (const mod of MODULES) {
           break
         }
 
+        case 'action':
+          checkText(step.title, `${S}.title`)
+          checkText(step.body, `${S}.body`)
+          checkText(step.copyText, `${S}.copyText`)
+          checkText(step.linkLabel, `${S}.linkLabel`)
+          if (!step.body) fail(S, 'action step has no body')
+          if (!step.copyText && !step.linkUrl) fail(S, 'action step needs a copyText or a linkUrl — otherwise there is nothing to do')
+          if (step.linkUrl && !/^https:\/\//.test(step.linkUrl)) fail(S, `linkUrl "${step.linkUrl}" should be a plain https:// URL`)
+          break
+
         default:
           fail(S, `unknown step type "${step.type}"`)
       }
@@ -171,9 +202,10 @@ for (const mod of MODULES) {
     // A lesson people can actually fail should also tell them what they learned.
     if (!lesson.steps.some((s) => s.type === 'recap')) fail(L, 'lesson has no recap step')
   }
+  }
 }
 
-console.log(`Checked ${MODULES.length} modules, ${LESSON_ORDER.length} lessons.`)
+console.log(`Checked ${COURSES.length} courses, ${totalModules} modules, ${totalLessons} lessons.`)
 if (problems.length) {
   console.error(`\n${problems.length} problem(s):\n - ` + problems.join('\n - '))
   process.exit(1)

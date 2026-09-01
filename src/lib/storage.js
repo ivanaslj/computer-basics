@@ -27,15 +27,18 @@ function safeLocalStorage() {
 const store = typeof window === 'undefined' ? null : safeLocalStorage()
 
 export const DEFAULT_STATE = {
-  version: 1,
+  version: 2,
   settings: {
     onboarded: false,
     device: null, // 'windows' | 'mac'
     language: 'en', // 'en' | 'es'
     textSize: 'normal', // 'normal' | 'large' | 'xlarge'
+    currentCourseId: null, // which course the hub last opened
   },
-  // lessonId -> { completedAt, perfect }
+  // courseId -> lessonId -> { completedAt, perfect, times }
   completed: {},
+  // Global and shared across every course — a daily practice streak doesn't
+  // care which course kept it going.
   streak: { count: 0, lastDay: null },
   // Reserved: when accounts exist this is where the server user id goes.
   account: null,
@@ -71,6 +74,21 @@ export function clear() {
   }
 }
 
+/**
+ * Before multi-course support, `completed` was flat: lessonId -> record. Now
+ * it's nested: courseId -> lessonId -> record. Detect the old shape
+ * structurally rather than by guessing at lesson-id naming (which a new
+ * course's ids could accidentally match): a v1 record has `completedAt`
+ * directly on it, a v2 course bucket does not. This is idempotent — running
+ * it on an already-nested object is a no-op.
+ */
+function normalizeCompleted(completed) {
+  if (!completed || typeof completed !== 'object') return {}
+  const values = Object.values(completed)
+  const looksFlat = values.length > 0 && values.every((v) => v && typeof v === 'object' && 'completedAt' in v)
+  return looksFlat ? { 'computer-basics': completed } : completed
+}
+
 /** Fills in anything a newer version of the app expects but an older save lacks. */
 function migrate(saved) {
   const base = structuredClone(DEFAULT_STATE)
@@ -79,7 +97,7 @@ function migrate(saved) {
     ...saved,
     version: base.version,
     settings: { ...base.settings, ...(saved.settings || {}) },
-    completed: saved.completed && typeof saved.completed === 'object' ? saved.completed : {},
+    completed: normalizeCompleted(saved.completed),
     streak: { ...base.streak, ...(saved.streak || {}) },
   }
 }

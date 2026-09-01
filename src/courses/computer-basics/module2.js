@@ -1,4 +1,4 @@
-import { dev } from '../i18n/content.js'
+import { dev } from '../../i18n/content.js'
 
 /**
  * Module 2 — Windows and apps.

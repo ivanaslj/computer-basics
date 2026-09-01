@@ -1,7 +1,6 @@
 import { useMemo, useRef, useState } from 'react'
 import { useApp } from '../state/store'
 import { useT, useTx } from '../i18n'
-import { getLesson, getNextLessonId } from '../curriculum'
 import StepView from '../components/StepView'
 import { RichText, Button, Sheet, Check } from '../components/ui'
 
@@ -23,8 +22,8 @@ const FRESH_STEP = { index: 0, solved: false, feedback: null, misses: 0, showHin
 export default function Lesson({ lessonId, onExit, onNext }) {
   const t = useT()
   const tx = useTx()
-  const { completeLesson, isCompleted } = useApp()
-  const entry = getLesson(lessonId)
+  const { course, completeLesson, isCompleted } = useApp()
+  const entry = course.getLesson(lessonId)
 
   // All per-step state moves together, so advancing a step resets it in one
   // update rather than through an effect that fires after a stale render.
@@ -75,7 +74,7 @@ export default function Lesson({ lessonId, onExit, onNext }) {
     setFinished(true)
   }
 
-  const nextId = useMemo(() => getNextLessonId(lessonId), [lessonId])
+  const nextId = useMemo(() => course.getNextLessonId(lessonId), [lessonId, course])
 
   if (!entry) return null
 
@@ -161,13 +160,24 @@ export default function Lesson({ lessonId, onExit, onNext }) {
         ) : (
           <div className="flex items-center gap-3">
             <p className="flex-1 text-[0.95rem] leading-snug font-semibold text-ink-soft">
-              {/* Sim steps get a "how" reminder; answer steps already say what
-                  to do above, so after a miss the footer just encourages. */}
+              {/* Sim and action steps get their own "how" reminder; answer
+                  steps already say what to do above, so after a miss the
+                  footer just encourages. */}
               {tx(step.footerHint) ||
-                (step.type === 'sim' ? t('yourTurn') : misses > 0 ? t('tryAgain') : t('tapTheAnswer'))}
+                (step.type === 'sim'
+                  ? t('yourTurn')
+                  : step.type === 'action'
+                    ? t('actionFooterHint')
+                    : misses > 0
+                      ? t('tryAgain')
+                      : t('tapTheAnswer'))}
             </p>
             {misses >= 1 && !showHint && (
-              <Button size="md" variant="neutral" onClick={() => setShowHint(true)}>
+              <Button
+                size="md"
+                variant="neutral"
+                onClick={() => setCurrent((c) => ({ ...c, showHint: true }))}
+              >
                 {t('showMe')}
               </Button>
             )}
@@ -195,8 +205,8 @@ export default function Lesson({ lessonId, onExit, onNext }) {
 function Complete({ entry, perfect, nextId, onExit, onNext, wasReplay }) {
   const t = useT()
   const tx = useTx()
-  const { overall } = useApp()
-  const next = nextId ? getLesson(nextId) : null
+  const { course, overall } = useApp()
+  const next = nextId ? course.getLesson(nextId) : null
 
   return (
     <div className="mx-auto flex h-dvh max-w-lg flex-col justify-between px-6 pt-[max(2rem,env(safe-area-inset-top))] pb-[max(1.5rem,env(safe-area-inset-bottom))]">

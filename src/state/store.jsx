@@ -1,6 +1,6 @@
 import { createContext, useContext, useEffect, useMemo, useReducer, useRef } from 'react'
-import { load, save, clear, today, isYesterday, DEFAULT_STATE } from '../lib/storage'
-import { MODULES, LESSON_ORDER, getLesson } from '../curriculum'
+import { load, save, today, isYesterday } from '../lib/storage'
+import { COURSES, getCourse } from '../courses'
 
 /**
  * All course progress and settings live here. Screens read derived values and
@@ -24,8 +24,14 @@ function reducer(state, action) {
       }
 
     case 'complete-lesson': {
+      const courseId = state.settings.currentCourseId
+      if (!courseId) return state // shouldn't happen — no lesson screen without a course
+      const courseCompleted = state.completed[courseId] || {}
+      const prev = courseCompleted[action.lessonId]
+
       const day = today()
-      const prev = state.completed[action.lessonId]
+      // The streak is global, shared across every course — any lesson,
+      // anywhere, keeps it going.
       const streak =
         state.streak.lastDay === day
           ? state.streak
@@ -33,27 +39,33 @@ function reducer(state, action) {
               count: isYesterday(state.streak.lastDay) ? state.streak.count + 1 : 1,
               lastDay: day,
             }
+
       return {
         ...state,
         streak,
         completed: {
           ...state.completed,
-          [action.lessonId]: {
-            completedAt: Date.now(),
-            // Replaying a lesson can only improve the record, never undo it.
-            perfect: action.perfect || prev?.perfect || false,
-            times: (prev?.times || 0) + 1,
+          [courseId]: {
+            ...courseCompleted,
+            [action.lessonId]: {
+              completedAt: Date.now(),
+              // Replaying a lesson can only improve the record, never undo it.
+              perfect: action.perfect || prev?.perfect || false,
+              times: (prev?.times || 0) + 1,
+            },
           },
         },
       }
     }
 
-    case 'reset':
-      // Keep the device/language choices — wiping those just means redoing setup.
-      return {
-        ...structuredClone(DEFAULT_STATE),
-        settings: { ...state.settings },
-      }
+    // Resets only the *current* course's checkmarks — resetting your Computer
+    // Basics progress shouldn't silently wipe Claude 001 too. Settings and
+    // every other course are left untouched.
+    case 'reset-course': {
+      if (!action.courseId) return state
+      const { [action.courseId]: _dropped, ...rest } = state.completed
+      return { ...state, completed: rest }
+    }
 
     default:
       return state
@@ -80,50 +92,63 @@ export function AppProvider({ children }) {
 
   const value = useMemo(() => {
     const { completed, settings, streak } = state
+    const course = getCourse(settings.currentCourseId)
+    // completed[courseId] — the bucket for whichever course is active. Falls
+    // back to {} both before a course is picked and for a fresh course.
+    const courseCompleted = course ? completed[course.id] || {} : {}
 
-    const isCompleted = (id) => Boolean(completed[id])
+    const isCompleted = (id) => Boolean(courseCompleted[id])
 
-    // Lessons unlock strictly in order: finishing one opens the next. A learner
-    // can still choose to jump ahead from the path screen; this is the default
-    // route, not a wall.
-    const firstUnfinishedIndex = LESSON_ORDER.findIndex((id) => !completed[id])
-    const frontier = firstUnfinishedIndex === -1 ? LESSON_ORDER.length - 1 : firstUnfinishedIndex
-    const isUnlocked = (id) => LESSON_ORDER.indexOf(id) <= frontier
+    // Lessons unlock strictly in order within a course: finishing one opens
+    // the next. A learner can still choose to jump ahead from the path
+    // screen; this is the default route, not a wall.
+    const order = course?.LESSON_ORDER || []
+    const firstUnfinishedIndex = order.findIndex((id) => !courseCompleted[id])
+    const frontier = firstUnfinishedIndex === -1 ? order.length - 1 : firstUnfinishedIndex
+    const isUnlocked = (id) => order.indexOf(id) <= frontier
 
-    const nextLessonId = LESSON_ORDER[frontier]
+    const nextLessonId = order[frontier]
 
     const moduleProgress = (moduleId) => {
-      const mod = MODULES.find((m) => m.id === moduleId)
+      const mod = course?.MODULES.find((m) => m.id === moduleId)
       if (!mod) return { done: 0, total: 0, pct: 0 }
-      const done = mod.lessons.filter((l) => completed[l.id]).length
+      const done = mod.lessons.filter((l) => courseCompleted[l.id]).length
       return { done, total: mod.lessons.length, pct: Math.round((done / mod.lessons.length) * 100) }
     }
 
-    const doneCount = LESSON_ORDER.filter((id) => completed[id]).length
+    const doneCount = order.filter((id) => courseCompleted[id]).length
+
+    // Every course in the catalog, each with its own progress summary — for
+    // the Hub screen. Coming-soon courses always read as 0 progress.
+    const courses = COURSES.map((c) => {
+      const bucket = completed[c.id] || {}
+      const done = c.LESSON_ORDER.filter((id) => bucket[id]).length
+      return { ...c, progress: { done, total: c.LESSON_ORDER.length, pct: Math.round((done / c.LESSON_ORDER.length) * 100) } }
+    })
 
     return {
       settings,
       streak,
-      completed,
+      completed: courseCompleted,
+      course,
+      courses,
       isCompleted,
       isUnlocked,
       nextLessonId,
-      nextLesson: getLesson(nextLessonId),
+      nextLesson: course?.getLesson(nextLessonId) ?? null,
       moduleProgress,
       overall: {
         done: doneCount,
-        total: LESSON_ORDER.length,
-        pct: Math.round((doneCount / LESSON_ORDER.length) * 100),
+        total: order.length,
+        pct: order.length ? Math.round((doneCount / order.length) * 100) : 0,
       },
-      courseFinished: doneCount === LESSON_ORDER.length,
+      courseFinished: order.length > 0 && doneCount === order.length,
       setSetting: (key, val) => dispatch({ type: 'set-setting', key, value: val }),
       finishOnboarding: (settings) => dispatch({ type: 'finish-onboarding', settings }),
+      openCourse: (courseId) => dispatch({ type: 'set-setting', key: 'currentCourseId', value: courseId }),
       completeLesson: (lessonId, { perfect } = {}) =>
         dispatch({ type: 'complete-lesson', lessonId, perfect }),
-      resetProgress: () => {
-        clear()
-        dispatch({ type: 'reset' })
-      },
+      resetProgress: () => dispatch({ type: 'reset-course', courseId: settings.currentCourseId }),
     }
   }, [state])
 

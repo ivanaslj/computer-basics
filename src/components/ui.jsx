@@ -1,4 +1,4 @@
-import { useEffect } from 'react'
+import { useEffect, useState } from 'react'
 
 /* ---------------------------------------------------------------- Buttons */
 
@@ -32,6 +32,46 @@ export function Button({
       {...props}
     >
       {children}
+    </button>
+  )
+}
+
+/**
+ * Copies `text` to the clipboard. The write happens synchronously inside the
+ * click handler (no `await` before it) because some mobile browsers only
+ * honor a clipboard write that's tied directly to the user gesture that
+ * triggered it. Falls back to a "select the text yourself" message if the
+ * API is missing or permission is denied — `text` should always also be
+ * rendered visibly by the caller, never revealed only through this button.
+ */
+export function CopyButton({ text, label, copiedLabel, failedLabel, className = '' }) {
+  const [state, setState] = useState('idle') // 'idle' | 'copied' | 'failed'
+
+  const onClick = () => {
+    if (!navigator.clipboard?.writeText) {
+      setState('failed')
+    } else {
+      navigator.clipboard
+        .writeText(text)
+        .then(() => setState('copied'))
+        .catch(() => setState('failed'))
+    }
+    setTimeout(() => setState('idle'), 2000)
+  }
+
+  return (
+    <button
+      type="button"
+      onClick={onClick}
+      className={`btn-3d inline-flex items-center gap-2 rounded-xl border-2 border-b-4 px-4 py-2.5 text-sm font-bold ${
+        state === 'copied'
+          ? 'border-grass-dark bg-grass text-white'
+          : state === 'failed'
+            ? 'border-berry/40 bg-berry-soft text-berry'
+            : 'border-brand-dark bg-brand text-white'
+      } ${className}`}
+    >
+      {state === 'copied' ? copiedLabel : state === 'failed' ? failedLabel : label}
     </button>
   )
 }

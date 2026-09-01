@@ -1,12 +1,13 @@
 import { useState } from 'react'
 import { useApp } from '../state/store'
-import { useT } from '../i18n'
+import { useT, useTx } from '../i18n'
 import { useInstallPrompt } from '../lib/install'
 import { Button, Card, Sheet, ProgressBar, ChevronLeft, Check } from '../components/ui'
 
 export default function Settings({ onBack }) {
   const t = useT()
-  const { settings, setSetting, overall, resetProgress } = useApp()
+  const tx = useTx()
+  const { settings, setSetting, course, overall, resetProgress } = useApp()
   const install = useInstallPrompt()
   const [confirmReset, setConfirmReset] = useState(false)
 
@@ -59,15 +60,19 @@ export default function Settings({ onBack }) {
           />
         </Group>
 
-        <Group label={t('progressLabel')}>
-          <Card className="flex flex-col gap-3">
-            <p className="font-bold">{t('lessonsDone', { done: overall.done, total: overall.total })}</p>
-            <ProgressBar value={overall.pct} />
-            <Button variant="neutral" size="md" onClick={() => setConfirmReset(true)}>
-              {t('resetProgress')}
-            </Button>
-          </Card>
-        </Group>
+        {course && (
+          <Group label={t('progressLabel')}>
+            <Card className="flex flex-col gap-3">
+              <p className="font-bold">
+                {tx(course.title)} · {t('lessonsDone', { done: overall.done, total: overall.total })}
+              </p>
+              <ProgressBar value={overall.pct} />
+              <Button variant="neutral" size="md" onClick={() => setConfirmReset(true)}>
+                {t('resetProgress')}
+              </Button>
+            </Card>
+          </Group>
+        )}
 
         {!install.installed && (
           <Group label={t('installTitle')}>
@@ -100,7 +105,9 @@ export default function Settings({ onBack }) {
       </div>
 
       <Sheet open={confirmReset} onClose={() => setConfirmReset(false)} title={t('resetConfirmTitle')}>
-        <p className="mb-5 leading-snug text-ink-soft">{t('resetConfirmBody')}</p>
+        <p className="mb-5 leading-snug text-ink-soft">
+          {t('resetConfirmBody', { course: course ? tx(course.title) : '' })}
+        </p>
         <div className="flex flex-col gap-3">
           <Button full onClick={() => setConfirmReset(false)}>
             {t('cancel')}

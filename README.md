@@ -1,10 +1,26 @@
 # Computer Basics
 
-A phone-first course that teaches complete beginners how to use a computer.
-Short lessons, hands-on practice on mock interfaces, and no way to fail.
+A phone-first learning app, growing into a small catalog of short courses.
+Short lessons, hands-on practice, and no way to fail.
 
 Built as an installable PWA: you hand someone a link, they add it to their home
 screen, and it works from then on with or without a connection.
+
+**Courses today:**
+
+- **Computer Basics** — for complete beginners: turning a computer on, the
+  desktop, files, a browser, staying safe, keyboard shortcuts.
+- **Claude 001** — for people already comfortable with a computer, brand new
+  to AI: what Claude is, skills/plugins/connectors, and five real projects
+  (install Claude, install a skill, install a connector, use Claude Design,
+  run a Claude Code prompt).
+- **Claude Code** and **AI 001** — reserved slots, shown as "coming soon" in
+  the app; not written yet.
+
+A **Hub** screen — the first thing you see after picking a language — lists
+every course with its own progress, and stays reachable any time from a
+course's own lesson-path screen. Progress, streak, and settings all live in
+one place either way; see [How it is put together](#how-it-is-put-together).
 
 <p align="center">
   <img src="docs/screenshots/home-path.png" width="200" alt="Lesson path screen" />
@@ -37,7 +53,7 @@ So the design choices follow from that, not from what would look impressive:
   $99/year developer account standing between "finished building this" and
   "my mom can use it."
 
-## What's in the course
+## What's in Computer Basics
 
 Seven modules, 31 lessons, built around eight interactive simulations rather
 than static screenshots — a working mock desktop, window manager, file
@@ -63,6 +79,27 @@ so a touchscreen can practice real shortcuts, and a mock AI chat:
 Every lesson is tailored to the learner's actual computer (Windows or Mac,
 chosen once at setup) and is fully bilingual — English and Spanish, including
 every screen, prompt, and piece of feedback, not just the menus.
+
+## What's in Claude 001
+
+For people who already use a computer fine and are new to AI — this one moves
+faster and skips re-explaining basic computer literacy. Four modules, 15
+lessons:
+
+1. **Meet Claude** — what it is, how a conversation works, usage limits and
+   plans → *project: install Claude and talk to it*
+2. **Getting fluent** — finding old chats, keyboard shortcuts, asking well
+3. **Extending Claude** — skill vs. connector vs. plugin, which skills to
+   install first → *project: install a connector*
+4. **Claude Code & Claude Design** — an overview of each, not a deep dive
+   (that's a future course) → *project: your first Claude Code prompt* →
+   *project: make your first skill* → *project: make something with Claude
+   Design*
+
+Its five hands-on projects are real, guided actions rather than in-app
+simulations — installing and using the real thing, since Claude's actual
+interface changes over time and can't be faithfully mocked the way a
+decades-old desktop metaphor can. See the new `action` step type below.
 
 ---
 
@@ -130,19 +167,40 @@ BASE_PATH=/computer-basics/ npm run build
 
 ```
 src/
-  curriculum/     the course — one file per module, plain data
+  courses/
+    index.js          the catalog: COURSES array + getCourse(id)
+    makeCourse.js      turns a module list into {MODULES, LESSON_ORDER, getLesson, …}
+    computer-basics/   one file per module, plain data
+    claude-001/        same shape, different course
+    claude-code/        }  stubs — one placeholder lesson each, status: 'coming-soon'
+    ai-001/             }
   components/
     sims/         the mock computer: desktop, windows, files, browser, keyboard
     Art.jsx       hand-drawn diagrams (phone vs. computer, the cheat sheet, …)
     StepView.jsx  renders one step of a lesson
-    ui.jsx        buttons, cards, sheets, the rich-text renderer
-  screens/        Onboarding, Path (home), Lesson, Settings
-  state/store.jsx all progress and settings
+    ui.jsx        buttons, cards, sheets, the rich-text renderer, CopyButton
+  screens/        Onboarding, Hub (course picker), Path (a course's lesson list), Lesson, Settings
+  state/store.jsx all progress and settings, scoped to whichever course is active
   lib/
     storage.js    the only file that touches persistence
     gestures.js   tap → click, double tap → double-click, hold → right-click
   i18n/           UI strings, plus the content resolver
 ```
+
+A course is whatever `makeCourse(meta, modules)` returns — the registry in
+`src/courses/index.js` is just an ordered list of those. Adding a fifth course
+later is: a new folder shaped like `claude-001/`, one line added to the
+`COURSES` array. Nothing else in the app needs to know it exists.
+
+Progress is stored nested by course —
+`completed: { [courseId]: { [lessonId]: {...} } }` — and `settings.currentCourseId`
+says which one is active; `useApp()` derives everything (unlock state, next
+lesson, per-module progress) against that course only. The streak is the one
+thing shared globally across every course, on purpose — a daily practice habit
+doesn't care which course kept it going. `src/lib/storage.js`'s `migrate()`
+detects an old, pre-multi-course save structurally (a lesson record has
+`completedAt` directly on it; a course bucket doesn't) and wraps it under
+`'computer-basics'` — no old progress is lost when this shape changed.
 
 ### Writing content
 
@@ -160,6 +218,7 @@ pair, or `dev(windows, mac)` to differ by platform — and these nest.
     { type: 'sim',   sim: 'files', prompt: …, config: { goal: 'move', … } },
     { type: 'choice', prompt: …, options: [{ id, label, correct }, …] },
     { type: 'sort',  prompt: …, buckets: [ … ], items: [ … ] },
+    { type: 'action', title: …, body: [ … ], copyText: …, linkUrl: … },
     { type: 'recap', points: [ … ] },
   ],
 }
@@ -167,10 +226,23 @@ pair, or `dev(windows, mac)` to differ by platform — and these nest.
 
 Inside any string: `**bold**`, `__a term being defined__`, `[[Ctrl]]` for a key cap.
 
-`npm run check` validates every lesson — missing translations, a simulation
-pointing at something that isn't on screen, a question with no right answer, a
-wrong answer with no explanation, a lesson with no recap. It runs as part of
-`npm run build`, so those can't ship.
+`action` is for a real task done outside the app — install something, run a
+command, visit a page — rather than a graded question. It never calls
+`onMistake`; there's no wrong answer to a real task, only done or not yet. Any
+`copyText` is always rendered as visible text too (never clipboard-only — the
+Copy button is a convenience on top of it, since permission can be denied),
+and `linkUrl` opens a real `target="_blank"` link — the only place in the app
+that leaves it. Both `copyText` and `linkUrl` can be `dev(windows, mac)`
+wrapped like any other content, for platform-specific commands.
+
+`npm run check` validates every lesson across every course — missing
+translations, a simulation pointing at something that isn't on screen, a
+question with no right answer, a wrong answer with no explanation, a lesson
+with no recap, an `action` step with nothing to actually do. Lesson ids only
+need to be unique within their own course, so two courses can both have an
+`m1-l1` without colliding. It runs as part of `npm run build`, so those can't
+ship. Coming-soon stub courses are checked only lightly (well-formed enough to
+render in the Hub), not against the full content rules.
 
 ### The simulations
 
@@ -196,6 +268,9 @@ These are deliberate; changing them changes the app's character.
   rather than described, it is.
 - **Every term gets defined the first time it appears.**
 - **Locking is guidance, not a wall** — a locked lesson offers "open it anyway".
+- **Simulate what's stable, guide what isn't.** A decades-old desktop metaphor
+  can be mocked faithfully forever; a real product's UI changes. Claude 001's
+  projects are real guided actions with real links, not mockups of Claude.
 
 ---
 

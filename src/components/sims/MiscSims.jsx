@@ -92,7 +92,7 @@ export function ScrollSim({ config = {}, onSolved, onMistake, showHint, solved }
  */
 export function AISim({ config = {}, onSolved, onMistake, showHint, solved }) {
   const tx = useTx()
-  const { opening, options = [], best, reply, vagueReply } = config
+  const { opening, options = [], best, reply, vagueReply, assistantName, assistantEmoji } = config
   const [messages, setMessages] = useState([{ from: 'ai', text: opening }])
   const [typing, setTyping] = useState(false)
   const [used, setUsed] = useState([])
@@ -126,9 +126,11 @@ export function AISim({ config = {}, onSolved, onMistake, showHint, solved }) {
     <div className="overflow-hidden rounded-3xl border-2 border-line bg-white">
       <div className="flex items-center gap-2 border-b-2 border-line bg-cream px-4 py-3">
         <span className="text-xl" aria-hidden="true">
-          ✨
+          {assistantEmoji || '✨'}
         </span>
-        <span className="font-extrabold">{tx({ en: 'AI Assistant', es: 'Asistente de IA' })}</span>
+        <span className="font-extrabold">
+          {assistantName ? tx(assistantName) : tx({ en: 'AI Assistant', es: 'Asistente de IA' })}
+        </span>
       </div>
 
       <div className="flex max-h-72 flex-col gap-3 overflow-y-auto p-4">

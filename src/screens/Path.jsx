@@ -1,8 +1,7 @@
 import { useState } from 'react'
 import { useApp } from '../state/store'
 import { useT, useTx } from '../i18n'
-import { MODULES, LESSON_ORDER, getLesson } from '../curriculum'
-import { Button, Card, Sheet, ProgressBar, Check, Lock, Gear, Flame } from '../components/ui'
+import { Button, Card, Sheet, ProgressBar, Check, Lock, Gear, Flame, ChevronLeft } from '../components/ui'
 
 /**
  * Home. Three jobs, in order of importance:
@@ -14,19 +13,19 @@ import { Button, Card, Sheet, ProgressBar, Check, Lock, Gear, Flame } from '../c
 const ROW = 142 // px between lesson nodes — enough for a two-line title under each
 const OFFSETS = [0, 54, 76, 54, 0, -54, -76, -54] // the gentle S-curve
 
-export default function Path({ onOpenLesson, onOpenSettings }) {
+export default function Path({ onOpenLesson, onOpenSettings, onOpenHub }) {
   const t = useT()
   const tx = useTx()
-  const { overall, streak, nextLessonId, isUnlocked, courseFinished } = useApp()
+  const { course, overall, streak, nextLessonId, isUnlocked, courseFinished } = useApp()
   const [locked, setLocked] = useState(null)
 
-  const next = getLesson(nextLessonId)
+  const next = course.getLesson(nextLessonId)
   const started = overall.done > 0
 
   const tapLesson = (lesson) => {
     if (isUnlocked(lesson.id)) return onOpenLesson(lesson.id)
-    const blockerId = LESSON_ORDER[LESSON_ORDER.indexOf(lesson.id) - 1]
-    setLocked({ lesson, blocker: getLesson(blockerId) })
+    const blockerId = course.LESSON_ORDER[course.LESSON_ORDER.indexOf(lesson.id) - 1]
+    setLocked({ lesson, blocker: course.getLesson(blockerId) })
   }
 
   return (
@@ -34,8 +33,16 @@ export default function Path({ onOpenLesson, onOpenSettings }) {
       {/* Header */}
       <header className="sticky top-0 z-20 border-b-2 border-line bg-cream/90 px-5 pt-[max(0.9rem,env(safe-area-inset-top))] pb-3 backdrop-blur-md">
         <div className="flex items-center gap-3">
+          <button
+            type="button"
+            onClick={onOpenHub}
+            aria-label={t('backToHub')}
+            className="-ml-1.5 rounded-full p-1.5 text-ink-soft active:bg-cream-deep"
+          >
+            <ChevronLeft />
+          </button>
           <h1 className="flex-1 truncate text-[1.15rem] font-extrabold tracking-tight">
-            {t('appName')}
+            {tx(course.title)}
           </h1>
           {streak.count > 0 && (
             <span className="flex items-center gap-1 rounded-full bg-sun-soft px-3 py-1 text-sm font-extrabold text-sun">
@@ -98,7 +105,7 @@ export default function Path({ onOpenLesson, onOpenSettings }) {
       </div>
 
       {/* The path */}
-      {MODULES.map((mod) => (
+      {course.MODULES.map((mod) => (
         <ModuleSection key={mod.id} mod={mod} onTapLesson={tapLesson} />
       ))}
 

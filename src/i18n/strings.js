@@ -32,6 +32,12 @@ export const STRINGS = {
     readyBody: 'Take one lesson a day, or a few in a row. Your progress saves on this phone.',
     startCourse: 'Start the first lesson',
 
+    // Hub (course picker / home base)
+    hubTitle: 'Choose what to learn',
+    hubSubtitle: 'Pick one to start. You can always come back here and switch.',
+    hubComingSoon: 'Coming soon',
+    backToHub: 'All courses',
+
     // Path / home
     hello: 'Welcome back',
     helloFirst: 'Welcome',
@@ -83,10 +89,10 @@ export const STRINGS = {
     langLabel: 'Language',
     sizeLabel: 'Text size',
     progressLabel: 'Progress',
-    resetProgress: 'Start the course over',
+    resetProgress: 'Start this course over',
     resetConfirmTitle: 'Start over?',
     resetConfirmBody:
-      'This clears every checkmark and takes you back to the first lesson. It cannot be undone.',
+      'This clears every checkmark in {course} and takes you back to its first lesson. Your other courses are not affected. It cannot be undone.',
     cancel: 'Cancel',
     resetYes: 'Yes, start over',
     installTitle: 'Add to your home screen',
@@ -109,6 +115,13 @@ export const STRINGS = {
     tapTheAnswer: 'Tap your answer',
     dragHint: 'Drag it where it belongs',
     keyboardOn: 'On your computer',
+
+    // Action steps (real-world projects) and the copy button
+    actionFooterHint: 'Go do this for real, then come back and tap the button',
+    actionDone: "I did this",
+    copy: 'Copy',
+    copied: 'Copied!',
+    copyFailed: "Couldn't copy — select the text above instead",
   },
 
   es: {
@@ -138,6 +151,11 @@ export const STRINGS = {
     readyBody:
       'Haz una lección al día, o varias seguidas. Tu progreso se guarda en este teléfono.',
     startCourse: 'Empezar la primera lección',
+
+    hubTitle: 'Elige qué aprender',
+    hubSubtitle: 'Elige uno para empezar. Siempre puedes volver aquí y cambiar.',
+    hubComingSoon: 'Próximamente',
+    backToHub: 'Todos los cursos',
 
     hello: 'Qué bueno verte',
     helloFirst: 'Bienvenida',
@@ -189,10 +207,10 @@ export const STRINGS = {
     langLabel: 'Idioma',
     sizeLabel: 'Tamaño del texto',
     progressLabel: 'Progreso',
-    resetProgress: 'Empezar el curso de nuevo',
+    resetProgress: 'Empezar este curso de nuevo',
     resetConfirmTitle: '¿Empezar de nuevo?',
     resetConfirmBody:
-      'Esto borra todas las palomitas y te regresa a la primera lección. No se puede deshacer.',
+      'Esto borra todas las palomitas de {course} y te regresa a su primera lección. Tus otros cursos no se ven afectados. No se puede deshacer.',
     cancel: 'Cancelar',
     resetYes: 'Sí, empezar de nuevo',
     installTitle: 'Agregar a la pantalla de inicio',
@@ -213,5 +231,11 @@ export const STRINGS = {
     tapTheAnswer: 'Toca tu respuesta',
     dragHint: 'Arrástralo a donde va',
     keyboardOn: 'En tu computadora',
+
+    actionFooterHint: 'Hazlo de verdad, y luego regresa y toca el botón',
+    actionDone: 'Ya lo hice',
+    copy: 'Copiar',
+    copied: '¡Copiado!',
+    copyFailed: 'No se pudo copiar — selecciona el texto de arriba',
   },
 }
