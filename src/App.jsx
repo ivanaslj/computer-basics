@@ -5,6 +5,7 @@ import Hub from './screens/Hub'
 import Path from './screens/Path'
 import Lesson from './screens/Lesson'
 import Settings from './screens/Settings'
+import Practice from './screens/Practice'
 
 /**
  * Screen routing. Deliberately not a router library: there are five screens,
@@ -44,7 +45,15 @@ export default function App() {
 
   switch (route.name) {
     case 'hub':
-      return <Hub onOpenCourse={() => go('path')} onOpenSettings={() => go('settings')} />
+      return (
+        <Hub
+          onOpenCourse={() => go('path')}
+          onOpenSettings={() => go('settings')}
+          onOpenPractice={(m) => go('practice', { mode: m })}
+        />
+      )
+    case 'practice':
+      return <Practice key={route.mode} mode={route.mode} onExit={() => go('hub')} />
     case 'lesson':
       return (
         <Lesson
@@ -64,7 +73,11 @@ export default function App() {
           onOpenHub={() => go('hub')}
         />
       ) : (
-        <Hub onOpenCourse={() => go('path')} onOpenSettings={() => go('settings')} />
+        <Hub
+          onOpenCourse={() => go('path')}
+          onOpenSettings={() => go('settings')}
+          onOpenPractice={(m) => go('practice', { mode: m })}
+        />
       )
   }
 }

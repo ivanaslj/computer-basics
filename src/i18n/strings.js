@@ -116,6 +116,72 @@ export const STRINGS = {
     dragHint: 'Drag it where it belongs',
     keyboardOn: 'On your computer',
 
+    // Practice arcade (unlimited, not lessons)
+    practiceSectionTitle: 'Practice',
+    practiceSectionBlurb:
+      'Unlimited drills you can repeat as often as you like. No lessons, nothing to finish.',
+    practiceClick: 'Practice clicking',
+    practiceClickBlurb: 'Hit targets as they appear, and get quicker at aiming',
+    practiceDrag: 'Practice dragging',
+    practiceDragBlurb: 'Move things around, and practise holding on',
+    practiceType: 'Practice typing',
+    practiceTypeBlurb: 'Build up from letters to real sentences',
+
+    practiceStart: 'Start',
+    practiceAgain: 'Go again',
+    practiceHits: 'Hits',
+    practiceDrags: 'Moved',
+    practiceRetries: 'Retries',
+    practiceAccuracy: 'Accuracy',
+    practiceAvgTime: 'Average',
+    practiceTargetLabel: 'Target',
+    practiceDragLabel: 'Drag this',
+    bestAccuracy: 'Your best accuracy',
+    bestDrags: 'Your best round',
+    bestWpm: 'Your best speed',
+
+    clickPracticeTitle: 'Practice clicking',
+    clickPracticeIntro:
+      'Something will appear on the screen. Tap it. Another one appears somewhere else. That is the whole thing — twelve of them, no timer, no way to lose.',
+    clickPracticeHint: 'Tap the white square wherever it appears',
+    practiceNoteClick: 'Every round makes finding and hitting things a little easier.',
+
+    dragPracticeTitle: 'Practice dragging',
+    dragPracticeIntro:
+      'Move each item onto the dashed box. Some of them ask you to hold it there for a second before letting go — that is the part worth practising.',
+    dragPracticeHint: 'Press, hold, slide it onto the box, then let go',
+    dragPracticeHoldHint: 'This one needs holding — keep pressing until the bar fills',
+    practiceNoteDrag: 'Letting go too early is the usual thing. It gets easier every round.',
+
+    typePracticeTitle: 'Practice typing',
+    typePracticeIntro:
+      'Type what you see. Letters turn green when they are right. No timer — it ends when you reach the end.',
+    typeChooseStage: 'Choose where to start',
+    typeStage_letters: 'Letters',
+    typeStageHint_letters: 'Home row — finding keys without looking',
+    typeStage_words: 'Words',
+    typeStageHint_words: 'Common everyday words',
+    typeStage_sentences: 'Sentences',
+    typeStageHint_sentences: 'Real lines you might actually write at work',
+    typePracticeHint: 'Tap the text if the keyboard disappears',
+    typeInputLabel: 'Type here',
+    typeRestart: 'New text',
+    typeProgress: 'Progress',
+    typeWpm: 'Words a minute',
+    typeMistakes: 'Mistakes',
+    practiceNoteType: 'Speed comes from accuracy. Getting it right slowly is the fastest way there.',
+
+    phoneNoticeTitle: 'This works better on a computer',
+    phoneNoticeBody:
+      'You can absolutely do this on your phone. But these drills are practice for using a real mouse or trackpad — so if you have a laptop nearby, that is where they will help the most.',
+    phoneNoticeTyping:
+      'You can do this on your phone, but the on-screen keyboard will cover most of the text. If you have a laptop nearby, this one is much easier there.',
+    phoneNoticeContinue: 'Got it — continue',
+
+    contactTitle: 'Questions?',
+    contactBody:
+      'Something confusing, broken, or missing? Send an email and it will get read.',
+
     // Action steps (real-world projects) and the copy button
     actionFooterHint: 'Go do this for real, then come back and tap the button',
     actionDone: "I did this",
@@ -231,6 +297,71 @@ export const STRINGS = {
     tapTheAnswer: 'Toca tu respuesta',
     dragHint: 'Arrástralo a donde va',
     keyboardOn: 'En tu computadora',
+
+    practiceSectionTitle: 'Práctica',
+    practiceSectionBlurb:
+      'Ejercicios ilimitados que puedes repetir cuantas veces quieras. Sin lecciones, sin nada que terminar.',
+    practiceClick: 'Practicar el clic',
+    practiceClickBlurb: 'Dale a los objetivos que aparecen, y gana puntería',
+    practiceDrag: 'Practicar arrastrar',
+    practiceDragBlurb: 'Mueve cosas de lugar, y practica mantener presionado',
+    practiceType: 'Practicar escritura',
+    practiceTypeBlurb: 'Empieza con letras y llega a oraciones reales',
+
+    practiceStart: 'Empezar',
+    practiceAgain: 'Otra vez',
+    practiceHits: 'Aciertos',
+    practiceDrags: 'Movidos',
+    practiceRetries: 'Reintentos',
+    practiceAccuracy: 'Precisión',
+    practiceAvgTime: 'Promedio',
+    practiceTargetLabel: 'Objetivo',
+    practiceDragLabel: 'Arrastra esto',
+    bestAccuracy: 'Tu mejor precisión',
+    bestDrags: 'Tu mejor ronda',
+    bestWpm: 'Tu mejor velocidad',
+
+    clickPracticeTitle: 'Practicar el clic',
+    clickPracticeIntro:
+      'Algo va a aparecer en la pantalla. Tócalo. Aparece otro en otro lado. Eso es todo — doce en total, sin reloj, sin forma de perder.',
+    clickPracticeHint: 'Toca el cuadro blanco donde aparezca',
+    practiceNoteClick: 'Cada ronda hace un poco más fácil encontrar y darle a las cosas.',
+
+    dragPracticeTitle: 'Practicar arrastrar',
+    dragPracticeIntro:
+      'Mueve cada cosa al recuadro punteado. Algunas te piden mantenerla ahí un segundo antes de soltar — esa es la parte que vale la pena practicar.',
+    dragPracticeHint: 'Presiona, mantén, deslízalo al recuadro, y suelta',
+    dragPracticeHoldHint: 'Este necesita que lo mantengas — sigue presionando hasta que se llene la barra',
+    practiceNoteDrag: 'Soltar antes de tiempo es lo más común. Se vuelve más fácil cada ronda.',
+
+    typePracticeTitle: 'Practicar escritura',
+    typePracticeIntro:
+      'Escribe lo que ves. Las letras se ponen verdes cuando están bien. Sin reloj — termina cuando llegas al final.',
+    typeChooseStage: 'Elige por dónde empezar',
+    typeStage_letters: 'Letras',
+    typeStageHint_letters: 'Fila base — encontrar teclas sin mirar',
+    typeStage_words: 'Palabras',
+    typeStageHint_words: 'Palabras comunes del día a día',
+    typeStage_sentences: 'Oraciones',
+    typeStageHint_sentences: 'Frases reales que podrías escribir en el trabajo',
+    typePracticeHint: 'Toca el texto si desaparece el teclado',
+    typeInputLabel: 'Escribe aquí',
+    typeRestart: 'Texto nuevo',
+    typeProgress: 'Avance',
+    typeWpm: 'Palabras por minuto',
+    typeMistakes: 'Errores',
+    practiceNoteType: 'La velocidad viene de la precisión. Hacerlo bien despacio es el camino más rápido.',
+
+    phoneNoticeTitle: 'Esto funciona mejor en una computadora',
+    phoneNoticeBody:
+      'Claro que puedes hacerlo en tu teléfono. Pero estos ejercicios son práctica para usar un ratón o panel táctil de verdad — así que si tienes una laptop cerca, ahí es donde más te van a servir.',
+    phoneNoticeTyping:
+      'Puedes hacerlo en tu teléfono, pero el teclado en pantalla va a tapar casi todo el texto. Si tienes una laptop cerca, este es mucho más fácil ahí.',
+    phoneNoticeContinue: 'Entendido — continuar',
+
+    contactTitle: '¿Preguntas?',
+    contactBody:
+      '¿Algo confuso, roto, o que falta? Manda un correo y lo vamos a leer.',
 
     actionFooterHint: 'Hazlo de verdad, y luego regresa y toca el botón',
     actionDone: 'Ya lo hice',

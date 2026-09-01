@@ -58,6 +58,19 @@ function reducer(state, action) {
       }
     }
 
+    // Practice modes keep only personal bests — there is nothing to complete,
+    // so a result either beats the record or it doesn't, and either way the
+    // round is counted. Never lowers a best.
+    case 'record-practice': {
+      const prev = state.practice[action.mode]
+      if (!prev) return state
+      const next = { ...prev, rounds: (prev.rounds || 0) + 1 }
+      for (const [key, value] of Object.entries(action.scores || {})) {
+        if (typeof value === 'number' && value > (prev[key] || 0)) next[key] = value
+      }
+      return { ...state, practice: { ...state.practice, [action.mode]: next } }
+    }
+
     // Resets only the *current* course's checkmarks — resetting your Computer
     // Basics progress shouldn't silently wipe Claude 001 too. Settings and
     // every other course are left untouched.
@@ -91,7 +104,7 @@ export function AppProvider({ children }) {
   }, [state.settings.textSize, state.settings.language])
 
   const value = useMemo(() => {
-    const { completed, settings, streak } = state
+    const { completed, settings, streak, practice } = state
     const course = getCourse(settings.currentCourseId)
     // completed[courseId] — the bucket for whichever course is active. Falls
     // back to {} both before a course is picked and for a fresh course.
@@ -129,6 +142,7 @@ export function AppProvider({ children }) {
     return {
       settings,
       streak,
+      practice,
       completed: courseCompleted,
       course,
       courses,
@@ -148,6 +162,7 @@ export function AppProvider({ children }) {
       openCourse: (courseId) => dispatch({ type: 'set-setting', key: 'currentCourseId', value: courseId }),
       completeLesson: (lessonId, { perfect } = {}) =>
         dispatch({ type: 'complete-lesson', lessonId, perfect }),
+      recordPractice: (mode, scores) => dispatch({ type: 'record-practice', mode, scores }),
       resetProgress: () => dispatch({ type: 'reset-course', courseId: settings.currentCourseId }),
     }
   }, [state])

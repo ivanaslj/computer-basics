@@ -25,6 +25,11 @@ every course with its own progress, and stays reachable any time from a
 course's own lesson-path screen. Progress, streak, and settings all live in
 one place either way; see [How it is put together](#how-it-is-put-together).
 
+Below the courses sit three **unlimited practice** drills — clicking,
+dragging, and typing. Unlike lessons these never finish: they exist to be
+repeated, and keep only a personal best. See
+[Practice modes](#practice-modes).
+
 <p align="center">
   <img src="docs/screenshots/home-path.png" width="200" alt="Lesson path screen" />
   <img src="docs/screenshots/practice-double-click.png" width="200" alt="Practicing a double-click on a mock desktop" />
@@ -109,6 +114,35 @@ Every lesson is tailored to the learner's actual computer (Windows or Mac,
 chosen once at setup) and is fully bilingual — English and Spanish, including
 every screen, prompt, and piece of feedback, not just the menus.
 
+## Practice modes
+
+Three drills reached from the bottom of the Hub, deliberately outside the
+course system — no lessons, no completion, no unlocking, just a skill to
+repeat for as long as you like. They exist because the finite Mouse Practice
+module teaches the motions once; muscle memory needs volume.
+
+- **Practice clicking** — aim-trainer style. Targets appear one at a time and
+  shrink *only* while they are being hit cleanly, growing back after misses,
+  so difficulty follows the learner instead of a preset curve. Nobody gets
+  stuck on a target they cannot hit.
+- **Practice dragging** — trains two separate things: repeated short drags for
+  speed, and, every third round, **holding the item still on the target**
+  before it drops. Letting go early is the specific failure that keeps
+  happening in real use, so it gets its own drill. Releasing early is never
+  punished — the item goes home and the round continues.
+- **Practice typing** — MonkeyType-shaped, in three stages the learner picks
+  between: home-row letters, common words, then real sentences. Live
+  per-character feedback, WPM and accuracy at the end.
+
+Tone matches the rest of the app: no countdown, no lose condition, no
+"wrong". Rounds are a fixed number of targets rather than a ticking clock, so
+a slow careful learner and a fast one both finish.
+
+One robustness note worth knowing: typing results above 250 WPM are shown but
+**not saved** as a personal best. That is past the world record, so it did not
+come from typing — a pasted answer would otherwise leave behind a score the
+learner could never beat.
+
 ### Phone-first delivery, desktop-first content
 
 The job-skills modules are honest about their own limits. A phone teaches
@@ -121,6 +155,12 @@ real task done on a real computer, with an ungraded "I did this". A practical
 minimum is one computer session after every lesson or two, rather than
 banking all the hands-on work until the end — otherwise recognition on a
 phone gets mistaken for the ability to do the task at work.
+
+The practice modes say the same thing out loud: opening one on a touch-first
+device (`matchMedia('(pointer: coarse)')`) shows a warm, dismissible notice
+that a real mouse or keyboard will help more. It never blocks use, and it does
+not appear on a laptop — including a laptop with a touchscreen, which reports
+a fine pointer because it has one.
 
 ## What's in Claude 001
 
@@ -218,10 +258,11 @@ src/
     ai-001/             }
   components/
     sims/         the mock computer: desktop, windows, files, browser, keyboard
+    practice/     the unlimited drills (click, drag, type) + typing word lists
     Art.jsx       hand-drawn diagrams (phone vs. computer, the cheat sheet, …)
     StepView.jsx  renders one step of a lesson
     ui.jsx        buttons, cards, sheets, the rich-text renderer, CopyButton
-  screens/        Onboarding, Hub (course picker), Path (a course's lesson list), Lesson, Settings
+  screens/        Onboarding, Hub (courses + practice), Path (a course's lesson list), Lesson, Practice, Settings
   state/store.jsx all progress and settings, scoped to whichever course is active
   lib/
     storage.js    the only file that touches persistence

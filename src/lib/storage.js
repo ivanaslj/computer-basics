@@ -40,6 +40,13 @@ export const DEFAULT_STATE = {
   // Global and shared across every course — a daily practice streak doesn't
   // care which course kept it going.
   streak: { count: 0, lastDay: null },
+  // Personal bests for the unlimited practice modes. These are not lessons
+  // and have no completion — only a number to try to beat.
+  practice: {
+    click: { best: 0, rounds: 0 },
+    drag: { best: 0, rounds: 0 },
+    type: { bestWpm: 0, bestAccuracy: 0, rounds: 0 },
+  },
   // Reserved: when accounts exist this is where the server user id goes.
   account: null,
 }
@@ -99,6 +106,13 @@ function migrate(saved) {
     settings: { ...base.settings, ...(saved.settings || {}) },
     completed: normalizeCompleted(saved.completed),
     streak: { ...base.streak, ...(saved.streak || {}) },
+    // Merged per mode, not wholesale: a save written before a mode existed
+    // would otherwise leave that mode's record undefined and crash on read.
+    practice: {
+      click: { ...base.practice.click, ...(saved.practice?.click || {}) },
+      drag: { ...base.practice.drag, ...(saved.practice?.drag || {}) },
+      type: { ...base.practice.type, ...(saved.practice?.type || {}) },
+    },
   }
 }
 

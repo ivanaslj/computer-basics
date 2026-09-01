@@ -4,6 +4,13 @@ import { useT, useTx } from '../i18n'
 import { useInstallPrompt } from '../lib/install'
 import { Button, Card, Sheet, ProgressBar, ChevronLeft, Check } from '../components/ui'
 
+/**
+ * Temporary: the maintainer's personal address, until the Computer Basics
+ * accounts exist. When they do, swap this one line and add Discord and
+ * Instagram links beside it in the contact card below.
+ */
+const CONTACT_EMAIL = 'ivanmartinezmedina97@gmail.com'
+
 export default function Settings({ onBack }) {
   const t = useT()
   const tx = useTx()
@@ -90,6 +97,18 @@ export default function Settings({ onBack }) {
             </Card>
           </Group>
         )}
+
+        <Group label={t('contactTitle')}>
+          <Card className="flex flex-col gap-3">
+            <p className="text-[0.98rem] leading-snug text-ink-soft">{t('contactBody')}</p>
+            <a
+              href={`mailto:${CONTACT_EMAIL}`}
+              className="btn-3d self-start rounded-xl border-2 border-b-4 border-brand-dark bg-brand px-5 py-3 font-bold break-all text-white"
+            >
+              {CONTACT_EMAIL}
+            </a>
+          </Card>
+        </Group>
 
         <Group label={t('aboutTitle')}>
           <Card className="flex flex-col gap-2">

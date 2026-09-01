@@ -9,7 +9,16 @@ import { ProgressBar, Gear, Flame } from '../components/ui'
  * own Path screen; coming-soon courses are visible but not enterable, so the
  * intended lineup is honest about what exists today.
  */
-export default function Hub({ onOpenCourse, onOpenSettings }) {
+// Unlimited practice, deliberately listed apart from the courses: no
+// lessons, no completion, no order — just a skill to drill for as long as
+// you like.
+const PRACTICE_MODES = [
+  { id: 'click', emoji: '🖱️', titleKey: 'practiceClick', blurbKey: 'practiceClickBlurb' },
+  { id: 'drag', emoji: '✋', titleKey: 'practiceDrag', blurbKey: 'practiceDragBlurb' },
+  { id: 'type', emoji: '⌨️', titleKey: 'practiceType', blurbKey: 'practiceTypeBlurb' },
+]
+
+export default function Hub({ onOpenCourse, onOpenSettings, onOpenPractice }) {
   const t = useT()
   const tx = useTx()
   const { courses, streak, openCourse } = useApp()
@@ -49,6 +58,33 @@ export default function Hub({ onOpenCourse, onOpenSettings }) {
           <CourseCard key={course.id} course={course} tx={tx} t={t} onTap={() => pick(course)} />
         ))}
       </div>
+
+      <section className="px-5 pt-9">
+        <h2 className="text-sm font-bold tracking-widest text-ink-soft uppercase">
+          {t('practiceSectionTitle')}
+        </h2>
+        <p className="mt-1 mb-3 text-[0.95rem] leading-snug text-ink-soft text-pretty">
+          {t('practiceSectionBlurb')}
+        </p>
+        <div className="flex flex-col gap-3">
+          {PRACTICE_MODES.map((m) => (
+            <button
+              key={m.id}
+              type="button"
+              onClick={() => onOpenPractice(m.id)}
+              className="btn-3d flex items-center gap-4 rounded-2xl border-2 border-b-4 border-line bg-white px-5 py-4 text-left"
+            >
+              <span className="text-3xl" aria-hidden="true">
+                {m.emoji}
+              </span>
+              <span className="min-w-0 flex-1">
+                <span className="block text-[1.05rem] leading-tight font-extrabold">{t(m.titleKey)}</span>
+                <span className="block text-[0.95rem] leading-snug text-ink-soft">{t(m.blurbKey)}</span>
+              </span>
+            </button>
+          ))}
+        </div>
+      </section>
     </div>
   )
 }
