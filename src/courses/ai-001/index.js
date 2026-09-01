@@ -19,7 +19,6 @@ export default makeCourse(
   [
     {
       id: 'ai-m1',
-      number: 1,
       emoji: '🚧',
       color: 'sun',
       title: { en: 'Coming soon', es: 'Próximamente' },

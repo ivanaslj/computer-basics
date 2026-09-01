@@ -8,8 +8,11 @@ screen, and it works from then on with or without a connection.
 
 **Courses today:**
 
-- **Computer Basics** — for complete beginners: turning a computer on, the
-  desktop, files, a browser, staying safe, keyboard shortcuts.
+- **Computer Basics** — for complete beginners, in two halves. The
+  foundation: turning a computer on, mouse practice, files, a browser,
+  staying safe, keyboard shortcuts. Then a job-readiness pathway: organising
+  work files, work email, sharing and permissions, Word/Docs, Excel,
+  PowerPoint, and end-to-end office tasks.
 - **Claude 001** — for people already comfortable with a computer, brand new
   to AI: what Claude is, skills/plugins/connectors, and five real projects
   (install Claude, install a skill, install a connector, use Claude Design,
@@ -55,30 +58,69 @@ So the design choices follow from that, not from what would look impressive:
 
 ## What's in Computer Basics
 
-Seven modules, 31 lessons, built around eight interactive simulations rather
-than static screenshots — a working mock desktop, window manager, file
-explorer with real drag-and-drop, a browser with tabs and search results
-(ads and a scam included, on purpose), a keyboard where modifier keys latch
-so a touchscreen can practice real shortcuts, and a mock AI chat:
+Fifteen modules, 79 lessons, built around eight interactive simulations
+rather than static screenshots — a working mock desktop, window manager, file
+explorer with real drag-and-drop, a browser with tabs and search results (ads
+and a scam included, on purpose), a keyboard where modifier keys latch so a
+touchscreen can practice real shortcuts, and a mock AI chat.
+
+**The foundation** — using the machine at all:
 
 1. **The absolute basics** — turning a computer on/off, the desktop, icons,
    one click vs. two, right-click menus, scrolling
 2. **Windows and apps** — opening, closing vs. minimising, switching between
    windows, `Alt+Tab` / `Cmd+Tab`
-3. **Files and folders** — what a file/folder is, making one, moving,
+3. **Mouse practice** — pure drilling on click, double-click, and
+   drag-and-drop, because knowing what a double-click *is* and being able to
+   do one reliably are different things
+4. **Files and folders** — what a file/folder is, making one, moving,
    renaming, where downloads go
-4. **Using a browser** — address bar vs. search box, tabs, back/reload,
+5. **Using a browser** — address bar vs. search box, tabs, back/reload,
    bookmarks
-5. **Searching, safely** — writing a good search, telling an ad from a real
+6. **Searching, safely** — writing a good search, telling an ad from a real
    result, spotting a scam
-6. **Using AI helpers** — what one is, asking a good question, what to
+7. **Using AI helpers** — what one is, asking a good question, what to
    double-check
-7. **Keyboard shortcuts** — copy/paste/undo, screenshots, a side-by-side
+8. **Keyboard shortcuts** — copy/paste/undo, screenshots, a side-by-side
    Windows/Mac cheat sheet
+
+**The job-skills pathway** — being useful in an entry-level office job.
+Ordered to prevent the usual failure, where someone can produce a document
+but then can't find it, send it, or tell which copy is current — so filing
+and email come *before* the apps that make the files:
+
+9. **Organising work files** — device vs. cloud, naming conventions, folder
+   structures, Save As, finding the current version
+10. **Work email** — subject lines, the four-part structure, To/CC/Reply-All,
+    attachments, following up, plus four reusable templates
+11. **Sharing files at work** — attachment vs. live link, cloud storage,
+    Viewer/Commenter/Editor permissions, who to share with
+12. **Word and Google Docs** — structure, readable formatting, editing,
+    tables, comments, DOCX vs. PDF
+13. **Excel essentials** — the grid, clean list data, `SUM` and basic
+    formulas, formatting, sorting/filtering without wrecking the table,
+    printing
+14. **PowerPoint essentials** — one message per slide, built-in layouts,
+    brief text, useful visuals, consistency
+15. **Putting it together** — full end-to-end office tasks, finishing with a
+    capstone driven by a single realistic instruction from a supervisor
 
 Every lesson is tailored to the learner's actual computer (Windows or Mac,
 chosen once at setup) and is fully bilingual — English and Spanish, including
 every screen, prompt, and piece of feedback, not just the menus.
+
+### Phone-first delivery, desktop-first content
+
+The job-skills modules are honest about their own limits. A phone teaches
+vocabulary, judgment, and sequencing well — which subject line is clearer,
+attachment or link, which formula answers this question. It cannot teach the
+feel of a Save As dialog, a fill handle, or a print preview.
+
+So those lessons pair phone-teachable concept steps with `action` steps: a
+real task done on a real computer, with an ungraded "I did this". A practical
+minimum is one computer session after every lesson or two, rather than
+banking all the hands-on work until the end — otherwise recognition on a
+phone gets mistaken for the ability to do the task at work.
 
 ## What's in Claude 001
 
@@ -170,7 +212,7 @@ src/
   courses/
     index.js          the catalog: COURSES array + getCourse(id)
     makeCourse.js      turns a module list into {MODULES, LESSON_ORDER, getLesson, …}
-    computer-basics/   one file per module, plain data
+    computer-basics/   one file per module, plain data (module1…7, moduleMouse, moduleJob1…7)
     claude-001/        same shape, different course
     claude-code/        }  stubs — one placeholder lesson each, status: 'coming-soon'
     ai-001/             }
@@ -191,6 +233,10 @@ A course is whatever `makeCourse(meta, modules)` returns — the registry in
 `src/courses/index.js` is just an ordered list of those. Adding a fifth course
 later is: a new folder shaped like `claude-001/`, one line added to the
 `COURSES` array. Nothing else in the app needs to know it exists.
+
+Module files do not carry their own number. `makeCourse` assigns "Module 3"
+from array position, so inserting a module never means hand-renumbering every
+one after it.
 
 Progress is stored nested by course —
 `completed: { [courseId]: { [lessonId]: {...} } }` — and `settings.currentCourseId`
@@ -227,13 +273,15 @@ pair, or `dev(windows, mac)` to differ by platform — and these nest.
 Inside any string: `**bold**`, `__a term being defined__`, `[[Ctrl]]` for a key cap.
 
 `action` is for a real task done outside the app — install something, run a
-command, visit a page — rather than a graded question. It never calls
-`onMistake`; there's no wrong answer to a real task, only done or not yet. Any
-`copyText` is always rendered as visible text too (never clipboard-only — the
-Copy button is a convenience on top of it, since permission can be denied),
-and `linkUrl` opens a real `target="_blank"` link — the only place in the app
-that leaves it. Both `copyText` and `linkUrl` can be `dev(windows, mac)`
-wrapped like any other content, for platform-specific commands.
+command, open Excel and build a tracker — rather than a graded question. It
+never calls `onMistake`; there's no wrong answer to a real task, only done or
+not yet. The `body` is the substance; `copyText` and `linkUrl` are optional
+extras, since plenty of real tasks have nothing to copy and nowhere to link.
+Any `copyText` is always rendered as visible text too (never clipboard-only —
+the Copy button is a convenience on top of it, since permission can be
+denied), and `linkUrl` opens a real `target="_blank"` link — the only place in
+the app that leaves it. Both can be `dev(windows, mac)` wrapped like any other
+content, for platform-specific commands.
 
 `npm run check` validates every lesson across every course — missing
 translations, a simulation pointing at something that isn't on screen, a

@@ -46,7 +46,6 @@ const PHOTOS_WINDOW = {
 
 export default {
   id: 'm2',
-  number: 2,
   emoji: '🪟',
   color: 'brand',
   title: { en: 'Windows and apps', es: 'Ventanas y aplicaciones' },

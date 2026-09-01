@@ -4,7 +4,13 @@
  * factory does the flattening/indexing once so each course's own index.js
  * stays a one-line declaration of its modules plus a `meta` block.
  */
-export function makeCourse(meta, modules) {
+export function makeCourse(meta, moduleList) {
+  // "Module 3" is derived from position, never stored in the module file —
+  // otherwise inserting a module means hand-renumbering every one after it,
+  // and the displayed numbers silently drift out of order the first time
+  // someone forgets.
+  const modules = moduleList.map((mod, i) => ({ ...mod, number: i + 1 }))
+
   const LESSON_ORDER = modules.flatMap((m) => m.lessons.map((l) => l.id))
 
   const INDEX = new Map()

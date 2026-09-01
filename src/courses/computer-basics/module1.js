@@ -26,7 +26,6 @@ const ICON_MENU = [
 
 export default {
   id: 'm1',
-  number: 1,
   emoji: '🌱',
   color: 'brand',
   title: { en: 'The absolute basics', es: 'Lo más básico' },

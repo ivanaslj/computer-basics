@@ -16,7 +16,6 @@ const TABS = [
 
 export default {
   id: 'm4',
-  number: 4,
   emoji: '🌐',
   color: 'brand',
   title: { en: 'Using a browser', es: 'Usar un navegador' },

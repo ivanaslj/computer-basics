@@ -20,6 +20,17 @@ export default defineConfig({
   base,
   server: { host: true, https },
   preview: { host: true, https },
+  build: {
+    // Every course's text ships in the bundle so the app works offline from
+    // the first load. That puts it over Vite's default 500 kB warning, which
+    // measures uncompressed size — the number that actually crosses the wire
+    // is roughly a third of that, downloaded once and then cached forever.
+    //
+    // When this does become a real problem, the fix is loading each course's
+    // modules on demand rather than all of them up front. That means making
+    // the course registry async, so it is its own change, not a tweak here.
+    chunkSizeWarningLimit: 900,
+  },
   plugins: [
     react(),
     tailwindcss(),

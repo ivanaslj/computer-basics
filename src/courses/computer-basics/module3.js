@@ -33,7 +33,6 @@ const EMPTY_MENU = [
 
 export default {
   id: 'm3',
-  number: 3,
   emoji: '📁',
   color: 'sun',
   title: { en: 'Files and folders', es: 'Archivos y carpetas' },

@@ -6,7 +6,6 @@
 
 export default {
   id: 'c1-m3',
-  number: 3,
   emoji: '🧩',
   color: 'sun',
   title: { en: 'Extending Claude', es: 'Extender a Claude' },

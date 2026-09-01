@@ -83,7 +83,6 @@ const RESULTS_SCAM = [
 
 export default {
   id: 'm5',
-  number: 5,
   emoji: '🔍',
   color: 'grass',
   title: { en: 'Searching, safely', es: 'Buscar, con seguridad' },

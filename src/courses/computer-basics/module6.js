@@ -7,7 +7,6 @@
  */
 export default {
   id: 'm6',
-  number: 6,
   emoji: '✨',
   color: 'brand',
   title: { en: 'Using AI helpers', es: 'Usar asistentes de IA' },

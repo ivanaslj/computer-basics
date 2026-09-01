@@ -9,7 +9,6 @@
 
 export default {
   id: 'c1-m1',
-  number: 1,
   emoji: '✨',
   color: 'brand',
   title: { en: 'Meet Claude', es: 'Conoce a Claude' },

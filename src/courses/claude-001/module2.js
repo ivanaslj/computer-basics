@@ -7,7 +7,6 @@ import { dev } from '../../i18n/content.js'
 
 export default {
   id: 'c1-m2',
-  number: 2,
   emoji: '⚡',
   color: 'grass',
   title: { en: 'Getting fluent', es: 'Ganar soltura' },

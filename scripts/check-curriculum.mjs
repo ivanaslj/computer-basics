@@ -189,8 +189,10 @@ for (const course of COURSES) {
           checkText(step.body, `${S}.body`)
           checkText(step.copyText, `${S}.copyText`)
           checkText(step.linkLabel, `${S}.linkLabel`)
-          if (!step.body) fail(S, 'action step has no body')
-          if (!step.copyText && !step.linkUrl) fail(S, 'action step needs a copyText or a linkUrl — otherwise there is nothing to do')
+          // The instructions are the substance of an action step. copyText and
+          // linkUrl are optional extras — plenty of real tasks ("open Word and
+          // write a one-page memo") have nothing to copy and nowhere to link.
+          if (!step.body) fail(S, 'action step has no body — the instructions are the whole step')
           if (step.linkUrl && !/^https:\/\//.test(step.linkUrl)) fail(S, `linkUrl "${step.linkUrl}" should be a plain https:// URL`)
           break
 

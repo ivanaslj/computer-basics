@@ -8,7 +8,6 @@ import { dev } from '../../i18n/content.js'
 
 export default {
   id: 'c1-m4',
-  number: 4,
   emoji: '🧑‍💻',
   color: 'berry',
   title: { en: 'Claude Code & Claude Design', es: 'Claude Code y Claude Design' },

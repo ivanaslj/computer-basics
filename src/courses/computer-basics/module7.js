@@ -10,7 +10,6 @@ import { dev } from '../../i18n/content.js'
  */
 export default {
   id: 'm7',
-  number: 7,
   emoji: '⌨️',
   color: 'sun',
   title: { en: 'Keyboard shortcuts', es: 'Atajos del teclado' },
