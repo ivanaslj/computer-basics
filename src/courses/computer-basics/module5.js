@@ -83,7 +83,7 @@ const RESULTS_SCAM = [
 
 export default {
   id: 'm5',
-  emoji: '🔍',
+  icon: 'search',
   color: 'grass',
   title: { en: 'Searching, safely', es: 'Buscar, con seguridad' },
   subtitle: {
@@ -94,7 +94,7 @@ export default {
     /* ------------------------------------------------------------------ */
     {
       id: 'm5-l1',
-      emoji: '💬',
+      icon: 'chat',
       minutes: 4,
       title: { en: 'Asking a good question', es: 'Hacer una buena pregunta' },
       steps: [
@@ -180,7 +180,7 @@ export default {
     /* ------------------------------------------------------------------ */
     {
       id: 'm5-l2',
-      emoji: '📋',
+      icon: 'clipboard',
       minutes: 5,
       title: { en: 'Reading the results', es: 'Leer los resultados' },
       steps: [
@@ -246,7 +246,7 @@ export default {
     /* ------------------------------------------------------------------ */
     {
       id: 'm5-l3',
-      emoji: '🛡️',
+      icon: 'shield',
       minutes: 6,
       title: { en: 'Spotting a scam', es: 'Reconocer una estafa' },
       steps: [
@@ -268,7 +268,7 @@ export default {
             es: 'Una página web **no puede** saber si tu computadora tiene un virus. Cualquier página que lo diga está mintiendo — siempre, sin excepción.',
           },
           calloutTone: 'berry',
-          calloutEmoji: '🚨',
+          calloutIcon: 'warning',
         },
         {
           type: 'sim',

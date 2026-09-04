@@ -10,7 +10,7 @@ import { dev } from '../../i18n/content.js'
  */
 export default {
   id: 'm7',
-  emoji: '⌨️',
+  icon: 'keyboard',
   color: 'sun',
   title: { en: 'Keyboard shortcuts', es: 'Atajos del teclado' },
   subtitle: {
@@ -21,7 +21,7 @@ export default {
     /* ------------------------------------------------------------------ */
     {
       id: 'm7-l1',
-      emoji: '📋',
+      icon: 'clipboard',
       minutes: 5,
       title: { en: 'Copy and paste', es: 'Copiar y pegar' },
       steps: [
@@ -145,7 +145,7 @@ export default {
     /* ------------------------------------------------------------------ */
     {
       id: 'm7-l2',
-      emoji: '↩️',
+      icon: 'undo',
       minutes: 3,
       title: { en: 'Undo: the safety net', es: 'Deshacer: la red de seguridad' },
       steps: [
@@ -173,7 +173,7 @@ export default {
             es: '¿Borraste un párrafo sin querer? ¿Moviste un archivo a un lugar raro? Deshacer. Funciona en casi toda aplicación.',
           },
           calloutTone: 'grass',
-          calloutEmoji: '🛟',
+          calloutIcon: 'undo',
         },
         {
           type: 'sim',
@@ -233,7 +233,7 @@ export default {
     /* ------------------------------------------------------------------ */
     {
       id: 'm7-l3',
-      emoji: '📸',
+      icon: 'camera',
       minutes: 5,
       title: { en: 'The cheat sheet', es: 'La hoja de trucos' },
       steps: [
@@ -260,7 +260,7 @@ export default {
             en: 'This is the thing to do when something confusing appears and you want to ask someone about it. Screenshot first, then ask.',
             es: 'Esto es lo que hay que hacer cuando aparece algo confuso y quieres preguntarle a alguien. Primero captura, luego pregunta.',
           },
-          calloutEmoji: '📷',
+          calloutIcon: 'camera',
         },
         {
           type: 'teach',

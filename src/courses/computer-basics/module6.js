@@ -7,7 +7,7 @@
  */
 export default {
   id: 'm6',
-  emoji: '✨',
+  icon: 'sparkle',
   color: 'brand',
   title: { en: 'Using AI helpers', es: 'Usar asistentes de IA' },
   subtitle: {
@@ -18,7 +18,7 @@ export default {
     /* ------------------------------------------------------------------ */
     {
       id: 'm6-l1',
-      emoji: '🤖',
+      icon: 'robot',
       minutes: 4,
       title: { en: 'What an AI assistant is', es: 'Qué es un asistente de IA' },
       steps: [
@@ -39,7 +39,7 @@ export default {
             en: 'It will never get impatient with you, never sigh, and never think a question is silly. Ask it the thing you were embarrassed to ask a person.',
             es: 'Nunca se va a impacientar, nunca va a suspirar, y nunca va a pensar que tu pregunta es tonta. Pregúntale eso que te daba pena preguntarle a una persona.',
           },
-          calloutEmoji: '💛',
+          calloutIcon: 'heart',
         },
         {
           type: 'teach',
@@ -119,7 +119,7 @@ export default {
     /* ------------------------------------------------------------------ */
     {
       id: 'm6-l2',
-      emoji: '🗨️',
+      icon: 'chat',
       minutes: 5,
       title: { en: 'Asking it well', es: 'Preguntarle bien' },
       steps: [
@@ -207,7 +207,7 @@ export default {
     /* ------------------------------------------------------------------ */
     {
       id: 'm6-l3',
-      emoji: '⚖️',
+      icon: 'scale',
       minutes: 4,
       title: { en: 'What to double-check', es: 'Qué verificar' },
       steps: [

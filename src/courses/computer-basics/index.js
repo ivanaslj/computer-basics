@@ -26,7 +26,7 @@ export default makeCourse(
   {
     id: 'computer-basics',
     status: 'available',
-    emoji: '🖥️',
+    icon: 'monitor',
     title: { en: 'Computer Basics', es: 'Computación Básica' },
     subtitle: {
       en: 'The start level — turn it on, click, type, search, stay safe',

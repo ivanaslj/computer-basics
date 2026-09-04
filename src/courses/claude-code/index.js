@@ -9,7 +9,7 @@ export default makeCourse(
   {
     id: 'claude-code',
     status: 'coming-soon',
-    emoji: '🧑‍💻',
+    icon: 'code',
     title: { en: 'Claude Code', es: 'Claude Code' },
     subtitle: {
       en: 'Going deeper with the terminal tool — coming soon',
@@ -19,7 +19,7 @@ export default makeCourse(
   [
     {
       id: 'cc-m1',
-      emoji: '🚧',
+      icon: 'warning',
       color: 'sun',
       title: { en: 'Coming soon', es: 'Próximamente' },
       subtitle: { en: 'This course is being written', es: 'Este curso se está escribiendo' },

@@ -16,7 +16,7 @@ const TABS = [
 
 export default {
   id: 'm4',
-  emoji: '🌐',
+  icon: 'globe',
   color: 'brand',
   title: { en: 'Using a browser', es: 'Usar un navegador' },
   subtitle: {
@@ -27,7 +27,7 @@ export default {
     /* ------------------------------------------------------------------ */
     {
       id: 'm4-l1',
-      emoji: '🪟',
+      icon: 'window',
       minutes: 4,
       title: { en: 'The internet and the browser', es: 'El internet y el navegador' },
       steps: [
@@ -128,7 +128,7 @@ export default {
     /* ------------------------------------------------------------------ */
     {
       id: 'm4-l2',
-      emoji: '🔤',
+      icon: 'type',
       minutes: 5,
       title: { en: 'The bar at the top', es: 'La barra de arriba' },
       steps: [
@@ -203,7 +203,7 @@ export default {
     /* ------------------------------------------------------------------ */
     {
       id: 'm4-l3',
-      emoji: '🗂️',
+      icon: 'folders',
       minutes: 5,
       title: { en: 'Tabs: several pages at once', es: 'Pestañas: varias páginas a la vez' },
       steps: [
@@ -239,7 +239,7 @@ export default {
             es: 'Cerrar una **pestaña** cierra una página. Cerrar la **ventana** las cierra todas de golpe. Esa es la diferencia que confunde a la gente.',
           },
           calloutTone: 'berry',
-          calloutEmoji: '⚠️',
+          calloutIcon: 'warning',
         },
         {
           type: 'sim',
@@ -282,7 +282,7 @@ export default {
     /* ------------------------------------------------------------------ */
     {
       id: 'm4-l4',
-      emoji: '⬅️',
+      icon: 'arrow-left',
       minutes: 3,
       title: { en: 'Back, and starting over', es: 'Atrás, y volver a empezar' },
       steps: [
@@ -371,7 +371,7 @@ export default {
     /* ------------------------------------------------------------------ */
     {
       id: 'm4-l5',
-      emoji: '⭐',
+      icon: 'star',
       minutes: 4,
       title: { en: 'Saving a page for later', es: 'Guardar una página para después' },
       steps: [

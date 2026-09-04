@@ -107,7 +107,7 @@ export default function TypePractice({ onFinish, best }) {
               key={s}
               type="button"
               onClick={() => start(s)}
-              className="btn-3d rounded-2xl border-2 border-b-4 border-line bg-white px-5 py-4 text-left"
+              className="btn-3d rounded-2xl border-2 border-b-4 border-line bg-surface px-5 py-4 text-left"
             >
               <span className="block text-[1.05rem] font-extrabold">{t(`typeStage_${s}`)}</span>
               <span className="block text-[0.95rem] leading-snug text-ink-soft">
@@ -149,7 +149,7 @@ export default function TypePractice({ onFinish, best }) {
       <button
         type="button"
         onClick={() => inputRef.current?.focus()}
-        className="rounded-[1.4rem] border-2 border-line bg-white p-5 text-left"
+        className="rounded-[1.4rem] border-2 border-line bg-surface p-5 text-left"
       >
         <p className="text-[1.25rem] leading-[1.9] font-medium tracking-wide break-words">
           {text.split('').map((ch, i) => {

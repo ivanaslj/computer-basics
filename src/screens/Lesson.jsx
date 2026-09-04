@@ -3,6 +3,7 @@ import { useApp } from '../state/store'
 import { useT, useTx } from '../i18n'
 import StepView from '../components/StepView'
 import { RichText, Button, Sheet, Check } from '../components/ui'
+import Icon from '../components/icons'
 
 /**
  * The lesson player.
@@ -139,8 +140,8 @@ export default function Lesson({ lessonId, onExit, onNext }) {
       >
         {feedback && (
           <div className="anim-pop mb-3 flex items-start gap-3">
-            <span className="shrink-0 text-xl" aria-hidden="true">
-              {feedback.tone === 'right' ? '✅' : '💡'}
+            <span className={`shrink-0 pt-0.5 ${feedback.tone === 'right' ? 'text-grass-dark' : 'text-sun'}`}>
+              <Icon name={feedback.tone === 'right' ? 'check' : 'bulb'} className="h-5 w-5" />
             </span>
             <p
               className={`text-[1rem] leading-snug font-semibold ${

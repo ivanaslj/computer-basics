@@ -8,7 +8,7 @@
 
 export default {
   id: 'job2',
-  emoji: '✉️',
+  icon: 'mail',
   color: 'brand',
   title: { en: 'Work email', es: 'Correo de trabajo' },
   subtitle: {
@@ -19,7 +19,7 @@ export default {
     /* ------------------------------------------------------------------ */
     {
       id: 'job2-l1',
-      emoji: '📥',
+      icon: 'inbox',
       minutes: 4,
       title: { en: 'Read an email like a task', es: 'Lee un correo como una tarea' },
       steps: [
@@ -78,7 +78,7 @@ export default {
     /* ------------------------------------------------------------------ */
     {
       id: 'job2-l2',
-      emoji: '📝',
+      icon: 'file-text',
       minutes: 3,
       title: { en: 'Write a clear subject line', es: 'Escribe un asunto claro' },
       steps: [
@@ -147,7 +147,7 @@ export default {
     /* ------------------------------------------------------------------ */
     {
       id: 'job2-l3',
-      emoji: '✍️',
+      icon: 'pencil',
       minutes: 5,
       title: { en: 'The shape of a work email', es: 'La forma de un correo de trabajo' },
       steps: [
@@ -243,7 +243,7 @@ export default {
             es: 'Son puntos de partida, no guiones. Cambia las palabras por las tuyas — la *estructura* es lo útil.',
           },
           calloutTone: 'grass',
-          calloutEmoji: '📋',
+          calloutIcon: 'clipboard',
         },
         {
           type: 'recap',
@@ -259,7 +259,7 @@ export default {
     /* ------------------------------------------------------------------ */
     {
       id: 'job2-l4',
-      emoji: '👥',
+      icon: 'people',
       minutes: 4,
       title: { en: 'To, CC, and Reply All', es: 'Para, CC, y Responder a todos' },
       steps: [
@@ -281,7 +281,7 @@ export default {
             es: 'Responder a todos no es lo cortés por defecto. Llena bandejas de entrada, y puede mostrar información a quien no la necesitaba.',
           },
           calloutTone: 'berry',
-          calloutEmoji: '⚠️',
+          calloutIcon: 'warning',
         },
         {
           type: 'choice',
@@ -344,7 +344,7 @@ export default {
     /* ------------------------------------------------------------------ */
     {
       id: 'job2-l5',
-      emoji: '📎',
+      icon: 'paperclip',
       minutes: 4,
       title: { en: 'Attach before you send', es: 'Adjunta antes de enviar' },
       steps: [
@@ -408,7 +408,7 @@ export default {
     /* ------------------------------------------------------------------ */
     {
       id: 'job2-l6',
-      emoji: '🔔',
+      icon: 'bell',
       minutes: 4,
       title: { en: 'Following up without nagging', es: 'Dar seguimiento sin fastidiar' },
       steps: [
@@ -429,7 +429,7 @@ export default {
             en: '"Per my last email" reads as sharp to many people. **"I\'m following up on…"** does the same job without the edge.',
             es: '«Como decía en mi correo anterior» suena cortante para mucha gente. **«Doy seguimiento a…»** hace lo mismo sin el filo.',
           },
-          calloutEmoji: '🫱',
+          calloutIcon: 'grab',
         },
         {
           type: 'choice',

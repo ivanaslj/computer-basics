@@ -8,7 +8,7 @@ import { dev } from '../../i18n/content.js'
 
 export default {
   id: 'c1-m4',
-  emoji: '🧑‍💻',
+  icon: 'code',
   color: 'berry',
   title: { en: 'Claude Code & Claude Design', es: 'Claude Code y Claude Design' },
   subtitle: {
@@ -19,7 +19,7 @@ export default {
     /* ------------------------------------------------------------------ */
     {
       id: 'c1-m4-l1',
-      emoji: '🧑‍💻',
+      icon: 'code',
       minutes: 3,
       title: { en: 'What Claude Code is', es: 'Qué es Claude Code' },
       steps: [
@@ -83,7 +83,7 @@ export default {
     /* ------------------------------------------------------------------ */
     {
       id: 'c1-m4-l2',
-      emoji: '🚀',
+      icon: 'rocket',
       minutes: 5,
       title: { en: 'Project: your first Claude Code prompt', es: 'Proyecto: tu primer prompt en Claude Code' },
       steps: [
@@ -131,7 +131,7 @@ export default {
     /* ------------------------------------------------------------------ */
     {
       id: 'c1-m4-l3',
-      emoji: '🛠️',
+      icon: 'broom',
       minutes: 5,
       title: { en: 'Project: make your first skill', es: 'Proyecto: crea tu primer skill' },
       steps: [
@@ -174,7 +174,7 @@ export default {
     /* ------------------------------------------------------------------ */
     {
       id: 'c1-m4-l4',
-      emoji: '🎨',
+      icon: 'palette',
       minutes: 3,
       title: { en: 'What Claude Design is', es: 'Qué es Claude Design' },
       steps: [
@@ -230,7 +230,7 @@ export default {
     /* ------------------------------------------------------------------ */
     {
       id: 'c1-m4-l5',
-      emoji: '🖼️',
+      icon: 'image',
       minutes: 5,
       title: { en: 'Project: make something with Claude Design', es: 'Proyecto: crea algo con Claude Design' },
       steps: [

@@ -13,7 +13,7 @@ export default makeCourse(
   {
     id: 'claude-001',
     status: 'available',
-    emoji: '✨',
+    icon: 'sparkle',
     title: { en: 'Claude 001', es: 'Claude 001' },
     subtitle: {
       en: 'What Claude is, how to use it well, and five real things to try',

@@ -97,11 +97,36 @@ export function AppProvider({ children }) {
     save(state)
   }, [state])
 
-  // Reflect the text-size preference on <html> so the rem scale moves with it.
+  // Reflect the display preferences on <html>: the rem scale moves with the
+  // text-size choice, and the theme choice — unless it is "match my device",
+  // which is the media query in index.css doing the work — overrides it.
   useEffect(() => {
-    document.documentElement.dataset.textsize = state.settings.textSize
-    document.documentElement.lang = state.settings.language
-  }, [state.settings.textSize, state.settings.language])
+    const html = document.documentElement
+    html.dataset.textsize = state.settings.textSize
+    html.lang = state.settings.language
+
+    const theme = state.settings.theme
+    if (theme === 'system') delete html.dataset.theme
+    else html.dataset.theme = theme
+    // Tells the browser which way to paint scrollbars, form controls and the
+    // area past the end of the page. Without it a dark app still overscrolls
+    // to white.
+    html.style.colorScheme = theme === 'system' ? 'light dark' : theme
+
+    // The phone's status bar colour. index.html carries a media-scoped pair
+    // for "match my device"; an explicit choice needs one that always
+    // applies, and it has to come first, because the browser takes the first
+    // tag whose media matches.
+    const ID = 'theme-color-override'
+    document.getElementById(ID)?.remove()
+    if (theme !== 'system') {
+      const meta = document.createElement('meta')
+      meta.id = ID
+      meta.name = 'theme-color'
+      meta.content = theme === 'dark' ? '#17161c' : '#faf7f2'
+      document.head.prepend(meta)
+    }
+  }, [state.settings.textSize, state.settings.language, state.settings.theme])
 
   const value = useMemo(() => {
     const { completed, settings, streak, practice } = state

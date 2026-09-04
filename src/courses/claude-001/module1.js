@@ -9,7 +9,7 @@
 
 export default {
   id: 'c1-m1',
-  emoji: '✨',
+  icon: 'sparkle',
   color: 'brand',
   title: { en: 'Meet Claude', es: 'Conoce a Claude' },
   subtitle: {
@@ -20,7 +20,7 @@ export default {
     /* ------------------------------------------------------------------ */
     {
       id: 'c1-m1-l1',
-      emoji: '👋',
+      icon: 'wave',
       minutes: 3,
       title: { en: 'What Claude is', es: 'Qué es Claude' },
       steps: [
@@ -96,7 +96,7 @@ export default {
     /* ------------------------------------------------------------------ */
     {
       id: 'c1-m1-l2',
-      emoji: '💬',
+      icon: 'chat',
       minutes: 3,
       title: { en: 'How a conversation works', es: 'Cómo funciona una conversación' },
       steps: [
@@ -156,7 +156,7 @@ export default {
     /* ------------------------------------------------------------------ */
     {
       id: 'c1-m1-l3',
-      emoji: '📊',
+      icon: 'chart',
       minutes: 3,
       title: { en: 'Usage limits and plans', es: 'Límites de uso y planes' },
       steps: [
@@ -177,7 +177,7 @@ export default {
             en: 'If you ever run out of usage, Claude tells you plainly and shows when it resets — it is not a trick or a dead end, just a pause.',
             es: 'Si alguna vez se te acaba el uso, Claude te lo dice claramente y te muestra cuándo se reinicia — no es una trampa ni un callejón sin salida, solo una pausa.',
           },
-          calloutEmoji: '⏳',
+          calloutIcon: 'hourglass',
         },
         {
           type: 'sort',
@@ -233,7 +233,7 @@ export default {
     /* ------------------------------------------------------------------ */
     {
       id: 'c1-m1-l4',
-      emoji: '🚀',
+      icon: 'rocket',
       minutes: 5,
       title: { en: 'Project: install Claude and talk to it', es: 'Proyecto: instala Claude y háblale' },
       steps: [

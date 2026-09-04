@@ -9,7 +9,7 @@
 
 export default {
   id: 'job3',
-  emoji: '🔗',
+  icon: 'link',
   color: 'grass',
   title: { en: 'Sharing files at work', es: 'Compartir archivos en el trabajo' },
   subtitle: {
@@ -20,7 +20,7 @@ export default {
     /* ------------------------------------------------------------------ */
     {
       id: 'job3-l1',
-      emoji: '📄',
+      icon: 'file',
       minutes: 4,
       title: { en: 'A copy, or the live file?', es: '¿Una copia, o el archivo vivo?' },
       steps: [
@@ -100,7 +100,7 @@ export default {
     /* ------------------------------------------------------------------ */
     {
       id: 'job3-l2',
-      emoji: '☁️',
+      icon: 'cloud',
       minutes: 3,
       title: { en: 'What cloud storage actually is', es: 'Qué es realmente la nube' },
       steps: [
@@ -160,7 +160,7 @@ export default {
     /* ------------------------------------------------------------------ */
     {
       id: 'job3-l3',
-      emoji: '🔑',
+      icon: 'key',
       minutes: 4,
       title: { en: 'Viewer, commenter, or editor', es: 'Lector, comentarista, o editor' },
       steps: [
@@ -241,7 +241,7 @@ export default {
     /* ------------------------------------------------------------------ */
     {
       id: 'job3-l4',
-      emoji: '🎯',
+      icon: 'target',
       minutes: 4,
       title: { en: 'Share with the right people', es: 'Comparte con las personas correctas' },
       steps: [
@@ -267,7 +267,7 @@ export default {
             es: 'Nunca uses «cualquiera con el enlace» para información de clientes, expedientes de empleados, documentos financieros, o algo privado. Tu trabajo también puede tener reglas sobre esto.',
           },
           calloutTone: 'berry',
-          calloutEmoji: '🔒',
+          calloutIcon: 'shield',
         },
         {
           type: 'choice',
@@ -307,7 +307,7 @@ export default {
     /* ------------------------------------------------------------------ */
     {
       id: 'job3-l5',
-      emoji: '✅',
+      icon: 'check',
       minutes: 4,
       title: { en: 'Check access before you send', es: 'Revisa el acceso antes de enviar' },
       steps: [

@@ -6,7 +6,7 @@
 
 export default {
   id: 'c1-m3',
-  emoji: '🧩',
+  icon: 'puzzle',
   color: 'sun',
   title: { en: 'Extending Claude', es: 'Extender a Claude' },
   subtitle: {
@@ -17,7 +17,7 @@ export default {
     /* ------------------------------------------------------------------ */
     {
       id: 'c1-m3-l1',
-      emoji: '🗺️',
+      icon: 'map',
       minutes: 4,
       title: { en: 'The conceptual map', es: 'El mapa de conceptos' },
       steps: [
@@ -98,7 +98,7 @@ export default {
     /* ------------------------------------------------------------------ */
     {
       id: 'c1-m3-l2',
-      emoji: '⭐',
+      icon: 'star',
       minutes: 3,
       title: { en: 'Which skills to install first', es: 'Qué skills instalar primero' },
       steps: [
@@ -158,7 +158,7 @@ export default {
     /* ------------------------------------------------------------------ */
     {
       id: 'c1-m3-l3',
-      emoji: '🔌',
+      icon: 'plug',
       minutes: 5,
       title: { en: 'Project: install a connector', es: 'Proyecto: instala un connector' },
       steps: [
@@ -183,7 +183,7 @@ export default {
             en: 'Only connect accounts you are comfortable letting Claude read from. You can disconnect any connector the same way you added it, any time.',
             es: 'Conecta solo cuentas que te parezca bien que Claude pueda leer. Puedes desconectar cualquier connector de la misma forma que lo agregaste, cuando quieras.',
           },
-          calloutEmoji: '🔒',
+          calloutIcon: 'shield',
         },
         {
           type: 'action',

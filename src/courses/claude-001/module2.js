@@ -7,7 +7,7 @@ import { dev } from '../../i18n/content.js'
 
 export default {
   id: 'c1-m2',
-  emoji: '⚡',
+  icon: 'bolt',
   color: 'grass',
   title: { en: 'Getting fluent', es: 'Ganar soltura' },
   subtitle: {
@@ -18,7 +18,7 @@ export default {
     /* ------------------------------------------------------------------ */
     {
       id: 'c1-m2-l1',
-      emoji: '🗂️',
+      icon: 'folders',
       minutes: 3,
       title: { en: 'Finding your way around', es: 'Moverte por la aplicación' },
       steps: [
@@ -74,7 +74,7 @@ export default {
     /* ------------------------------------------------------------------ */
     {
       id: 'c1-m2-l2',
-      emoji: '⌨️',
+      icon: 'keyboard',
       minutes: 4,
       title: { en: 'Keyboard shortcuts for Claude', es: 'Atajos de teclado para Claude' },
       steps: [
@@ -147,7 +147,7 @@ export default {
     /* ------------------------------------------------------------------ */
     {
       id: 'c1-m2-l3',
-      emoji: '🎯',
+      icon: 'target',
       minutes: 4,
       title: { en: 'Asking well', es: 'Preguntar bien' },
       steps: [
@@ -172,7 +172,7 @@ export default {
             en: 'Nobody writes the perfect prompt on the first try, including people who do this every day. Iterating is the normal way to use it, not a sign you did it wrong.',
             es: 'Nadie escribe el prompt perfecto al primer intento, ni la gente que lo hace todos los días. Iterar es la forma normal de usarlo, no una señal de que lo hiciste mal.',
           },
-          calloutEmoji: '🔁',
+          calloutIcon: 'shuffle',
         },
         {
           type: 'choice',

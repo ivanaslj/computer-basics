@@ -33,6 +33,7 @@ export const DEFAULT_STATE = {
     device: null, // 'windows' | 'mac'
     language: 'en', // 'en' | 'es'
     textSize: 'normal', // 'normal' | 'large' | 'xlarge'
+    theme: 'system', // 'system' | 'light' | 'dark'
     currentCourseId: null, // which course the hub last opened
   },
   // courseId -> lessonId -> { completedAt, perfect, times }

@@ -5,7 +5,7 @@ import { useEffect, useState } from 'react'
 const VARIANTS = {
   primary: 'bg-brand text-white shadow-[0_4px_0_var(--color-brand-dark)]',
   success: 'bg-grass text-white shadow-[0_4px_0_var(--color-grass-dark)]',
-  neutral: 'bg-white text-ink border-2 border-line shadow-[0_4px_0_var(--color-line)]',
+  neutral: 'bg-surface text-ink border-2 border-line shadow-[0_4px_0_var(--color-line)]',
   ghost: 'bg-transparent text-ink-soft',
   danger: 'bg-berry text-white shadow-[0_4px_0_#96234f]',
 }
@@ -121,7 +121,7 @@ export function RichText({ children, className = '' }) {
 
 export function Keycap({ children, tone = 'default' }) {
   const tones = {
-    default: 'bg-white border-line text-ink',
+    default: 'bg-surface border-line text-ink',
     brand: 'bg-brand-soft border-brand/30 text-brand',
   }
   return (
@@ -137,7 +137,7 @@ export function Keycap({ children, tone = 'default' }) {
 
 export function Card({ children, className = '', tone = 'plain', ...props }) {
   const tones = {
-    plain: 'bg-white border-line',
+    plain: 'bg-surface border-line',
     brand: 'bg-brand-soft border-brand/20',
     grass: 'bg-grass-soft border-grass/20',
     sun: 'bg-sun-soft border-sun/25',

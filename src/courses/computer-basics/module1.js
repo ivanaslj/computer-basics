@@ -26,7 +26,7 @@ const ICON_MENU = [
 
 export default {
   id: 'm1',
-  emoji: '🌱',
+  icon: 'sprout',
   color: 'brand',
   title: { en: 'The absolute basics', es: 'Lo más básico' },
   subtitle: {
@@ -37,7 +37,7 @@ export default {
     /* ------------------------------------------------------------------ */
     {
       id: 'm1-l1',
-      emoji: '👋',
+      icon: 'wave',
       minutes: 3,
       title: { en: 'You cannot break it', es: 'No la puedes romper' },
       steps: [
@@ -58,7 +58,7 @@ export default {
             en: 'If you ever feel lost, you can always turn the computer off and start again. Nothing is lost forever.',
             es: 'Si alguna vez te sientes perdida, siempre puedes apagar la computadora y volver a empezar. Nada se pierde para siempre.',
           },
-          calloutEmoji: '🌤️',
+          calloutIcon: 'sun',
         },
         {
           type: 'teach',
@@ -178,7 +178,7 @@ export default {
     /* ------------------------------------------------------------------ */
     {
       id: 'm1-l2',
-      emoji: '🧩',
+      icon: 'puzzle',
       minutes: 4,
       title: { en: 'The parts of a computer', es: 'Las partes de una computadora' },
       steps: [
@@ -261,7 +261,7 @@ export default {
     /* ------------------------------------------------------------------ */
     {
       id: 'm1-l3',
-      emoji: '⏻',
+      icon: 'power',
       minutes: 4,
       title: { en: 'Turning it on and off', es: 'Encenderla y apagarla' },
       steps: [
@@ -305,7 +305,7 @@ export default {
             en: 'A black screen with a small light on does not mean it is broken. It means it is still waking up.',
             es: 'Una pantalla negra con una lucecita encendida no significa que esté descompuesta. Significa que todavía está despertando.',
           },
-          calloutEmoji: '⏳',
+          calloutIcon: 'hourglass',
         },
         {
           type: 'teach',
@@ -407,7 +407,7 @@ export default {
     /* ------------------------------------------------------------------ */
     {
       id: 'm1-l4',
-      emoji: '🖥️',
+      icon: 'monitor',
       minutes: 3,
       title: { en: 'The desktop and icons', es: 'El escritorio y los iconos' },
       steps: [
@@ -499,7 +499,7 @@ export default {
     /* ------------------------------------------------------------------ */
     {
       id: 'm1-l5',
-      emoji: '👆',
+      icon: 'cursor',
       minutes: 5,
       title: { en: 'One click, or two?', es: '¿Un clic, o dos?' },
       steps: [
@@ -607,7 +607,7 @@ export default {
     /* ------------------------------------------------------------------ */
     {
       id: 'm1-l6',
-      emoji: '📋',
+      icon: 'clipboard',
       minutes: 4,
       title: { en: 'Right-click: the helpful menu', es: 'Clic derecho: el menú útil' },
       steps: [
@@ -634,7 +634,7 @@ export default {
               'En el panel táctil de la Mac, presiona con **dos dedos** a la vez. (O mantén Control y haz clic.)'
             ),
           },
-          calloutEmoji: '✌️',
+          calloutIcon: 'press',
         },
         {
           type: 'sim',
@@ -726,7 +726,7 @@ export default {
     /* ------------------------------------------------------------------ */
     {
       id: 'm1-l7',
-      emoji: '📜',
+      icon: 'scroll',
       minutes: 3,
       title: { en: 'There is more below', es: 'Hay más abajo' },
       steps: [
@@ -765,7 +765,7 @@ export default {
             en: 'If a button someone told you about is not there — scroll down. It is almost always just below the edge.',
             es: 'Si un botón que te dijeron no aparece — desplázate hacia abajo. Casi siempre está justo debajo de la orilla.',
           },
-          calloutEmoji: '👇',
+          calloutIcon: 'press',
         },
         {
           type: 'sim',

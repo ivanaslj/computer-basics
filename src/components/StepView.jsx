@@ -3,6 +3,14 @@ import { RichText, Card, CopyButton } from './ui'
 import Art from './Art'
 import { getSim } from './sims'
 import { useT, useTx } from '../i18n'
+import Icon from './icons'
+
+const CALLOUT_TINT = {
+  sun: 'text-sun',
+  brand: 'text-brand',
+  grass: 'text-grass',
+  berry: 'text-berry',
+}
 
 /**
  * Renders one step of a lesson. Every step type reports back through the same
@@ -62,8 +70,10 @@ function TeachStep({ step }) {
       </div>
       {step.callout && (
         <Card tone={step.calloutTone || 'sun'} className="flex gap-3">
-          <span className="shrink-0 text-2xl" aria-hidden="true">
-            {step.calloutEmoji || '💡'}
+          {/* Tinted to the card it sits in, so the icon reads as part of the
+              callout rather than as grey text that happens to be a picture. */}
+          <span className={`shrink-0 ${CALLOUT_TINT[step.calloutTone] || CALLOUT_TINT.sun}`}>
+            <Icon name={step.calloutIcon || 'bulb'} className="h-7 w-7" />
           </span>
           <p className="text-[1rem] leading-snug">
             <RichText>{tx(step.callout)}</RichText>
@@ -87,8 +97,8 @@ function RecapStep({ step }) {
       <ul className="flex flex-col gap-3">
         {step.points.map((p, i) => (
           <li key={i} className="flex gap-3 rounded-2xl border-2 border-grass/20 bg-grass-soft p-4">
-            <span className="shrink-0 text-xl" aria-hidden="true">
-              ✅
+            <span className="shrink-0 pt-0.5 text-grass">
+              <Icon name="check" className="h-5 w-5" />
             </span>
             <span className="text-[1.02rem] leading-snug">
               <RichText>{tx(p)}</RichText>
@@ -138,7 +148,7 @@ function ChoiceStep({ step, solved, showHint, onSolved, onMistake }) {
                   ? 'border-grass bg-grass-soft text-ink'
                   : isWrong
                     ? 'anim-nudge border-berry/50 bg-berry-soft text-ink-soft'
-                    : 'border-line bg-white text-ink'
+                    : 'border-line bg-surface text-ink'
               } ${showHint && opt.correct && !solved ? 'anim-halo border-brand' : ''}`}
             >
               <span className="flex items-center gap-3">
@@ -190,7 +200,7 @@ function SortStep({ step, solved, showHint, onSolved, onMistake }) {
 
       <div
         key={item?.id}
-        className="anim-pop flex flex-col items-center gap-2 rounded-3xl border-2 border-line bg-white px-5 py-7 text-center"
+        className="anim-pop flex flex-col items-center gap-2 rounded-3xl border-2 border-line bg-surface px-5 py-7 text-center"
       >
         <span className="text-5xl" aria-hidden="true">
           {item?.emoji}
@@ -205,7 +215,7 @@ function SortStep({ step, solved, showHint, onSolved, onMistake }) {
             type="button"
             onClick={() => choose(b.id)}
             disabled={solved}
-            className={`rounded-2xl border-2 border-b-4 border-line bg-white px-4 py-5 text-center leading-tight font-extrabold active:translate-y-[2px] ${
+            className={`rounded-2xl border-2 border-b-4 border-line bg-surface px-4 py-5 text-center leading-tight font-extrabold active:translate-y-[2px] ${
               showHint && item?.bucket === b.id && !solved ? 'anim-halo border-brand' : ''
             }`}
           >

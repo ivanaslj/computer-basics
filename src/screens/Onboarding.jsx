@@ -2,6 +2,7 @@ import { useState } from 'react'
 import { useApp } from '../state/store'
 import { useT } from '../i18n'
 import { Button, Card, Check } from '../components/ui'
+import Icon from '../components/icons'
 
 /**
  * Setup, in four short screens. Two answers actually matter — language and
@@ -64,9 +65,9 @@ export default function Onboarding({ onDone }) {
               value={device}
               onChange={setDevice}
               options={[
-                { value: 'windows', label: t('windows'), hint: t('windowsHint'), emoji: '🪟' },
-                { value: 'mac', label: t('mac'), hint: t('macHint'), emoji: '🍏' },
-                { value: 'unsure', label: t('unsure'), hint: t('unsureHint'), emoji: '🤔' },
+                { value: 'windows', label: t('windows'), hint: t('windowsHint'), icon: 'windows' },
+                { value: 'mac', label: t('mac'), hint: t('macHint'), icon: 'apple' },
+                { value: 'unsure', label: t('unsure'), hint: t('unsureHint'), icon: 'question' },
               ]}
             />
           </div>
@@ -132,12 +133,12 @@ function OptionList({ value, onChange, options }) {
             onClick={() => onChange(o.value)}
             aria-pressed={active}
             className={`flex items-center gap-4 rounded-2xl border-2 border-b-4 px-5 py-4 text-left transition active:translate-y-[2px] ${
-              active ? 'border-brand bg-brand-soft' : 'border-line bg-white'
+              active ? 'border-brand bg-brand-soft' : 'border-line bg-surface'
             }`}
           >
-            {o.emoji && (
-              <span className="text-2xl" aria-hidden="true">
-                {o.emoji}
+            {o.icon && (
+              <span className={active ? 'text-brand' : 'text-ink-soft'}>
+                <Icon name={o.icon} className="h-7 w-7" />
               </span>
             )}
             <span className="min-w-0 flex-1">

@@ -9,7 +9,7 @@
 
 export default {
   id: 'job6',
-  emoji: '📽️',
+  icon: 'slides',
   color: 'berry',
   title: { en: 'PowerPoint essentials', es: 'Lo esencial de PowerPoint' },
   subtitle: {
@@ -20,7 +20,7 @@ export default {
     /* ------------------------------------------------------------------ */
     {
       id: 'job6-l1',
-      emoji: '1️⃣',
+      icon: 'target',
       minutes: 4,
       title: { en: 'One message per slide', es: 'Un mensaje por diapositiva' },
       steps: [
@@ -90,7 +90,7 @@ export default {
     /* ------------------------------------------------------------------ */
     {
       id: 'job6-l2',
-      emoji: '🎨',
+      icon: 'palette',
       minutes: 4,
       title: { en: 'Use a built-in layout', es: 'Usa un diseño que ya viene' },
       steps: [
@@ -150,7 +150,7 @@ export default {
     /* ------------------------------------------------------------------ */
     {
       id: 'job6-l3',
-      emoji: '🔠',
+      icon: 'type',
       minutes: 4,
       title: { en: 'Write slide text', es: 'Escribe el texto' },
       steps: [
@@ -214,7 +214,7 @@ export default {
     /* ------------------------------------------------------------------ */
     {
       id: 'job6-l4',
-      emoji: '🖼️',
+      icon: 'image',
       minutes: 4,
       title: { en: 'Add a useful visual', es: 'Agrega un visual útil' },
       steps: [
@@ -274,7 +274,7 @@ export default {
     /* ------------------------------------------------------------------ */
     {
       id: 'job6-l5',
-      emoji: '📐',
+      icon: 'ruler',
       minutes: 4,
       title: { en: 'Keep it consistent', es: 'Mantenlo consistente' },
       steps: [
@@ -299,7 +299,7 @@ export default {
             en: 'If you find yourself spending more time on the look than the content, stop. Nobody was ever promoted for a slide transition.',
             es: 'Si te descubres pasando más tiempo en el aspecto que en el contenido, para. A nadie lo han ascendido por una transición de diapositiva.',
           },
-          calloutEmoji: '🛑',
+          calloutIcon: 'warning',
         },
         {
           type: 'sort',
@@ -368,7 +368,7 @@ export default {
     /* ------------------------------------------------------------------ */
     {
       id: 'job6-l6',
-      emoji: '🔎',
+      icon: 'search',
       minutes: 5,
       title: { en: 'Check before sharing', es: 'Revisa antes de compartir' },
       steps: [

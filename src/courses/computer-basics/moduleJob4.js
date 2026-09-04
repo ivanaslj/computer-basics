@@ -8,7 +8,7 @@
 
 export default {
   id: 'job4',
-  emoji: '📝',
+  icon: 'file-text',
   color: 'brand',
   title: { en: 'Word and Google Docs', es: 'Word y Google Docs' },
   subtitle: {
@@ -19,7 +19,7 @@ export default {
     /* ------------------------------------------------------------------ */
     {
       id: 'job4-l1',
-      emoji: '🤔',
+      icon: 'question',
       minutes: 3,
       title: { en: 'Word or Google Docs?', es: '¿Word o Google Docs?' },
       steps: [
@@ -79,7 +79,7 @@ export default {
     /* ------------------------------------------------------------------ */
     {
       id: 'job4-l2',
-      emoji: '📄',
+      icon: 'file',
       minutes: 4,
       title: { en: 'Start a simple document', es: 'Empieza un documento simple' },
       steps: [
@@ -129,7 +129,7 @@ export default {
     /* ------------------------------------------------------------------ */
     {
       id: 'job4-l3',
-      emoji: '✨',
+      icon: 'sparkle',
       minutes: 4,
       title: { en: 'Make it easy to read', es: 'Hazlo fácil de leer' },
       steps: [
@@ -155,7 +155,7 @@ export default {
             es: 'No presiones Enter diez veces para empujar algo a la siguiente página. Se desbarata en cuanto cambia algo arriba — existe un salto de página para eso.',
           },
           calloutTone: 'berry',
-          calloutEmoji: '⚠️',
+          calloutIcon: 'warning',
         },
         {
           type: 'choice',
@@ -205,7 +205,7 @@ export default {
     /* ------------------------------------------------------------------ */
     {
       id: 'job4-l4',
-      emoji: '↩️',
+      icon: 'undo',
       minutes: 4,
       title: { en: 'Fix mistakes safely', es: 'Corrige sin miedo' },
       steps: [
@@ -269,7 +269,7 @@ export default {
     /* ------------------------------------------------------------------ */
     {
       id: 'job4-l5',
-      emoji: '🗓️',
+      icon: 'calendar',
       minutes: 4,
       title: { en: 'Make a simple table', es: 'Haz una tabla simple' },
       steps: [
@@ -319,7 +319,7 @@ export default {
     /* ------------------------------------------------------------------ */
     {
       id: 'job4-l6',
-      emoji: '💬',
+      icon: 'chat',
       minutes: 4,
       title: { en: 'Share and get feedback', es: 'Comparte y recibe comentarios' },
       steps: [
@@ -384,7 +384,7 @@ export default {
     /* ------------------------------------------------------------------ */
     {
       id: 'job4-l7',
-      emoji: '📤',
+      icon: 'upload',
       minutes: 4,
       title: { en: 'Export the right file', es: 'Exporta el archivo correcto' },
       steps: [

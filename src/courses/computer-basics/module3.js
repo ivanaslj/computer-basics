@@ -33,7 +33,7 @@ const EMPTY_MENU = [
 
 export default {
   id: 'm3',
-  emoji: '📁',
+  icon: 'folder',
   color: 'sun',
   title: { en: 'Files and folders', es: 'Archivos y carpetas' },
   subtitle: {
@@ -44,7 +44,7 @@ export default {
     /* ------------------------------------------------------------------ */
     {
       id: 'm3-l1',
-      emoji: '📄',
+      icon: 'file',
       minutes: 4,
       title: { en: 'What a file is', es: 'Qué es un archivo' },
       steps: [
@@ -80,7 +80,7 @@ export default {
             en: 'Do not change the part after the dot when renaming something. Change the name in front of it.',
             es: 'No cambies la parte después del punto cuando le cambies el nombre a algo. Cambia el nombre de adelante.',
           },
-          calloutEmoji: '⚠️',
+          calloutIcon: 'warning',
           calloutTone: 'berry',
         },
         {
@@ -150,7 +150,7 @@ export default {
     /* ------------------------------------------------------------------ */
     {
       id: 'm3-l2',
-      emoji: '🗄️',
+      icon: 'folders',
       minutes: 4,
       title: { en: 'Folders hold your files', es: 'Las carpetas guardan tus archivos' },
       steps: [
@@ -262,7 +262,7 @@ export default {
     /* ------------------------------------------------------------------ */
     {
       id: 'm3-l3',
-      emoji: '➕',
+      icon: 'plus',
       minutes: 4,
       title: { en: 'Making a new folder', es: 'Crear una carpeta nueva' },
       steps: [
@@ -349,7 +349,7 @@ export default {
     /* ------------------------------------------------------------------ */
     {
       id: 'm3-l4',
-      emoji: '✋',
+      icon: 'grab',
       minutes: 4,
       title: { en: 'Moving a file', es: 'Mover un archivo' },
       steps: [
@@ -370,7 +370,7 @@ export default {
             en: 'You already know this gesture: it is exactly how you rearrange the icons on your phone.',
             es: 'Ya conoces este gesto: es justo como acomodas los iconos en tu teléfono.',
           },
-          calloutEmoji: '📱',
+          calloutIcon: 'phone',
         },
         {
           type: 'sim',
@@ -437,7 +437,7 @@ export default {
     /* ------------------------------------------------------------------ */
     {
       id: 'm3-l5',
-      emoji: '✏️',
+      icon: 'pencil',
       minutes: 3,
       title: { en: 'Renaming things', es: 'Cambiar el nombre' },
       steps: [
@@ -494,7 +494,7 @@ export default {
     /* ------------------------------------------------------------------ */
     {
       id: 'm3-l6',
-      emoji: '⬇️',
+      icon: 'download',
       minutes: 3,
       title: { en: 'Where downloads go', es: 'A dónde van las descargas' },
       steps: [

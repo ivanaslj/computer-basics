@@ -3,13 +3,21 @@ import { useApp } from '../state/store'
 import { useT, useTx } from '../i18n'
 import { useInstallPrompt } from '../lib/install'
 import { Button, Card, Sheet, ProgressBar, ChevronLeft, Check } from '../components/ui'
+import Icon from '../components/icons'
 
 /**
- * Temporary: the maintainer's personal address, until the Computer Basics
- * accounts exist. When they do, swap this one line and add Discord and
- * Instagram links beside it in the contact card below.
+ * Where to find the project and its maintainer. All temporary in the sense
+ * that they are personal accounts, not Computer Basics ones — when the app
+ * gets its own (a Discord server is the next one planned, plus Instagram),
+ * add them to LINKS below and swap the address on this line.
  */
 const CONTACT_EMAIL = 'ivanmartinezmedina97@gmail.com'
+
+const LINKS = [
+  { id: 'source', icon: 'code', url: 'https://github.com/ivanaslj/computer-basics', labelKey: 'linkSource' },
+  { id: 'github', icon: 'github', url: 'https://github.com/ivanaslj', labelKey: 'linkGithub' },
+  { id: 'youtube', icon: 'youtube', url: 'https://www.youtube.com/@Its_mamut', labelKey: 'linkYoutube' },
+]
 
 export default function Settings({ onBack }) {
   const t = useT()
@@ -38,8 +46,8 @@ export default function Settings({ onBack }) {
             value={settings.device}
             onChange={(v) => setSetting('device', v)}
             options={[
-              { value: 'windows', label: t('windows'), emoji: '🪟' },
-              { value: 'mac', label: t('mac'), emoji: '🍏' },
+              { value: 'windows', label: t('windows'), icon: 'windows' },
+              { value: 'mac', label: t('mac'), icon: 'apple' },
             ]}
           />
         </Group>
@@ -67,6 +75,18 @@ export default function Settings({ onBack }) {
           />
         </Group>
 
+        <Group label={t('themeLabel')}>
+          <Choices
+            value={settings.theme}
+            onChange={(v) => setSetting('theme', v)}
+            options={[
+              { value: 'system', label: t('themeSystem'), icon: 'contrast' },
+              { value: 'light', label: t('themeLight'), icon: 'sun' },
+              { value: 'dark', label: t('themeDark'), icon: 'moon' },
+            ]}
+          />
+        </Group>
+
         {course && (
           <Group label={t('progressLabel')}>
             <Card className="flex flex-col gap-3">
@@ -90,7 +110,7 @@ export default function Settings({ onBack }) {
                   {t('installBtn')}
                 </Button>
               ) : (
-                <p className="rounded-2xl bg-white/70 p-3 text-[0.95rem] leading-snug font-semibold">
+                <p className="rounded-2xl bg-surface/70 p-3 text-[0.95rem] leading-snug font-semibold">
                   {install.isIOS ? t('installIOS') : t('installOther')}
                 </p>
               )}
@@ -103,10 +123,32 @@ export default function Settings({ onBack }) {
             <p className="text-[0.98rem] leading-snug text-ink-soft">{t('contactBody')}</p>
             <a
               href={`mailto:${CONTACT_EMAIL}`}
-              className="btn-3d self-start rounded-xl border-2 border-b-4 border-brand-dark bg-brand px-5 py-3 font-bold break-all text-white"
+              className="btn-3d self-start rounded-xl border-2 border-b-4 border-brand-dark bg-brand px-4 py-3 text-[0.9rem] font-bold break-all text-white"
             >
               {CONTACT_EMAIL}
             </a>
+          </Card>
+        </Group>
+
+        <Group label={t('linksTitle')}>
+          <Card className="flex flex-col gap-2">
+            {LINKS.map((l) => (
+              <a
+                key={l.id}
+                href={l.url}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="flex items-center gap-3 rounded-2xl px-2 py-2.5 font-bold active:bg-cream-deep"
+              >
+                <span className="text-brand">
+                  <Icon name={l.icon} className="h-6 w-6" />
+                </span>
+                <span className="flex-1">{t(l.labelKey)}</span>
+                <span className="text-ink-soft" aria-hidden="true">
+                  <Icon name="link" className="h-5 w-5" />
+                </span>
+              </a>
+            ))}
           </Card>
         </Group>
 
@@ -169,12 +211,12 @@ function Choices({ value, onChange, options }) {
             onClick={() => onChange(o.value)}
             aria-pressed={active}
             className={`flex items-center gap-3 rounded-2xl border-2 px-5 py-4 text-left font-extrabold transition ${
-              active ? 'border-brand bg-brand-soft' : 'border-line bg-white'
+              active ? 'border-brand bg-brand-soft' : 'border-line bg-surface'
             }`}
           >
-            {o.emoji && (
-              <span className="text-xl" aria-hidden="true">
-                {o.emoji}
+            {o.icon && (
+              <span className={active ? 'text-brand' : 'text-ink-soft'}>
+                <Icon name={o.icon} className="h-6 w-6" />
               </span>
             )}
             <span className="flex-1">{o.label}</span>

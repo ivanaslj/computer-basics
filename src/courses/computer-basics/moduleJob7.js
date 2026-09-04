@@ -10,7 +10,7 @@
 
 export default {
   id: 'job7',
-  emoji: '🏆',
+  icon: 'trophy',
   color: 'sun',
   title: { en: 'Putting it together', es: 'Juntando todo' },
   subtitle: {
@@ -21,7 +21,7 @@ export default {
     /* ------------------------------------------------------------------ */
     {
       id: 'job7-l1',
-      emoji: '🧩',
+      icon: 'puzzle',
       minutes: 3,
       title: { en: 'How real tasks actually arrive', es: 'Cómo llegan las tareas reales' },
       steps: [
@@ -62,7 +62,7 @@ export default {
     /* ------------------------------------------------------------------ */
     {
       id: 'job7-l2',
-      emoji: '📧',
+      icon: 'mail',
       minutes: 10,
       title: { en: 'Task: send a meeting update', es: 'Tarea: manda una actualización de junta' },
       steps: [
@@ -97,7 +97,7 @@ export default {
     /* ------------------------------------------------------------------ */
     {
       id: 'job7-l3',
-      emoji: '📊',
+      icon: 'chart',
       minutes: 12,
       title: { en: 'Task: update an expense list', es: 'Tarea: actualiza una lista de gastos' },
       steps: [
@@ -134,7 +134,7 @@ export default {
     /* ------------------------------------------------------------------ */
     {
       id: 'job7-l4',
-      emoji: '📣',
+      icon: 'send',
       minutes: 10,
       title: { en: 'Task: prepare a team announcement', es: 'Tarea: prepara un anuncio para el equipo' },
       steps: [
@@ -170,7 +170,7 @@ export default {
     /* ------------------------------------------------------------------ */
     {
       id: 'job7-l5',
-      emoji: '🖥️',
+      icon: 'monitor',
       minutes: 10,
       title: { en: 'Task: make a short update deck', es: 'Tarea: haz una presentación corta' },
       steps: [
@@ -206,7 +206,7 @@ export default {
     /* ------------------------------------------------------------------ */
     {
       id: 'job7-l6',
-      emoji: '🎓',
+      icon: 'trophy',
       minutes: 15,
       title: { en: 'Your first office task', es: 'Tu primera tarea de oficina' },
       steps: [
@@ -264,7 +264,7 @@ export default {
             es: 'Cada una de estas tareas se puede repetir las veces que quieras, con detalles inventados distintos. La repetición es como deja de sentirse un examen y empieza a sentirse un martes cualquiera.',
           },
           calloutTone: 'grass',
-          calloutEmoji: '🔁',
+          calloutIcon: 'shuffle',
         },
         {
           type: 'recap',

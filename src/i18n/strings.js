@@ -88,6 +88,10 @@ export const STRINGS = {
     deviceLabel: 'My computer',
     langLabel: 'Language',
     sizeLabel: 'Text size',
+    themeLabel: 'Appearance',
+    themeSystem: 'Match my device',
+    themeLight: 'Light',
+    themeDark: 'Dark',
     progressLabel: 'Progress',
     resetProgress: 'Start this course over',
     resetConfirmTitle: 'Start over?',
@@ -182,6 +186,11 @@ export const STRINGS = {
     contactBody:
       'Something confusing, broken, or missing? Send an email and it will get read.',
 
+    linksTitle: 'Find us',
+    linkSource: 'How this app is built',
+    linkGithub: 'GitHub',
+    linkYoutube: 'YouTube',
+
     // Action steps (real-world projects) and the copy button
     actionFooterHint: 'Go do this for real, then come back and tap the button',
     actionDone: "I did this",
@@ -272,6 +281,10 @@ export const STRINGS = {
     deviceLabel: 'Mi computadora',
     langLabel: 'Idioma',
     sizeLabel: 'Tamaño del texto',
+    themeLabel: 'Apariencia',
+    themeSystem: 'Igual que mi aparato',
+    themeLight: 'Claro',
+    themeDark: 'Oscuro',
     progressLabel: 'Progreso',
     resetProgress: 'Empezar este curso de nuevo',
     resetConfirmTitle: '¿Empezar de nuevo?',
@@ -362,6 +375,11 @@ export const STRINGS = {
     contactTitle: '¿Preguntas?',
     contactBody:
       '¿Algo confuso, roto, o que falta? Manda un correo y lo vamos a leer.',
+
+    linksTitle: 'Encuéntranos',
+    linkSource: 'Cómo está hecha esta app',
+    linkGithub: 'GitHub',
+    linkYoutube: 'YouTube',
 
     actionFooterHint: 'Hazlo de verdad, y luego regresa y toca el botón',
     actionDone: 'Ya lo hice',

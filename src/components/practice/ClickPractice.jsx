@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useRef, useState } from 'react'
 import { useT } from '../../i18n'
 import { Button } from '../ui'
+import Icon from '../icons'
 
 /**
  * Aim-trainer style clicking practice, dressed as a desktop.
@@ -180,7 +181,7 @@ export function StatBar({ items }) {
   return (
     <div className="flex gap-3">
       {items.map((it) => (
-        <div key={it.label} className="flex-1 rounded-2xl border-2 border-line bg-white px-3 py-2 text-center">
+        <div key={it.label} className="flex-1 rounded-2xl border-2 border-line bg-surface px-3 py-2 text-center">
           <div className="text-xs font-bold tracking-wide text-ink-soft uppercase">{it.label}</div>
           <div className="text-[1.3rem] leading-tight font-extrabold tabular-nums">{it.value}</div>
         </div>
@@ -209,9 +210,9 @@ export function Intro({ title, body, best, bestLabel, cta, onStart }) {
 export function Summary({ stats, note, cta, onAgain }) {
   return (
     <div className="flex flex-col items-center gap-5 py-4 text-center">
-      <div className="text-5xl" aria-hidden="true">
-        🎉
-      </div>
+      <span className="flex h-16 w-16 items-center justify-center rounded-full bg-grass-soft text-grass">
+        <Icon name="trophy" className="h-9 w-9" />
+      </span>
       <div className="flex w-full gap-3">
         {stats.map((s) => (
           <div key={s.label} className="flex-1 rounded-2xl border-2 border-grass/25 bg-grass-soft px-2 py-3">

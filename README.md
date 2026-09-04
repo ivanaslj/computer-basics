@@ -30,11 +30,16 @@ dragging, and typing. Unlike lessons these never finish: they exist to be
 repeated, and keep only a personal best. See
 [Practice modes](#practice-modes).
 
+The app follows your device's light or dark setting, or you can pin it either
+way in Settings. All of its own iconography is drawn — see
+[Icons and theme](#icons-and-theme).
+
 <p align="center">
   <img src="docs/screenshots/home-path.png" width="200" alt="Lesson path screen" />
   <img src="docs/screenshots/practice-double-click.png" width="200" alt="Practicing a double-click on a mock desktop" />
   <img src="docs/screenshots/spotting-a-scam.png" width="200" alt="A lesson on spotting a fake tech-support warning" />
   <img src="docs/screenshots/shortcut-cheatsheet.png" width="200" alt="Windows and Mac keyboard shortcut cheat sheet" />
+  <img src="docs/screenshots/hub-dark.png" width="200" alt="The course hub in dark mode" />
 </p>
 
 ## Why this exists
@@ -260,6 +265,7 @@ src/
     sims/         the mock computer: desktop, windows, files, browser, keyboard
     practice/     the unlimited drills (click, drag, type) + typing word lists
     Art.jsx       hand-drawn diagrams (phone vs. computer, the cheat sheet, …)
+    icons/        the drawn icon set — inline SVG, referenced by name
     StepView.jsx  renders one step of a lesson
     ui.jsx        buttons, cards, sheets, the rich-text renderer, CopyButton
   screens/        Onboarding, Hub (courses + practice), Path (a course's lesson list), Lesson, Practice, Settings
@@ -297,7 +303,7 @@ pair, or `dev(windows, mac)` to differ by platform — and these nest.
 ```js
 {
   id: 'm3-l4',
-  emoji: '✋',
+  icon: 'wave',
   minutes: 4,
   title: { en: 'Moving a file', es: 'Mover un archivo' },
   steps: [
@@ -327,11 +333,39 @@ content, for platform-specific commands.
 `npm run check` validates every lesson across every course — missing
 translations, a simulation pointing at something that isn't on screen, a
 question with no right answer, a wrong answer with no explanation, a lesson
-with no recap, an `action` step with nothing to actually do. Lesson ids only
+with no recap, an `action` step with nothing to actually do, an `icon:` naming
+something that isn't drawn. Lesson ids only
 need to be unique within their own course, so two courses can both have an
 `m1-l1` without colliding. It runs as part of `npm run build`, so those can't
 ship. Coming-soon stub courses are checked only lightly (well-formed enough to
 render in the Hub), not against the full content rules.
+
+### Icons and theme
+
+Every icon in the app's own furniture — course cards, module headers, lesson
+nodes, callouts, settings rows — is a drawn SVG in `src/components/icons/`,
+named by string the same way sims and art are. Content refers to them as
+`icon: 'folder'`, and `names.js` keeps a plain-JS list so `npm run check` can
+catch a typo without a JSX runtime. A name that doesn't exist renders a neutral
+dot rather than throwing, so a bad name is visible but never breaks a lesson
+someone is part-way through.
+
+Emoji are not used for iconography. They render differently on every platform,
+can't take the theme's colour, and read as a shortcut. They remain only *inside*
+the simulations, where they stand in for real desktop icons.
+
+The set is small on purpose — around eighty glyphs reused across ~120 slots. A
+tight vocabulary reads as deliberate; a unique drawing per lesson reads as
+noise, and most lessons are variations on a handful of ideas anyway.
+
+Because every icon is `currentColor` and every surface draws from the tokens in
+`src/index.css`, dark mode is a token swap rather than a second design.
+`settings.theme` is `'system' | 'light' | 'dark'`; `'system'` leaves `<html>`
+alone and lets the `prefers-color-scheme` media query decide, while an explicit
+choice sets `data-theme` and wins in both directions. The mock Windows and macOS
+interfaces keep their own hardcoded colours and deliberately do *not* follow the
+theme — a simulated file explorer should look like a real one whatever the app
+around it is wearing.
 
 ### The simulations
 
@@ -356,6 +390,8 @@ These are deliberate; changing them changes the app's character.
 - **Show, don't tell.** Where a lesson can be practised on a mock interface
   rather than described, it is.
 - **Every term gets defined the first time it appears.**
+- **No emoji as iconography.** Drawn icons only, so the app's furniture is one
+  consistent, themeable vocabulary. Emoji stay inside the simulations.
 - **Locking is guidance, not a wall** — a locked lesson offers "open it anyway".
 - **Simulate what's stable, guide what isn't.** A decades-old desktop metaphor
   can be mocked faithfully forever; a real product's UI changes. Claude 001's

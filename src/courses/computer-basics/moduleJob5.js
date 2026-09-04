@@ -14,7 +14,7 @@
 
 export default {
   id: 'job5',
-  emoji: '📊',
+  icon: 'chart',
   color: 'grass',
   title: { en: 'Excel essentials', es: 'Lo esencial de Excel' },
   subtitle: {
@@ -25,7 +25,7 @@ export default {
     /* ------------------------------------------------------------------ */
     {
       id: 'job5-l1',
-      emoji: '🔲',
+      icon: 'grid',
       minutes: 4,
       title: { en: 'A spreadsheet is a grid', es: 'Una hoja de cálculo es una cuadrícula' },
       steps: [
@@ -98,7 +98,7 @@ export default {
     /* ------------------------------------------------------------------ */
     {
       id: 'job5-l2',
-      emoji: '📋',
+      icon: 'clipboard',
       minutes: 4,
       title: { en: 'Enter a clean list', es: 'Captura una lista limpia' },
       steps: [
@@ -168,7 +168,7 @@ export default {
     /* ------------------------------------------------------------------ */
     {
       id: 'job5-l3',
-      emoji: '🧮',
+      icon: 'chart',
       minutes: 5,
       title: { en: 'Make the numbers add up', es: 'Haz que los números salgan' },
       steps: [
@@ -198,7 +198,7 @@ export default {
             es: 'Apuntas una fórmula a **direcciones de celda**, no a números escritos. Así, cuando un precio cambia, el total se actualiza solo.',
           },
           calloutTone: 'grass',
-          calloutEmoji: '💡',
+          calloutIcon: 'bulb',
         },
         {
           type: 'choice',
@@ -271,7 +271,7 @@ export default {
     /* ------------------------------------------------------------------ */
     {
       id: 'job5-l4',
-      emoji: '⬇️',
+      icon: 'download',
       minutes: 4,
       title: { en: 'Copy a formula down', es: 'Copia una fórmula hacia abajo' },
       steps: [
@@ -330,7 +330,7 @@ export default {
     /* ------------------------------------------------------------------ */
     {
       id: 'job5-l5',
-      emoji: '💲',
+      icon: 'chart',
       minutes: 4,
       title: { en: 'Make the sheet readable', es: 'Haz la hoja legible' },
       steps: [
@@ -355,7 +355,7 @@ export default {
             en: 'Seeing **#####** in a cell does not mean an error — it means the column is too narrow for the number. Widen it.',
             es: 'Ver **#####** en una celda no significa error — significa que la columna es muy angosta para el número. Ensánchala.',
           },
-          calloutEmoji: '↔️',
+          calloutIcon: 'ruler',
         },
         {
           type: 'choice',
@@ -395,7 +395,7 @@ export default {
     /* ------------------------------------------------------------------ */
     {
       id: 'job5-l6',
-      emoji: '🔍',
+      icon: 'search',
       minutes: 5,
       title: { en: 'Sort and filter safely', es: 'Ordena y filtra sin romper nada' },
       steps: [
@@ -484,7 +484,7 @@ export default {
     /* ------------------------------------------------------------------ */
     {
       id: 'job5-l7',
-      emoji: '🖨️',
+      icon: 'printer',
       minutes: 4,
       title: { en: 'Print without surprises', es: 'Imprime sin sorpresas' },
       steps: [

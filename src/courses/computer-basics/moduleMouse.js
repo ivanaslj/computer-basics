@@ -23,7 +23,7 @@ const DESKTOP = [
 
 export default {
   id: 'mp',
-  emoji: '🖱️',
+  icon: 'mouse',
   color: 'grass',
   title: { en: 'Mouse practice', es: 'Práctica del mouse' },
   subtitle: {
@@ -34,7 +34,7 @@ export default {
     /* ------------------------------------------------------------------ */
     {
       id: 'mp-l1',
-      emoji: '👆',
+      icon: 'cursor',
       minutes: 3,
       title: { en: 'Clicking, on purpose', es: 'Hacer clic, a propósito' },
       steps: [
@@ -90,7 +90,7 @@ export default {
     /* ------------------------------------------------------------------ */
     {
       id: 'mp-l2',
-      emoji: '👆👆',
+      icon: 'double-click',
       minutes: 4,
       title: { en: 'Double-click, until it is easy', es: 'Doble clic, hasta que sea fácil' },
       steps: [
@@ -111,7 +111,7 @@ export default {
             en: 'A real computer lets you slow the required speed down in its mouse settings, if double-clicking stays hard. It is a setting, not a limitation of yours.',
             es: 'Una computadora de verdad te deja hacer más lenta la velocidad requerida en los ajustes del mouse, si el doble clic sigue costando. Es una configuración, no un límite tuyo.',
           },
-          calloutEmoji: '⚙️',
+          calloutIcon: 'gear',
         },
         {
           type: 'sim',
@@ -196,7 +196,7 @@ export default {
     /* ------------------------------------------------------------------ */
     {
       id: 'mp-l3',
-      emoji: '✊',
+      icon: 'press',
       minutes: 3,
       title: { en: 'Picking something up', es: 'Levantar algo' },
       steps: [
@@ -235,7 +235,7 @@ export default {
             en: 'On a phone this is the same gesture you already use to rearrange your app icons — press, hold, slide, release.',
             es: 'En el teléfono es el mismo gesto que ya usas para acomodar los iconos de tus apps — presiona, mantén, desliza, suelta.',
           },
-          calloutEmoji: '📱',
+          calloutIcon: 'phone',
         },
         {
           type: 'choice',
@@ -281,7 +281,7 @@ export default {
     /* ------------------------------------------------------------------ */
     {
       id: 'mp-l4',
-      emoji: '🫳',
+      icon: 'grab',
       minutes: 4,
       title: { en: 'Your first drag', es: 'Tu primer arrastre' },
       steps: [
@@ -333,7 +333,7 @@ export default {
     /* ------------------------------------------------------------------ */
     {
       id: 'mp-l5',
-      emoji: '🎯',
+      icon: 'target',
       minutes: 4,
       title: { en: 'Choosing the right place', es: 'Elegir el lugar correcto' },
       steps: [
@@ -409,7 +409,7 @@ export default {
     /* ------------------------------------------------------------------ */
     {
       id: 'mp-l6',
-      emoji: '🧹',
+      icon: 'broom',
       minutes: 5,
       title: { en: 'Tidy up the desktop', es: 'Ordena el escritorio' },
       steps: [
@@ -482,7 +482,7 @@ export default {
             es: 'Vuelve y repite cualquiera de estas cuando quieras practicar. Nunca se acaban.',
           },
           calloutTone: 'grass',
-          calloutEmoji: '🔁',
+          calloutIcon: 'shuffle',
         },
         {
           type: 'recap',

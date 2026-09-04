@@ -11,6 +11,10 @@
 
   --color-cream: #faf7f2;
   --color-cream-deep: #f2ece2;
+  /* Cards and anything that sits *on* the page background. Its own token
+     rather than plain white, so dark mode lifts cards off the page instead
+     of punching holes in it. */
+  --color-surface: #ffffff;
   --color-ink: #221f26;
   --color-ink-soft: #5b5563;
   --color-line: #e6ded1;
@@ -30,6 +34,65 @@
   --color-berry-soft: #fdeaf1;
 
   --text-base: 1.125rem;
+}
+
+/* ---------------------------------------------------------------------------
+   Dark theme. Only the tokens change — no component knows a theme exists.
+   Two selectors, deliberately:
+     - the media query handles "match my device" (the default)
+     - [data-theme] handles an explicit choice, and must be able to win in
+       *both* directions, so the light block is repeated rather than relying
+       on the media query not matching.
+   The mock Windows/macOS interfaces inside the lessons keep their own
+   hardcoded colours on purpose: a simulated file explorer should look like a
+   real one whatever theme the app around it is wearing.
+--------------------------------------------------------------------------- */
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme='light']) {
+    --color-cream: #17161c;
+    --color-cream-deep: #21202a;
+    --color-surface: #23212c;
+    --color-ink: #f2eee9;
+    --color-ink-soft: #a49dae;
+    --color-line: #34313f;
+
+    --color-brand: #8b83ff;
+    --color-brand-dark: #6a61e0;
+    --color-brand-soft: #272441;
+
+    --color-grass: #43c46e;
+    --color-grass-dark: #2c9950;
+    --color-grass-soft: #17301f;
+
+    --color-sun: #f0a338;
+    --color-sun-soft: #33260f;
+
+    --color-berry: #f0709e;
+    --color-berry-soft: #331823;
+  }
+}
+
+:root[data-theme='dark'] {
+  --color-cream: #17161c;
+  --color-cream-deep: #21202a;
+  --color-surface: #23212c;
+  --color-ink: #f2eee9;
+  --color-ink-soft: #a49dae;
+  --color-line: #34313f;
+
+  --color-brand: #8b83ff;
+  --color-brand-dark: #6a61e0;
+  --color-brand-soft: #272441;
+
+  --color-grass: #43c46e;
+  --color-grass-dark: #2c9950;
+  --color-grass-soft: #17301f;
+
+  --color-sun: #f0a338;
+  --color-sun-soft: #33260f;
+
+  --color-berry: #f0709e;
+  --color-berry-soft: #331823;
 }
 
 /* The "larger text" toggle scales the whole UI: every size in the app is in

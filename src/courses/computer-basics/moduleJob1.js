@@ -10,7 +10,7 @@ import { dev } from '../../i18n/content.js'
 
 export default {
   id: 'job1',
-  emoji: '🗂️',
+  icon: 'folders',
   color: 'sun',
   title: { en: 'Organising work files', es: 'Organizar archivos de trabajo' },
   subtitle: {
@@ -21,7 +21,7 @@ export default {
     /* ------------------------------------------------------------------ */
     {
       id: 'job1-l1',
-      emoji: '📍',
+      icon: 'pin',
       minutes: 4,
       title: { en: 'Where did my file go?', es: '¿A dónde se fue mi archivo?' },
       steps: [
@@ -101,7 +101,7 @@ export default {
     /* ------------------------------------------------------------------ */
     {
       id: 'job1-l2',
-      emoji: '🏷️',
+      icon: 'tag',
       minutes: 4,
       title: { en: 'Give files useful names', es: 'Ponles nombres útiles' },
       steps: [
@@ -127,7 +127,7 @@ export default {
             es: 'Evita **final**, **final2**, **nuevofinal**, **FINAL-bueno**, y **cosas**. Un archivo que hoy es final mañana se revisa.',
           },
           calloutTone: 'berry',
-          calloutEmoji: '⚠️',
+          calloutIcon: 'warning',
         },
         {
           type: 'choice',
@@ -176,7 +176,7 @@ export default {
     /* ------------------------------------------------------------------ */
     {
       id: 'job1-l3',
-      emoji: '📂',
+      icon: 'folder',
       minutes: 4,
       title: { en: 'Put it in the right folder', es: 'Ponlo en la carpeta correcta' },
       steps: [
@@ -230,7 +230,7 @@ export default {
     /* ------------------------------------------------------------------ */
     {
       id: 'job1-l4',
-      emoji: '💾',
+      icon: 'save',
       minutes: 4,
       title: { en: 'Save before you close', es: 'Guarda antes de cerrar' },
       steps: [
@@ -290,7 +290,7 @@ export default {
     /* ------------------------------------------------------------------ */
     {
       id: 'job1-l5',
-      emoji: '🔎',
+      icon: 'search',
       minutes: 4,
       title: { en: 'Find the latest version', es: 'Encuentra la versión más reciente' },
       steps: [

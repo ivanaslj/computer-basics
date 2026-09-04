@@ -13,7 +13,7 @@ import { ART_NAMES } from './art-names'
 function Stage({ children, className = '', ratio = 'aspect-[4/3]' }) {
   return (
     <div
-      className={`relative w-full overflow-hidden rounded-[1.4rem] border-2 border-line bg-white ${ratio} ${className}`}
+      className={`relative w-full overflow-hidden rounded-[1.4rem] border-2 border-line bg-surface ${ratio} ${className}`}
       style={{ containerType: 'inline-size' }}
     >
       {children}
@@ -213,7 +213,7 @@ function InternetVsBrowser() {
   const tx = useTx()
   return (
     <div className="flex flex-col gap-3">
-      <div className="rounded-2xl border-2 border-line bg-white p-4">
+      <div className="rounded-2xl border-2 border-line bg-surface p-4">
         <div className="flex items-center gap-3">
           <span className="text-3xl" aria-hidden="true">
             🌍
@@ -301,7 +301,7 @@ function ModifierKeys() {
             {d.emoji}
           </div>
           <p className="mt-1 text-sm font-bold text-ink-soft">{d.name}</p>
-          <p className="mt-2 inline-block rounded-xl border-2 border-b-4 border-line bg-white px-3 py-1.5 font-extrabold">
+          <p className="mt-2 inline-block rounded-xl border-2 border-b-4 border-line bg-surface px-3 py-1.5 font-extrabold">
             {d.key}
           </p>
           <p className="mt-2 text-[0.9rem] leading-snug text-ink-soft">
@@ -334,7 +334,7 @@ function Combo({ keys, dim }) {
       {keys.map((k, i) => (
         <span key={k + i} className="flex items-center gap-1">
           {i > 0 && <span className="text-xs font-bold text-ink-soft">+</span>}
-          <kbd className="inline-flex min-w-7 items-center justify-center rounded-md border-2 border-b-[3px] border-line bg-white px-1.5 py-0.5 font-sans text-[0.8rem] font-extrabold">
+          <kbd className="inline-flex min-w-7 items-center justify-center rounded-md border-2 border-b-[3px] border-line bg-surface px-1.5 py-0.5 font-sans text-[0.8rem] font-extrabold">
             {k}
           </kbd>
         </span>
@@ -353,7 +353,7 @@ function ShortcutTable() {
   const { device } = useLocale()
   const isMac = device === 'mac'
   return (
-    <div className="overflow-hidden rounded-3xl border-2 border-line bg-white">
+    <div className="overflow-hidden rounded-3xl border-2 border-line bg-surface">
       <div className="grid grid-cols-[1fr_auto_auto] items-center gap-x-3 border-b-2 border-line bg-cream px-4 py-2 text-[0.72rem] font-bold tracking-widest text-ink-soft uppercase">
         <span>{tx({ en: 'To do this', es: 'Para hacer esto' })}</span>
         <span className={isMac ? 'opacity-45' : 'text-brand'}>Windows</span>

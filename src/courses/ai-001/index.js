@@ -9,7 +9,7 @@ export default makeCourse(
   {
     id: 'ai-001',
     status: 'coming-soon',
-    emoji: '🤖',
+    icon: 'robot',
     title: { en: 'AI 001', es: 'IA 001' },
     subtitle: {
       en: 'AI beyond Claude — coming soon',
@@ -19,7 +19,7 @@ export default makeCourse(
   [
     {
       id: 'ai-m1',
-      emoji: '🚧',
+      icon: 'warning',
       color: 'sun',
       title: { en: 'Coming soon', es: 'Próximamente' },
       subtitle: { en: 'This course is being written', es: 'Este curso se está escribiendo' },

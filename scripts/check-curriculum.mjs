@@ -8,6 +8,7 @@
 import { COURSES } from '../src/courses/index.js'
 import { SIMS } from '../src/components/sims/registry.js'
 import { ART_NAMES } from '../src/components/art-names.js'
+import { ICON_NAMES } from '../src/components/icons/names.js'
 
 const problems = []
 const fail = (where, msg) => problems.push(`${where}: ${msg}`)
@@ -62,6 +63,8 @@ for (const course of COURSES) {
   courseIds.add(course.id)
   checkText(course.title, `${course.id}.title`)
   checkText(course.subtitle, `${course.id}.subtitle`)
+  if (!course.icon) fail(course.id, 'missing icon')
+  else if (!ICON_NAMES.includes(course.icon)) fail(course.id, `unknown icon "${course.icon}"`)
   if (!['available', 'coming-soon'].includes(course.status))
     fail(course.id, `unknown status "${course.status}"`)
 
@@ -78,6 +81,8 @@ for (const course of COURSES) {
 
   for (const mod of course.MODULES) {
   for (const key of ['title', 'subtitle']) checkText(mod[key], `${course.id}/${mod.id}.${key}`)
+  if (!mod.icon) fail(`${course.id}/${mod.id}`, 'missing icon')
+  else if (!ICON_NAMES.includes(mod.icon)) fail(`${course.id}/${mod.id}`, `unknown icon "${mod.icon}"`)
   if (!mod.lessons?.length) fail(`${course.id}/${mod.id}`, 'module has no lessons')
 
   for (const lesson of mod.lessons) {
@@ -86,7 +91,8 @@ for (const course of COURSES) {
     seenIds.add(lesson.id)
     if (!lesson.id?.startsWith(mod.id + '-')) fail(L, `lesson id should start with "${mod.id}-"`)
     checkText(lesson.title, `${L}.title`)
-    if (!lesson.emoji) fail(L, 'missing emoji')
+    if (!lesson.icon) fail(L, 'missing icon')
+    else if (!ICON_NAMES.includes(lesson.icon)) fail(L, `unknown icon "${lesson.icon}"`)
     if (!lesson.minutes) fail(L, 'missing minutes')
     if (!lesson.steps?.length) fail(L, 'lesson has no steps')
 
@@ -107,6 +113,10 @@ for (const course of COURSES) {
           checkText(step.body, `${S}.body`)
           checkText(step.callout, `${S}.callout`)
           if (!step.body?.length) fail(S, 'teach step has no body')
+          // An unknown name silently falls back to the default bulb, which
+          // looks fine and hides the typo — so check it here instead.
+          if (step.calloutIcon && !ICON_NAMES.includes(step.calloutIcon))
+            fail(S, `unknown calloutIcon "${step.calloutIcon}"`)
           break
 
         case 'recap':

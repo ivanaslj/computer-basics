@@ -2,6 +2,7 @@ import { useState } from 'react'
 import { useApp } from '../state/store'
 import { useT, useTx } from '../i18n'
 import { Button, Card, Sheet, ProgressBar, Check, Lock, Gear, Flame, ChevronLeft } from '../components/ui'
+import Icon from '../components/icons'
 
 /**
  * Home. Three jobs, in order of importance:
@@ -71,9 +72,9 @@ export default function Path({ onOpenLesson, onOpenSettings, onOpenHub }) {
       <div className="px-5 pt-5">
         {courseFinished ? (
           <Card tone="grass" className="text-center">
-            <p className="text-3xl" aria-hidden="true">
-              🎉
-            </p>
+            <span className="mx-auto flex h-14 w-14 items-center justify-center rounded-full bg-grass text-white">
+              <Icon name="trophy" className="h-8 w-8" />
+            </span>
             <h2 className="mt-2 text-xl leading-tight font-extrabold">{t('courseDoneTitle')}</h2>
             <p className="mt-1 leading-snug text-ink-soft">{t('courseDoneBody')}</p>
           </Card>
@@ -84,8 +85,8 @@ export default function Path({ onOpenLesson, onOpenSettings, onOpenHub }) {
                 {tx(next.module.title)}
               </p>
               <div className="flex items-center gap-3">
-                <span className="text-4xl" aria-hidden="true">
-                  {next.lesson.emoji}
+                <span className="text-brand">
+                  <Icon name={next.lesson.icon} className="h-9 w-9" />
                 </span>
                 <div className="min-w-0">
                   <h2 className="text-[1.3rem] leading-tight font-extrabold text-balance">
@@ -125,12 +126,12 @@ function ModuleSection({ mod, onTapLesson }) {
     <section className="px-5 pt-8">
       <div
         className={`rounded-3xl border-2 p-5 ${
-          finished ? 'border-grass/25 bg-grass-soft' : 'border-line bg-white'
+          finished ? 'border-grass/25 bg-grass-soft' : 'border-line bg-surface'
         }`}
       >
         <div className="flex items-start gap-3">
-          <span className="text-3xl" aria-hidden="true">
-            {mod.emoji}
+          <span className={finished ? 'text-grass' : 'text-brand'}>
+            <Icon name={mod.icon} className="h-8 w-8" />
           </span>
           <div className="min-w-0 flex-1">
             <p className="text-xs font-bold tracking-widest text-ink-soft uppercase">
@@ -196,7 +197,7 @@ function LessonNode({ lesson, x, y, done, current, unlocked, onTap }) {
     : current
       ? 'bg-brand text-white shadow-[0_5px_0_var(--color-brand-dark)]'
       : unlocked
-        ? 'bg-white text-ink border-2 border-line shadow-[0_5px_0_var(--color-line)]'
+        ? 'bg-surface text-ink border-2 border-line shadow-[0_5px_0_var(--color-line)]'
         : 'bg-cream-deep text-ink-soft/60 shadow-none'
 
   return (
@@ -213,7 +214,7 @@ function LessonNode({ lesson, x, y, done, current, unlocked, onTap }) {
         }`}
       >
         {unlocked ? (
-          <span aria-hidden="true">{lesson.emoji}</span>
+          <Icon name={lesson.icon} className="h-8 w-8" />
         ) : (
           <Lock className="h-7 w-7" />
         )}

@@ -18,7 +18,7 @@ const DESKTOP_ICONS = [
 
 const NOTES_WINDOW = {
   id: 'notes',
-  emoji: '📝',
+  icon: 'file-text',
   title: { en: 'Notes', es: 'Notas' },
   body: {
     en: 'Shopping list:\n\nrice, beans, two onions, coffee',
@@ -32,7 +32,7 @@ const NOTES_WINDOW = {
 
 const PHOTOS_WINDOW = {
   id: 'photos',
-  emoji: '🖼️',
+  icon: 'image',
   title: { en: 'Photos', es: 'Fotos' },
   body: {
     en: 'Your pictures would be shown here.',
@@ -46,7 +46,7 @@ const PHOTOS_WINDOW = {
 
 export default {
   id: 'm2',
-  emoji: '🪟',
+  icon: 'window',
   color: 'brand',
   title: { en: 'Windows and apps', es: 'Ventanas y aplicaciones' },
   subtitle: {
@@ -57,7 +57,7 @@ export default {
     /* ------------------------------------------------------------------ */
     {
       id: 'm2-l1',
-      emoji: '📦',
+      icon: 'folders',
       minutes: 3,
       title: { en: 'What an app is', es: 'Qué es una aplicación' },
       steps: [
@@ -161,7 +161,7 @@ export default {
     /* ------------------------------------------------------------------ */
     {
       id: 'm2-l2',
-      emoji: '🔲',
+      icon: 'grid',
       minutes: 4,
       title: { en: 'The parts of a window', es: 'Las partes de una ventana' },
       steps: [
@@ -254,7 +254,7 @@ export default {
     /* ------------------------------------------------------------------ */
     {
       id: 'm2-l3',
-      emoji: '🙈',
+      icon: 'window-hidden',
       minutes: 4,
       title: { en: 'Closed, or just hidden?', es: '¿Cerrada, o solo escondida?' },
       steps: [
@@ -275,7 +275,7 @@ export default {
             en: 'When something "disappears", it is usually minimised, not lost. Look at the bar along the bottom.',
             es: 'Cuando algo «desaparece», casi siempre está minimizado, no perdido. Mira la barra de abajo.',
           },
-          calloutEmoji: '🔎',
+          calloutIcon: 'search',
         },
         {
           type: 'sim',
@@ -384,7 +384,7 @@ export default {
     /* ------------------------------------------------------------------ */
     {
       id: 'm2-l4',
-      emoji: '🔀',
+      icon: 'shuffle',
       minutes: 5,
       title: { en: 'Two things at once', es: 'Dos cosas a la vez' },
       steps: [

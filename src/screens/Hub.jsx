@@ -1,6 +1,7 @@
 import { useApp } from '../state/store'
 import { useT, useTx } from '../i18n'
 import { ProgressBar, Gear, Flame } from '../components/ui'
+import Icon from '../components/icons'
 
 /**
  * The very first real choice after onboarding ("what do you want to learn?"),
@@ -13,9 +14,9 @@ import { ProgressBar, Gear, Flame } from '../components/ui'
 // lessons, no completion, no order — just a skill to drill for as long as
 // you like.
 const PRACTICE_MODES = [
-  { id: 'click', emoji: '🖱️', titleKey: 'practiceClick', blurbKey: 'practiceClickBlurb' },
-  { id: 'drag', emoji: '✋', titleKey: 'practiceDrag', blurbKey: 'practiceDragBlurb' },
-  { id: 'type', emoji: '⌨️', titleKey: 'practiceType', blurbKey: 'practiceTypeBlurb' },
+  { id: 'click', icon: 'mouse', titleKey: 'practiceClick', blurbKey: 'practiceClickBlurb' },
+  { id: 'drag', icon: 'grab', titleKey: 'practiceDrag', blurbKey: 'practiceDragBlurb' },
+  { id: 'type', icon: 'keyboard', titleKey: 'practiceType', blurbKey: 'practiceTypeBlurb' },
 ]
 
 export default function Hub({ onOpenCourse, onOpenSettings, onOpenPractice }) {
@@ -72,10 +73,10 @@ export default function Hub({ onOpenCourse, onOpenSettings, onOpenPractice }) {
               key={m.id}
               type="button"
               onClick={() => onOpenPractice(m.id)}
-              className="btn-3d flex items-center gap-4 rounded-2xl border-2 border-b-4 border-line bg-white px-5 py-4 text-left"
+              className="btn-3d flex items-center gap-4 rounded-2xl border-2 border-b-4 border-line bg-surface px-5 py-4 text-left"
             >
-              <span className="text-3xl" aria-hidden="true">
-                {m.emoji}
+              <span className="text-brand">
+                <Icon name={m.icon} className="h-7 w-7" />
               </span>
               <span className="min-w-0 flex-1">
                 <span className="block text-[1.05rem] leading-tight font-extrabold">{t(m.titleKey)}</span>
@@ -99,12 +100,12 @@ function CourseCard({ course, tx, t, onTap }) {
       className={`btn-3d rounded-3xl border-2 p-5 text-left ${
         comingSoon
           ? 'border-line bg-cream-deep/60 shadow-none'
-          : 'border-line bg-white shadow-[0_4px_0_var(--color-line)]'
+          : 'border-line bg-surface shadow-[0_4px_0_var(--color-line)]'
       }`}
     >
       <div className="flex items-start gap-4">
-        <span className={`text-4xl ${comingSoon ? 'opacity-40 grayscale' : ''}`} aria-hidden="true">
-          {course.emoji}
+        <span className={comingSoon ? 'text-ink-soft/40' : 'text-brand'}>
+          <Icon name={course.icon} className="h-9 w-9" />
         </span>
         <div className="min-w-0 flex-1">
           <div className="flex items-center gap-2">
