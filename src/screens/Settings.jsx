@@ -158,6 +158,11 @@ export default function Settings({ onBack }) {
             <p className="flex items-center gap-2 text-sm font-bold text-grass">
               <Check className="h-4 w-4" /> {t('offlineReady')}
             </p>
+            {/* Which build is actually running. Makes "the new thing isn't
+                there" answerable without guessing at caching. */}
+            <p className="text-sm text-ink-soft tabular-nums">
+              {t('version', { id: __BUILD_ID__ })}
+            </p>
           </Card>
         </Group>
 

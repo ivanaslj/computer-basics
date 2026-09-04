@@ -340,6 +340,26 @@ need to be unique within their own course, so two courses can both have an
 ship. Coming-soon stub courses are checked only lightly (well-formed enough to
 render in the Hub), not against the full content rules.
 
+### Staying up to date
+
+The service worker precaches the whole build so lessons work with no
+connection. The cost is a page that, once loaded, would otherwise run the same
+JavaScript forever — a new version installs and claims the tab, but nothing
+tells the running app to pick it up, so someone can open the app for days and
+still be on the build they first loaded.
+
+`src/lib/updates.js` fixes that: it owns the registration (hence
+`injectRegister: null` in `vite.config.js`), asks for a new version whenever the
+app becomes visible again — an installed PWA resumed from the app switcher never
+re-fires `load` — and reports when one has taken over. `App.jsx` decides when to
+apply it, reloading silently everywhere except inside a lesson, a practice run,
+or onboarding, which are the only screens holding state that isn't yet in
+`localStorage`. There is no update banner, on purpose: "tap here to update"
+means nothing to the person this app is for.
+
+Settings → About shows which build is running (the commit SHA in production),
+so "the new thing isn't there" can be answered rather than guessed at.
+
 ### Icons and theme
 
 Every icon in the app's own furniture — course cards, module headers, lesson

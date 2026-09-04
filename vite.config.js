@@ -7,6 +7,12 @@ import fs from 'node:fs'
 // Deployed under a subpath? set BASE_PATH at build time (e.g. GitHub Pages).
 const base = process.env.BASE_PATH || '/'
 
+// Shown in Settings > About. When someone reports that a change is missing,
+// this says immediately whether they are on an old cached build or whether the
+// change genuinely isn't there.
+const buildId =
+  process.env.VERCEL_GIT_COMMIT_SHA?.slice(0, 7) || new Date().toISOString().slice(0, 10)
+
 // Installing to a home screen and working offline both need a secure origin,
 // which a phone on the LAN doesn't get over plain http. `HTTPS=1` serves with
 // the self-signed cert in .certs/ so the real thing can be tested on a phone.
@@ -18,6 +24,7 @@ const https =
 
 export default defineConfig({
   base,
+  define: { __BUILD_ID__: JSON.stringify(buildId) },
   server: { host: true, https },
   preview: { host: true, https },
   build: {
@@ -36,6 +43,11 @@ export default defineConfig({
     tailwindcss(),
     VitePWA({
       registerType: 'autoUpdate',
+      // The plugin's own injected snippet only calls register() and then
+      // forgets about it, so a phone that already has the app keeps running
+      // the build it first loaded — forever. src/lib/updates.js registers
+      // instead, and reloads when a new version takes over.
+      injectRegister: null,
       includeAssets: ['favicon.svg', 'icons/*.png'],
       workbox: {
         // The whole course ships in the JS bundle, so precaching the build

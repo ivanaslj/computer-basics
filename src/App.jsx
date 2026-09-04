@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useState } from 'react'
 import { useApp } from './state/store'
+import { useAppUpdate, applyUpdate } from './lib/updates'
 import Onboarding from './screens/Onboarding'
 import Hub from './screens/Hub'
 import Path from './screens/Path'
@@ -16,6 +17,7 @@ import Practice from './screens/Practice'
 export default function App() {
   const { settings } = useApp()
   const [route, setRoute] = useState({ name: 'path' })
+  const updateReady = useAppUpdate()
 
   const go = useCallback((name, params = {}) => {
     setRoute({ name, ...params })
@@ -37,6 +39,17 @@ export default function App() {
       window.history.pushState({ screen: route.name }, '')
     }
   }, [route.name])
+
+  // A new version swaps itself in silently, but only where nothing is lost by
+  // doing it. A lesson's current step, a practice run and half-finished
+  // onboarding are the three things held in memory rather than in
+  // localStorage; everywhere else a reload costs the learner nothing and they
+  // simply have the newest app. If they are busy, the update waits here until
+  // they aren't.
+  const busy = route.name === 'lesson' || route.name === 'practice' || !settings.onboarded
+  useEffect(() => {
+    if (updateReady && !busy) applyUpdate()
+  }, [updateReady, busy])
 
   // Language is asked during onboarding; "what program" is the very next
   // screen the learner sees, and stays reachable forever after from Path's

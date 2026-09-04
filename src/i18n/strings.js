@@ -190,6 +190,7 @@ export const STRINGS = {
     linkSource: 'How this app is built',
     linkGithub: 'GitHub',
     linkYoutube: 'YouTube',
+    version: 'Version {id}',
 
     // Action steps (real-world projects) and the copy button
     actionFooterHint: 'Go do this for real, then come back and tap the button',
@@ -380,6 +381,7 @@ export const STRINGS = {
     linkSource: 'Cómo está hecha esta app',
     linkGithub: 'GitHub',
     linkYoutube: 'YouTube',
+    version: 'Versión {id}',
 
     actionFooterHint: 'Hazlo de verdad, y luego regresa y toca el botón',
     actionDone: 'Ya lo hice',
