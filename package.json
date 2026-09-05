@@ -5,13 +5,15 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "build": "node scripts/check-curriculum.mjs && vite build",
+    "build": "npm run check && vite build",
     "lint": "oxlint",
     "preview": "vite preview",
-    "check": "node scripts/check-curriculum.mjs",
-    "icons": "node scripts/make-icons.mjs"
+    "check": "node scripts/check-curriculum.mjs && node scripts/check-merge.mjs",
+    "icons": "node scripts/make-icons.mjs",
+    "check:rls": "node scripts/check-rls.mjs"
   },
   "dependencies": {
+    "@supabase/supabase-js": "^2.115.0",
     "react": "^19.2.8",
     "react-dom": "^19.2.8"
   },

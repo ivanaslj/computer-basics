@@ -1,11 +1,13 @@
-import { useCallback, useEffect, useState } from 'react'
+import { useCallback, useEffect, useRef, useState } from 'react'
 import { useApp } from './state/store'
 import { useAppUpdate, applyUpdate } from './lib/updates'
+import { useAuth } from './state/auth'
 import Onboarding from './screens/Onboarding'
 import Hub from './screens/Hub'
 import Path from './screens/Path'
 import Lesson from './screens/Lesson'
 import Settings from './screens/Settings'
+import Account from './screens/Account'
 import Practice from './screens/Practice'
 
 /**
@@ -16,6 +18,7 @@ import Practice from './screens/Practice'
  */
 export default function App() {
   const { settings } = useApp()
+  const auth = useAuth()
   const [route, setRoute] = useState({ name: 'path' })
   const updateReady = useAppUpdate()
 
@@ -46,6 +49,20 @@ export default function App() {
   // localStorage; everywhere else a reload costs the learner nothing and they
   // simply have the newest app. If they are busy, the update waits here until
   // they aren't.
+  // A password-reset link drops the learner back into the app with a recovery
+  // session. Send them straight to the screen that finishes the job, or the
+  // link appears to have done nothing at all.
+  const sentToReset = useRef(false)
+  useEffect(() => {
+    if (!auth.recovering) {
+      sentToReset.current = false
+      return
+    }
+    if (sentToReset.current) return
+    sentToReset.current = true
+    setRoute({ name: 'account' })
+  }, [auth.recovering])
+
   const busy = route.name === 'lesson' || route.name === 'practice' || !settings.onboarded
   useEffect(() => {
     if (updateReady && !busy) applyUpdate()
@@ -77,7 +94,14 @@ export default function App() {
         />
       )
     case 'settings':
-      return <Settings onBack={() => go(settings.currentCourseId ? 'path' : 'hub')} />
+      return (
+        <Settings
+          onBack={() => go(settings.currentCourseId ? 'path' : 'hub')}
+          onOpenAccount={() => go('account')}
+        />
+      )
+    case 'account':
+      return <Account onBack={() => go('settings')} />
     default:
       return settings.currentCourseId ? (
         <Path

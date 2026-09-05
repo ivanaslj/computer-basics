@@ -135,6 +135,79 @@ export function Keycap({ children, tone = 'default' }) {
 
 /* -------------------------------------------------------------- Surfaces */
 
+/* ----------------------------------------------------------------- Fields */
+
+/**
+ * A labelled text input.
+ *
+ * Two things here are for this audience specifically. The label is a real
+ * <label>, always visible — placeholder-as-label disappears the moment you
+ * start typing, which is exactly when someone unsure of themselves looks back
+ * to check what the box was for. And a password field gets a Show button,
+ * because a beginner who cannot see what they typed has no way to tell a typo
+ * from a wrong password.
+ */
+export function Field({
+  id,
+  label,
+  type = 'text',
+  value,
+  onChange,
+  error,
+  hint,
+  showLabel,
+  hideLabel,
+  autoComplete,
+  inputMode,
+  disabled,
+}) {
+  const [revealed, setRevealed] = useState(false)
+  const isPassword = type === 'password'
+  const describedBy = error ? `${id}-error` : hint ? `${id}-hint` : undefined
+
+  return (
+    <div className="flex flex-col gap-1.5">
+      <label htmlFor={id} className="text-[0.95rem] font-bold">
+        {label}
+      </label>
+      <div className="relative">
+        <input
+          id={id}
+          type={isPassword && revealed ? 'text' : type}
+          value={value}
+          onChange={(e) => onChange(e.target.value)}
+          autoComplete={autoComplete}
+          inputMode={inputMode}
+          disabled={disabled}
+          aria-invalid={error ? true : undefined}
+          aria-describedby={describedBy}
+          className={`w-full rounded-2xl border-2 bg-surface px-4 py-3.5 text-[1.05rem] text-ink outline-none ${
+            isPassword ? 'pr-20' : ''
+          } ${error ? 'border-berry' : 'border-line focus:border-brand'}`}
+        />
+        {isPassword && (
+          <button
+            type="button"
+            onClick={() => setRevealed((v) => !v)}
+            className="absolute top-1/2 right-2 -translate-y-1/2 rounded-xl px-3 py-2 text-[0.85rem] font-bold text-brand"
+          >
+            {revealed ? hideLabel : showLabel}
+          </button>
+        )}
+      </div>
+      {error ? (
+        <p id={`${id}-error`} className="text-[0.9rem] leading-snug font-semibold text-berry" role="alert">
+          {error}
+        </p>
+      ) : hint ? (
+        <p id={`${id}-hint`} className="text-[0.9rem] leading-snug text-ink-soft">
+          {hint}
+        </p>
+      ) : null}
+    </div>
+  )
+}
+
 export function Card({ children, className = '', tone = 'plain', ...props }) {
   const tones = {
     plain: 'bg-surface border-line',

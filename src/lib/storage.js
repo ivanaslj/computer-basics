@@ -35,6 +35,10 @@ export const DEFAULT_STATE = {
     textSize: 'normal', // 'normal' | 'large' | 'xlarge'
     theme: 'system', // 'system' | 'light' | 'dark'
     currentCourseId: null, // which course the hub last opened
+    // When a setting was last changed on this device. Settings are
+    // preferences, not achievements, so when two devices disagree the newer
+    // choice simply wins — this is how sync knows which that is.
+    updatedAt: 0,
   },
   // courseId -> lessonId -> { completedAt, perfect, times }
   completed: {},
@@ -48,7 +52,9 @@ export const DEFAULT_STATE = {
     drag: { best: 0, rounds: 0 },
     type: { bestWpm: 0, bestAccuracy: 0, rounds: 0 },
   },
-  // Reserved: when accounts exist this is where the server user id goes.
+  // The signed-in user's id, when there is one. Progress is stored the same
+  // way either way; an account only decides whether it is also kept on a
+  // server so it can follow the person to another device.
   account: null,
 }
 

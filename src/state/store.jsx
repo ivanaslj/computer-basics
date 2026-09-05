@@ -1,13 +1,17 @@
-import { createContext, useContext, useEffect, useMemo, useReducer, useRef } from 'react'
+import { createContext, useCallback, useContext, useEffect, useMemo, useReducer, useRef, useState } from 'react'
 import { load, save, today, isYesterday } from '../lib/storage'
 import { COURSES, getCourse } from '../courses'
+import { useAuth } from './auth'
+import { syncNow } from '../lib/sync'
 
 /**
  * All course progress and settings live here. Screens read derived values and
  * dispatch intents; nothing else in the app reads or writes storage directly.
  *
- * Later: adding accounts means replacing the storage calls in this file with a
- * synced source, plus a `state.account` check. No screen needs to change.
+ * Storage stays local-first even with an account: the app boots from
+ * localStorage synchronously and never waits on a network to show a lesson.
+ * Signing in adds a background copy on the server, folded together with
+ * whatever this device already had — see `lib/sync.js`.
  */
 
 const AppContext = createContext(null)
@@ -15,12 +19,15 @@ const AppContext = createContext(null)
 function reducer(state, action) {
   switch (action.type) {
     case 'set-setting':
-      return { ...state, settings: { ...state.settings, [action.key]: action.value } }
+      return {
+        ...state,
+        settings: { ...state.settings, [action.key]: action.value, updatedAt: Date.now() },
+      }
 
     case 'finish-onboarding':
       return {
         ...state,
-        settings: { ...state.settings, ...action.settings, onboarded: true },
+        settings: { ...state.settings, ...action.settings, onboarded: true, updatedAt: Date.now() },
       }
 
     case 'complete-lesson': {
@@ -80,6 +87,12 @@ function reducer(state, action) {
       return { ...state, completed: rest }
     }
 
+    // The result of folding this device's progress together with the copy on
+    // the server. Replaces state wholesale because the merge has already
+    // considered both sides — see `lib/merge.js`.
+    case 'adopt':
+      return action.state
+
     default:
       return state
   }
@@ -96,6 +109,82 @@ export function AppProvider({ children }) {
     }
     save(state)
   }, [state])
+
+  /* ------------------------------------------------------------- syncing */
+
+  const { user } = useAuth()
+  const userId = user?.id ?? null
+  // Only for the listeners registered once below, which cannot close over a
+  // fresh `state`. Everywhere else the state is passed in explicitly. Written
+  // in an effect, never during render, so it is never a half-updated value.
+  const stateRef = useRef(state)
+  useEffect(() => {
+    stateRef.current = state
+  }, [state])
+  // 'idle' | 'syncing' | 'saved' | 'offline'
+  const [syncState, setSyncState] = useState('idle')
+  const syncedFor = useRef(null)
+
+  // Pushing is deliberately fire-and-forget. A learner finishing a lesson on a
+  // train must never see a spinner or an error because the carriage went
+  // through a tunnel — the lesson is already saved on the device, and the
+  // server copy catches up whenever it can.
+  const pushSoon = useCallback(
+    async (id, current) => {
+      if (!id) return
+      const local = current ?? stateRef.current
+      setSyncState('syncing')
+      try {
+        const merged = await syncNow(id, local)
+        // Only adopt when the server actually added something. Dispatching an
+        // equal-but-new object every time would re-render, re-save and
+        // re-trigger this effect forever.
+        if (JSON.stringify(merged) !== JSON.stringify(local)) {
+          dispatch({ type: 'adopt', state: merged })
+        }
+        setSyncState('saved')
+      } catch {
+        setSyncState('offline')
+      }
+    },
+    []
+  )
+
+  // On sign-in: fold the server's copy together with this device's before
+  // anything else happens. This is what stops an empty new account wiping
+  // progress someone already made without one.
+  useEffect(() => {
+    if (!userId || syncedFor.current === userId) return
+    syncedFor.current = userId
+    pushSoon(userId)
+  }, [userId, pushSoon])
+
+  useEffect(() => {
+    if (!userId) syncedFor.current = null
+  }, [userId])
+
+  // On change: wait for a pause rather than writing on every step of a lesson.
+  useEffect(() => {
+    if (!userId || syncedFor.current !== userId) return
+    const t = setTimeout(() => pushSoon(userId, state), 2000)
+    return () => clearTimeout(t)
+  }, [state, userId, pushSoon])
+
+  // Leaving the app is the moment most likely to be followed by picking up a
+  // different device, so flush then too rather than losing the last two
+  // seconds of work to a debounce that never fired.
+  useEffect(() => {
+    if (!userId) return
+    const flush = () => {
+      if (document.visibilityState === 'hidden') pushSoon(userId)
+    }
+    document.addEventListener('visibilitychange', flush)
+    window.addEventListener('pagehide', flush)
+    return () => {
+      document.removeEventListener('visibilitychange', flush)
+      window.removeEventListener('pagehide', flush)
+    }
+  }, [userId, pushSoon])
 
   // Reflect the display preferences on <html>: the rem scale moves with the
   // text-size choice, and the theme choice — unless it is "match my device",
@@ -168,6 +257,7 @@ export function AppProvider({ children }) {
       settings,
       streak,
       practice,
+      syncState: userId ? syncState : 'idle',
       completed: courseCompleted,
       course,
       courses,
@@ -190,7 +280,7 @@ export function AppProvider({ children }) {
       recordPractice: (mode, scores) => dispatch({ type: 'record-practice', mode, scores }),
       resetProgress: () => dispatch({ type: 'reset-course', courseId: settings.currentCourseId }),
     }
-  }, [state])
+  }, [state, syncState, userId])
 
   return <AppContext.Provider value={value}>{children}</AppContext.Provider>
 }

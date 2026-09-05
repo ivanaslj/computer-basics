@@ -2,3 +2,11 @@
 dist/
 node_modules/
 .DS_Store
+
+# Local Supabase config. The publishable key in here is safe to ship (it goes
+# into the bundle by design, guarded by row-level security), but .env is never
+# committed regardless — a secret key must never reach git even once, because
+# git history is forever. .env.example carries the shape, never the values.
+.env
+.env.*
+!.env.example

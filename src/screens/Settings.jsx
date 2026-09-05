@@ -4,6 +4,8 @@ import { useT, useTx } from '../i18n'
 import { useInstallPrompt } from '../lib/install'
 import { Button, Card, Sheet, ProgressBar, ChevronLeft, Check } from '../components/ui'
 import Icon from '../components/icons'
+import { useAuth } from '../state/auth'
+import { SyncLine } from './Account'
 
 /**
  * Where to find the project and its maintainer. All temporary in the sense
@@ -19,10 +21,11 @@ const LINKS = [
   { id: 'youtube', icon: 'youtube', url: 'https://www.youtube.com/@Its_mamut', labelKey: 'linkYoutube' },
 ]
 
-export default function Settings({ onBack }) {
+export default function Settings({ onBack, onOpenAccount }) {
   const t = useT()
   const tx = useTx()
-  const { settings, setSetting, course, overall, resetProgress } = useApp()
+  const { settings, setSetting, course, overall, resetProgress, syncState } = useApp()
+  const auth = useAuth()
   const install = useInstallPrompt()
   const [confirmReset, setConfirmReset] = useState(false)
 
@@ -41,6 +44,32 @@ export default function Settings({ onBack }) {
       </header>
 
       <div className="flex flex-col gap-7 px-5 pt-6">
+        {/* Only shown when this build has a Supabase project configured. With
+            none, the app is exactly what it always was and there is nothing
+            here to explain. */}
+        {auth.accountsEnabled && (
+          <Group label={t('accountTitle')}>
+            <Card className="flex flex-col gap-3">
+              {auth.session ? (
+                <>
+                  <p className="font-bold break-all">{auth.email}</p>
+                  <SyncLine syncState={syncState} t={t} />
+                  <Button variant="neutral" size="md" onClick={onOpenAccount}>
+                    {t('accountManage')}
+                  </Button>
+                </>
+              ) : (
+                <>
+                  <p className="leading-snug text-ink-soft text-pretty">{t('accountSaveBlurb')}</p>
+                  <Button size="md" onClick={onOpenAccount}>
+                    {t('accountSaveCta')}
+                  </Button>
+                </>
+              )}
+            </Card>
+          </Group>
+        )}
+
         <Group label={t('deviceLabel')}>
           <Choices
             value={settings.device}

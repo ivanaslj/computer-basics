@@ -272,6 +272,9 @@ src/
   state/store.jsx all progress and settings, scoped to whichever course is active
   lib/
     storage.js    the only file that touches persistence
+    supabase.js   the client, or null when no project is configured
+    merge.js      combining two copies of a learner's progress (pure)
+    sync.js       pulling and pushing that progress
     gestures.js   tap → click, double tap → double-click, hold → right-click
   i18n/           UI strings, plus the content resolver
 ```
@@ -330,7 +333,7 @@ denied), and `linkUrl` opens a real `target="_blank"` link — the only place in
 the app that leaves it. Both can be `dev(windows, mac)` wrapped like any other
 content, for platform-specific commands.
 
-`npm run check` validates every lesson across every course — missing
+`npm run check` runs the merge rules above as well, then validates every lesson across every course — missing
 translations, a simulation pointing at something that isn't on screen, a
 question with no right answer, a wrong answer with no explanation, a lesson
 with no recap, an `action` step with nothing to actually do, an `icon:` naming
@@ -339,6 +342,49 @@ need to be unique within their own course, so two courses can both have an
 `m1-l1` without colliding. It runs as part of `npm run build`, so those can't
 ship. Coming-soon stub courses are checked only lightly (well-formed enough to
 render in the Hub), not against the full content rules.
+
+### Accounts (optional)
+
+Signing in is an extra, never a gate. With no `.env` the app has no accounts at
+all and behaves exactly as it did before they existed — `src/lib/supabase.js`
+returns `null` and every caller checks for it. Copy `.env.example` to `.env` to
+turn them on.
+
+The app stays **local-first**. It still boots synchronously from `localStorage`
+and never waits on a network to show a lesson; an account only adds a copy on
+the server so progress can follow someone to another device. Sign out and the
+progress stays on the device — nothing is deleted.
+
+Two tables, `profiles` and `progress`, both with row-level security allowing a
+user to touch **only their own row**. That is what makes it safe to ship the
+publishable key inside the bundle, which is how Supabase is designed to work.
+`npm run check:rls` proves it, by signing in as one user and trying to read,
+overwrite and delete another's data through the real API. The secret /
+`service_role` key bypasses those policies entirely and must never appear in
+the app, in `.env`, or in git.
+
+`profiles` also carries `streak_count` and `lessons_done`, denormalised from
+the progress blob on each sync. Nothing reads them yet — they exist so that
+comparing streaks between people later is one indexed query rather than a scan
+over everyone's JSON.
+
+#### Merging, and why it never subtracts
+
+Two devices can both have progress the other has not seen, so `lib/merge.js`
+combines them rather than picking a winner. Completed lessons are unioned;
+practice bests take the higher number; settings take the more recent choice.
+
+Two rules matter more than they look:
+
+- **Counts take `max`, never a sum.** Sync runs on a timer, on every sign-in and
+  on every foreground, so a rule that accumulates would drift further from the
+  truth on every pass. `merge(merge(a,b),b)` has to equal `merge(a,b)`, and
+  `npm run check` asserts exactly that.
+- **A streak is joined, not truncated.** If the server knows a 5-day run ending
+  Monday and the phone knows a 2-day run ending Wednesday, those are two halves
+  of one 7-day run seen by two devices — not competing claims. Keeping only the
+  more recent one would delete five days someone actually earned. A genuine gap
+  between them still counts as a lapse; days are never invented.
 
 ### Staying up to date
 
@@ -421,10 +467,6 @@ These are deliberate; changing them changes the app's character.
 
 ## What v1 leaves out, on purpose
 
-No accounts, no backend, no payments, no analytics. Progress lives in
-`localStorage` on the device.
-
-When accounts are wanted, `src/lib/storage.js` is the seam: give `load`/`save` a
-networked implementation plus a merge strategy, and add the `state.account`
-check in `src/state/store.jsx`. Nothing in the screens or the curriculum has to
-change. Settings has the place a sign-in section would go.
+No payments and no analytics. Accounts exist now but are optional — see
+[Accounts](#accounts-optional); with no `.env` the app is still entirely
+device-local, and nothing is ever sent anywhere.
