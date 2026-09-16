@@ -2,6 +2,7 @@ import { useApp } from '../state/store'
 import { useT, useTx } from '../i18n'
 import { ProgressBar, Gear, Flame } from '../components/ui'
 import Icon from '../components/icons'
+import { stagger } from '../lib/motion'
 
 /**
  * The very first real choice after onboarding ("what do you want to learn?"),
@@ -22,7 +23,7 @@ const PRACTICE_MODES = [
 export default function Hub({ onOpenCourse, onOpenSettings, onOpenPractice }) {
   const t = useT()
   const tx = useTx()
-  const { courses, streak, openCourse } = useApp()
+  const { courses, streak, openCourse, profile, totalLessonsDone } = useApp()
 
   const pick = (course) => {
     if (course.status !== 'available') return
@@ -30,11 +31,34 @@ export default function Hub({ onOpenCourse, onOpenSettings, onOpenPractice }) {
     onOpenCourse()
   }
 
+  // Exactly one course icon bobs: the first one with work left in it. Two
+  // things moving forever on one screen stops reading as "look here".
+  const nudging = courses.find((c) => c.status === 'available' && c.progress.pct < 100)?.id
+
+  // The name is local, so this reads the same signed in, signed out or with no
+  // network at all. That is the whole reason it lives in settings.
+  const greeting = profile.name
+    ? t('helloNamed', { name: profile.name })
+    : totalLessonsDone > 0
+      ? t('hello')
+      : t('helloFirst')
+
   return (
     <div className="mx-auto min-h-dvh max-w-lg pb-10">
       <header className="sticky top-0 z-20 flex items-center gap-3 border-b-2 border-line bg-cream/90 px-5 pt-[max(0.9rem,env(safe-area-inset-top))] pb-3 backdrop-blur-md">
-        <h1 className="flex-1 text-[1.15rem] leading-tight font-extrabold tracking-tight">
-          {t('hubTitle')}
+        <button
+          type="button"
+          onClick={onOpenSettings}
+          aria-label={t('profileTitle')}
+          className="btn-3d flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-brand-soft text-brand"
+        >
+          <Icon name={profile.avatar || 'monitor'} className="h-6 w-6" />
+        </button>
+        {/* Wraps rather than truncates. A name is the one piece of text here
+            that belongs to the reader, and clipping it is worse than a second
+            line — especially at the larger text sizes. */}
+        <h1 className="min-w-0 flex-1 text-[1.1rem] leading-tight font-extrabold tracking-tight">
+          {greeting}
         </h1>
         {streak.count > 0 && (
           <span className="flex items-center gap-1 rounded-full bg-sun-soft px-3 py-1 text-sm font-extrabold text-sun">
@@ -52,11 +76,22 @@ export default function Hub({ onOpenCourse, onOpenSettings, onOpenPractice }) {
         </button>
       </header>
 
-      <p className="px-5 pt-4 pb-1 leading-snug text-ink-soft text-pretty">{t('hubSubtitle')}</p>
+      <h2 className="px-5 pt-5 text-sm font-bold tracking-widest text-ink-soft uppercase">
+        {t('hubTitle')}
+      </h2>
+      <p className="px-5 pt-1 pb-1 leading-snug text-ink-soft text-pretty">{t('hubSubtitle')}</p>
 
       <div className="flex flex-col gap-4 px-5 pt-3">
-        {courses.map((course) => (
-          <CourseCard key={course.id} course={course} tx={tx} t={t} onTap={() => pick(course)} />
+        {courses.map((course, i) => (
+          <CourseCard
+            key={course.id}
+            course={course}
+            tx={tx}
+            t={t}
+            onTap={() => pick(course)}
+            bob={course.id === nudging}
+            delay={stagger(i)}
+          />
         ))}
       </div>
 
@@ -68,12 +103,15 @@ export default function Hub({ onOpenCourse, onOpenSettings, onOpenPractice }) {
           {t('practiceSectionBlurb')}
         </p>
         <div className="flex flex-col gap-3">
-          {PRACTICE_MODES.map((m) => (
+          {PRACTICE_MODES.map((m, i) => (
             <button
               key={m.id}
               type="button"
               onClick={() => onOpenPractice(m.id)}
-              className="btn-3d flex items-center gap-4 rounded-2xl border-2 border-b-4 border-line bg-surface px-5 py-4 text-left"
+              // The stagger index carries on from the course cards above, so
+              // the page cascades once from the top rather than twice.
+              style={stagger(courses.length + i)}
+              className="anim-enter btn-3d flex items-center gap-4 rounded-2xl border-2 border-b-4 border-line bg-surface px-5 py-4 text-left"
             >
               <span className="text-brand">
                 <Icon name={m.icon} className="h-7 w-7" />
@@ -90,21 +128,24 @@ export default function Hub({ onOpenCourse, onOpenSettings, onOpenPractice }) {
   )
 }
 
-function CourseCard({ course, tx, t, onTap }) {
+function CourseCard({ course, tx, t, onTap, bob, delay }) {
   const comingSoon = course.status !== 'available'
   return (
     <button
       type="button"
       onClick={onTap}
       disabled={comingSoon}
-      className={`btn-3d rounded-3xl border-2 p-5 text-left ${
+      style={delay}
+      className={`anim-enter btn-3d rounded-3xl border-2 p-5 text-left ${
         comingSoon
           ? 'border-line bg-cream-deep/60 shadow-none'
           : 'border-line bg-surface shadow-[0_4px_0_var(--color-line)]'
       }`}
     >
       <div className="flex items-start gap-4">
-        <span className={comingSoon ? 'text-ink-soft/40' : 'text-brand'}>
+        {/* The bob lives on this span, never on the button: an infinite
+            animation on the button would outrank :active and kill the press. */}
+        <span className={`${comingSoon ? 'text-ink-soft/40' : 'text-brand'} ${bob ? 'anim-bob' : ''}`}>
           <Icon name={course.icon} className="h-9 w-9" />
         </span>
         <div className="min-w-0 flex-1">

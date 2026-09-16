@@ -3,7 +3,7 @@
  * bug this app cannot afford, so these run as part of `npm run check` and
  * therefore as part of every build.
  */
-import { mergeStates, summarise } from '../src/lib/merge.js'
+import { mergeStates, summarise, identity } from '../src/lib/merge.js'
 
 let pass = 0, fail = 0
 const sortKeys = (v) => Array.isArray(v) ? v.map(sortKeys)
@@ -98,8 +98,33 @@ const newS = base({ settings: { ...base().settings, theme: 'dark', updatedAt: 90
 eq('newer theme wins', mergeStates(oldS, newS).settings.theme, 'dark')
 eq('regardless of argument order', mergeStates(newS, oldS).settings.theme, 'dark')
 
+// The name and picture are settings, so they ride the same "newest wins" rule
+// as the theme. What matters is the other half: a device that has never heard
+// of the field must not wipe it off a device that has.
+console.log('\n7b. a name survives a device that predates the field')
+const named = base({ settings: { ...base().settings, displayName: 'Ana', avatarIcon: 'sprout', updatedAt: 100 } })
+const oblivious = base({ settings: { ...base().settings, theme: 'dark', updatedAt: 900 } })
+eq('name kept', mergeStates(named, oblivious).settings.displayName, 'Ana')
+eq('picture kept', mergeStates(named, oblivious).settings.avatarIcon, 'sprout')
+eq('and the newer theme still wins', mergeStates(named, oblivious).settings.theme, 'dark')
+
+console.log('\n7c. the newer name wins, either way round')
+const renamedOld = base({ settings: { ...base().settings, displayName: 'Ana', updatedAt: 100 } })
+const renamedNew = base({ settings: { ...base().settings, displayName: 'Ana María', updatedAt: 900 } })
+eq('newer name wins', mergeStates(renamedOld, renamedNew).settings.displayName, 'Ana María')
+eq('regardless of argument order', mergeStates(renamedNew, renamedOld).settings.displayName, 'Ana María')
+
 console.log('\n8. summary for the future streak comparison')
 eq('counts every course', summarise(merged), { streak_count: 3, lessons_done: 4, last_active: '2026-09-04' })
+
+console.log('\n8b. identity for the profile row')
+eq('unset reads as null, not empty string', identity(base()), { display_name: null, avatar_icon: null })
+eq('trims', identity(base({ settings: { ...base().settings, displayName: '  Ana  ' } })).display_name, 'Ana')
+eq(
+  'whitespace-only is still null',
+  identity(base({ settings: { ...base().settings, displayName: '   ' } })).display_name,
+  null
+)
 
 console.log('\n9. null/garbage inputs do not throw')
 eq('null a', mergeStates(null, phone), phone)

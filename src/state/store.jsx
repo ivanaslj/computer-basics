@@ -253,10 +253,25 @@ export function AppProvider({ children }) {
       return { ...c, progress: { done, total: c.LESSON_ORDER.length, pct: Math.round((done / c.LESSON_ORDER.length) * 100) } }
     })
 
+    // Lessons finished across every course. `overall` below is the *current*
+    // course only, which is the right number on the path screen and the wrong
+    // one anywhere that is talking about the person rather than the course.
+    const totalLessonsDone = Object.values(completed).reduce(
+      (n, bucket) => n + Object.keys(bucket || {}).length,
+      0
+    )
+
     return {
       settings,
       streak,
       practice,
+      totalLessonsDone,
+      // Normalised in one place so no screen has to decide for itself what an
+      // empty name or a missing icon means.
+      profile: {
+        name: String(settings.displayName || '').trim(),
+        avatar: settings.avatarIcon || null,
+      },
       syncState: userId ? syncState : 'idle',
       completed: courseCompleted,
       course,

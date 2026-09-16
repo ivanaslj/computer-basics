@@ -3,6 +3,7 @@ import { useApp } from '../state/store'
 import { useT } from '../i18n'
 import { Button, Card, Check } from '../components/ui'
 import Icon from '../components/icons'
+import LogoMark from '../components/LogoMark'
 
 /**
  * Setup, in four short screens. Two answers actually matter — language and
@@ -176,22 +177,3 @@ function Dots({ count, active }) {
   )
 }
 
-function LogoMark() {
-  return (
-    <div className="flex h-24 w-24 items-center justify-center rounded-[1.8rem] bg-gradient-to-b from-brand to-brand-dark shadow-[0_10px_24px_-10px_rgb(var(--color-brand-rgb)/0.8)]">
-      <div className="relative">
-        <div className="h-11 w-16 rounded-md border-[3px] border-white bg-[#2e2a82]" />
-        <div className="mx-auto mt-1 h-1.5 w-20 rounded-full bg-white" />
-        <svg viewBox="0 0 24 24" className="absolute top-2.5 left-6 w-4" aria-hidden="true">
-          <path
-            d="M5 2.5 19 12l-6.2.9 3.1 6.4-2.6 1.3-3.1-6.4L5 18.6z"
-            fill="#fff"
-            stroke="#2e2a82"
-            strokeWidth="1.6"
-            strokeLinejoin="round"
-          />
-        </svg>
-      </div>
-    </div>
-  )
-}

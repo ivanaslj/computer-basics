@@ -2,7 +2,7 @@ import { useState } from 'react'
 import { useApp } from '../state/store'
 import { useT, useTx } from '../i18n'
 import { useInstallPrompt } from '../lib/install'
-import { Button, Card, Sheet, ProgressBar, ChevronLeft, Check } from '../components/ui'
+import { Button, Card, Sheet, ProgressBar, ChevronLeft, Check, Field } from '../components/ui'
 import Icon from '../components/icons'
 import { useAuth } from '../state/auth'
 import { SyncLine } from './Account'
@@ -44,6 +44,27 @@ export default function Settings({ onBack, onOpenAccount }) {
       </header>
 
       <div className="flex flex-col gap-7 px-5 pt-6">
+        {/* Above the account group on purpose: a name and a picture are about
+            the person, not about having signed up for anything, and they work
+            exactly the same with no account at all. */}
+        <Group label={t('profileTitle')}>
+          <Card className="flex flex-col gap-4">
+            <Field
+              id="display-name"
+              label={t('profileNameLabel')}
+              hint={t('profileNameHint')}
+              value={settings.displayName || ''}
+              onChange={(v) => setSetting('displayName', v.slice(0, 40))}
+              autoComplete="given-name"
+            />
+            <AvatarPicker
+              value={settings.avatarIcon}
+              onChange={(v) => setSetting('avatarIcon', v)}
+              t={t}
+            />
+          </Card>
+        </Group>
+
         {/* Only shown when this build has a Supabase project configured. With
             none, the app is exactly what it always was and there is nothing
             here to explain. */}
@@ -220,6 +241,48 @@ export default function Settings({ onBack, onOpenAccount }) {
           </Button>
         </div>
       </Sheet>
+    </div>
+  )
+}
+
+/**
+ * Twelve of the icons the app already draws. A curated subset rather than the
+ * whole registry: most of those icons mean something specific inside a lesson
+ * (a folder, a printer), and picking your own face out of a list of eighty is
+ * a chore rather than a treat.
+ *
+ * Tapping one twice clears it, which is the only way back to no picture.
+ */
+const AVATARS = [
+  'sprout', 'heart', 'star', 'sun',
+  'moon', 'rocket', 'sparkle', 'trophy',
+  'bulb', 'palette', 'globe', 'monitor',
+]
+
+function AvatarPicker({ value, onChange, t }) {
+  return (
+    <div className="flex flex-col gap-1.5">
+      <p className="text-[0.95rem] font-bold">{t('profileAvatarLabel')}</p>
+      <p className="text-[0.9rem] leading-snug text-ink-soft">{t('profileAvatarHint')}</p>
+      <div className="mt-1 grid grid-cols-4 gap-2">
+        {AVATARS.map((name, i) => {
+          const active = value === name
+          return (
+            <button
+              key={name}
+              type="button"
+              onClick={() => onChange(active ? null : name)}
+              aria-pressed={active}
+              aria-label={t('profileAvatarOption', { n: i + 1 })}
+              className={`btn-3d flex aspect-square items-center justify-center rounded-2xl border-2 ${
+                active ? 'border-brand bg-brand-soft text-brand' : 'border-line bg-surface text-ink-soft'
+              }`}
+            >
+              <Icon name={name} className="h-7 w-7" />
+            </button>
+          )
+        })}
+      </div>
     </div>
   )
 }

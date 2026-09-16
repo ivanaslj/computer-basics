@@ -2,6 +2,7 @@ import { StrictMode } from 'react'
 import { createRoot } from 'react-dom/client'
 import './index.css'
 import App from './App'
+import Intro from './components/Intro'
 import { AppProvider } from './state/store'
 import { AuthProvider } from './state/auth'
 
@@ -16,5 +17,9 @@ createRoot(document.getElementById('root')).render(
         <App />
       </AppProvider>
     </AuthProvider>
+    {/* Outside the providers, and outside the router: the launch animation
+        needs to cover onboarding too, and it deliberately subscribes to no
+        context, so a route change can never remount it mid-zoom. */}
+    <Intro />
   </StrictMode>
 )

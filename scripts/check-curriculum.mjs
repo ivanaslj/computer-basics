@@ -6,6 +6,7 @@
  * Run with `npm run check`.
  */
 import { COURSES } from '../src/courses/index.js'
+import { STRINGS } from '../src/i18n/strings.js'
 import { SIMS } from '../src/components/sims/registry.js'
 import { ART_NAMES } from '../src/components/art-names.js'
 import { ICON_NAMES } from '../src/components/icons/names.js'
@@ -217,7 +218,18 @@ for (const course of COURSES) {
   }
 }
 
+// Every string exists in both languages.
+//
+// The app is used in Spanish first — it was built for one Spanish-speaking
+// beginner — so an English-only string is not a cosmetic slip, it is a word she
+// cannot read in the middle of a lesson. Nothing enforced this before, and the
+// two lists happened to match; this keeps them matching.
+const [en, es] = [Object.keys(STRINGS.en), Object.keys(STRINGS.es)]
+for (const k of en) if (!STRINGS.es[k]) fail('i18n', `"${k}" is in en but missing from es`)
+for (const k of es) if (!STRINGS.en[k]) fail('i18n', `"${k}" is in es but missing from en`)
+
 console.log(`Checked ${COURSES.length} courses, ${totalModules} modules, ${totalLessons} lessons.`)
+console.log(`Checked ${en.length} strings in 2 languages.`)
 if (problems.length) {
   console.error(`\n${problems.length} problem(s):\n - ` + problems.join('\n - '))
   process.exit(1)

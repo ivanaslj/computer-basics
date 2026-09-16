@@ -144,6 +144,27 @@ export function mergeStates(a, b) {
   }
 }
 
+/**
+ * The name and picture half of the profile row.
+ *
+ * Kept apart from summarise() rather than folded into it. summarise() is about
+ * counts, its exact shape is asserted by scripts/check-merge.mjs, and that
+ * assertion runs inside `npm run build` — so quietly adding a field there
+ * fails the deploy, not the test run. Two small functions, one of which is
+ * about identity, is also just the truer description.
+ *
+ * Empty means null, not "". The column is nullable and an empty string would
+ * be a second way to say the same thing.
+ */
+export function identity(state) {
+  const name = String(state.settings?.displayName || '').trim()
+  const icon = state.settings?.avatarIcon
+  return {
+    display_name: name || null,
+    avatar_icon: typeof icon === 'string' && icon ? icon : null,
+  }
+}
+
 /** The handful of numbers the profile row carries for a future comparison. */
 export function summarise(state) {
   const lessonsDone = Object.values(state.completed || {}).reduce(

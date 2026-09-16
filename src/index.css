@@ -43,7 +43,21 @@
   --color-berry: #c0356b;
   --color-berry-soft: #fdeaf1;
 
+  /* The desk in the launch animation. A token like everything else, so a
+     night-time launch is a dim room rather than a floodlit one. */
+  --color-wood: #b07f4e;
+  --color-wood-dark: #8d6238;
+
   --text-base: 1.125rem;
+
+  /* Motion curves. The game-feel ones deliberately overshoot past 1: a spring
+     that settles exactly on its target reads as a CSS transition, not as
+     something physical. */
+  --ease-spring: cubic-bezier(.34, 1.56, .64, 1);
+  --ease-spring-soft: cubic-bezier(.22, 1.2, .36, 1);
+  --ease-out-quint: cubic-bezier(.22, 1, .36, 1);
+  --ease-press: cubic-bezier(.3, 0, .7, 1);
+  --ease-dolly: cubic-bezier(.4, 0, .35, 1);
 }
 
 /* ---------------------------------------------------------------------------
@@ -85,6 +99,9 @@
 
     --color-berry: #f0709e;
     --color-berry-soft: #331823;
+
+    --color-wood: #6b4c30;
+    --color-wood-dark: #46311d;
   }
 }
 
@@ -115,6 +132,9 @@
 
   --color-berry: #f0709e;
   --color-berry-soft: #331823;
+
+  --color-wood: #6b4c30;
+  --color-wood-dark: #46311d;
 }
 
 /* The "larger text" toggle scales the whole UI: every size in the app is in
@@ -147,8 +167,17 @@ button, [role='button'] {
 
 /* --- Chunky pressable button: a solid colour with a darker "lip" beneath,
        which compresses on press. Reads as physical, which helps. --- */
-.btn-3d { transition: transform .06s ease, box-shadow .06s ease, filter .12s ease; }
-.btn-3d:active:not(:disabled) { transform: translateY(3px); box-shadow: none !important; }
+/* The asymmetry is the whole trick: 70ms down on an ease-in-out, 340ms back on
+   a spring that overshoots past 1. Equal timings either side read as a CSS
+   transition; this reads as something with weight. translateY stays inside the
+   same transform so the lip still compresses. */
+.btn-3d { transition: transform .34s var(--ease-spring), box-shadow .1s ease, filter .12s ease; }
+.btn-3d:active:not(:disabled) {
+  transform: translateY(3px) scale(.955);
+  transition-duration: .07s;
+  transition-timing-function: var(--ease-press);
+  box-shadow: none !important;
+}
 .btn-3d:disabled { filter: saturate(.25) opacity(.55); }
 
 @keyframes pop-in { from { opacity: 0; transform: translateY(10px) scale(.98); } to { opacity: 1; transform: none; } }
@@ -170,6 +199,263 @@ button, [role='button'] {
 
 @keyframes cursor-hint { 0%,100% { transform: translate(0,0); } 50% { transform: translate(0,-6px); } }
 .anim-cursor { animation: cursor-hint 1.4s ease-in-out infinite; }
+
+/* ---------------------------------------------------------------------------
+   Game feel. Two rules govern everything below:
+
+   1. A CSS `animation` beats a non-`!important` `:active` declaration, so an
+      element gets EITHER an idle animation OR the .btn-3d press squash — never
+      both. Idle animation always goes on a wrapper, never on the button.
+   2. At most two infinite animations on screen at once, and transform/opacity
+      only. The target device is a cheap Android and this app has a very long
+      scrolling path screen.
+--------------------------------------------------------------------------- */
+
+/* "This is the thing to tap next." */
+@keyframes bob { 0%,100% { transform: translateY(0); } 50% { transform: translateY(-4px); } }
+.anim-bob { animation: bob 2.4s cubic-bezier(.45,0,.55,1) infinite; }
+
+/* Entrance with a little overshoot, for staggered lists.
+
+   `backwards`, not `both`, and that matters: `both` retains the final keyframe
+   forever, and a retained `transform: none` outranks `:active`, silently and
+   permanently killing the press squash on every button it touches. `backwards`
+   holds the 0% state through the stagger delay — which is the only part we
+   actually need — then gets out of the way. The 100% frame is already the
+   element's natural state, so there is nothing to retain. */
+@keyframes pop-spring {
+  0% { opacity: 0; transform: translateY(14px) scale(.94); }
+  60% { opacity: 1; transform: translateY(-2px) scale(1.015); }
+  100% { opacity: 1; transform: none; }
+}
+.anim-enter { animation: pop-spring .42s var(--ease-out-quint) backwards; }
+
+/* --- The lesson-complete celebration, four layers --- */
+
+@keyframes badge-in {
+  0% { opacity: 0; transform: scale(.3); }
+  55% { opacity: 1; transform: scale(1.12); }
+  75% { transform: scale(.97); }
+  100% { transform: scale(1); }
+}
+.anim-badge { animation: badge-in .62s cubic-bezier(.2,.8,.2,1) both; }
+
+/* The tick draws itself on. 22 covers the check path's ~20.5 units of length. */
+@keyframes tick-draw { from { stroke-dashoffset: 22; } to { stroke-dashoffset: 0; } }
+.anim-tick { stroke-dasharray: 22; animation: tick-draw .34s ease-out .2s both; }
+
+@keyframes shock {
+  from { opacity: .45; transform: scale(1); }
+  to { opacity: 0; transform: scale(2.1); }
+}
+.anim-shock { animation: shock .7s var(--ease-out-quint) .1s both; }
+
+/* One keyframe for every particle; each carries its own direction in vars. */
+@keyframes burst {
+  0% { opacity: 0; transform: translate(0,0) scale(.2) rotate(0deg); }
+  14% { opacity: 1; }
+  100% { opacity: 0; transform: translate(var(--bx), var(--by)) scale(1) rotate(var(--br)); }
+}
+.anim-burst { animation: burst .9s cubic-bezier(.16,.84,.44,1) .08s both; }
+
+/* ---------------------------------------------------------------------------
+   The launch animation. See components/Intro.jsx.
+
+   The whole thing rests on one idea: .intro-screen is an exact scaled copy of
+   the viewport — same aspect ratio on any phone, by construction, because both
+   of its sides are the viewport's own units times --intro-s. It sits centred
+   on the stage's transform-origin, so scaling the stage by the reciprocal of
+   that fraction lands the screen rectangle precisely on the viewport edges.
+   The desk and props are carried out of frame by the same transform. That is a
+   real camera push rather than a cross-fade pretending to be one.
+
+   Then the handover: at full zoom the screen is a flat --color-cream rectangle,
+   which is exactly what the app's body already is. So fading the overlay out
+   reveals the real app with no visible seam.
+--------------------------------------------------------------------------- */
+.intro {
+  position: fixed;
+  inset: 0;
+  z-index: 100;
+  overflow: hidden;
+  background: var(--color-cream);
+  touch-action: none;
+  animation: intro-exit .5s ease-out 2s both;
+
+  /* Fallbacks only. Intro.jsx measures the viewport and overwrites all three
+     the moment it mounts — see the comment there for why the zoom cannot be a
+     constant. */
+  --intro-sw: 66vw;
+  --intro-sh: 41vw;
+  --intro-z: 5;
+  --intro-cy: 42%; /* the screen's centre, and so the camera's target */
+}
+@keyframes intro-exit { from { opacity: 1; } to { opacity: 0; } }
+
+/* Tapping to skip: a short fade that still swallows the pointer. */
+.intro--out { animation: intro-exit .18s ease-out both; }
+
+.intro--reduced {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  animation: intro-exit .25s ease-out both;
+}
+
+.intro-stage {
+  position: absolute;
+  inset: 0;
+  transform-origin: 50% var(--intro-cy);
+  will-change: transform;
+  animation:
+    intro-settle .8s var(--ease-out-quint) both,
+    intro-push 1.2s var(--ease-dolly) .8s both;
+}
+@keyframes intro-settle {
+  from { transform: scale(1.045) translateY(6px); }
+  to { transform: scale(1) translateY(0); }
+}
+/* The waypoints are powers of the final zoom, set in Intro.jsx — see the
+   comment there. With them doing the work of keeping the apparent speed even,
+   the curve itself only has to ease the start and the landing. */
+@keyframes intro-push {
+  0% { transform: scale(1); }
+  25% { transform: scale(var(--intro-z25)); }
+  50% { transform: scale(var(--intro-z50)); }
+  75% { transform: scale(var(--intro-z75)); }
+  100% { transform: scale(var(--intro-z)); }
+}
+
+.intro-room {
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(120% 90% at 50% 18%, rgb(255 255 255 / .55), transparent 62%),
+    linear-gradient(180deg, var(--color-cream-deep), var(--color-cream));
+}
+
+/* Two bands, not one flat slab: a bright lip along the front edge where the
+   light catches it, then the drop into shadow. Without the lip the desk reads
+   as a brown wall rather than a surface with a near edge. */
+.intro-desk {
+  position: absolute;
+  inset: 66% 0 0 0;
+  background:
+    linear-gradient(180deg,
+      color-mix(in srgb, var(--color-wood) 82%, white) 0 1.2%,
+      var(--color-wood) 1.2% 14%,
+      var(--color-wood-dark) 100%);
+}
+
+/* What actually sells the monitor as resting on something. */
+.intro-contact {
+  position: absolute;
+  left: 50%;
+  top: 66%;
+  width: 46%;
+  height: 2.2%;
+  transform: translate(-50%, -55%);
+  border-radius: 50%;
+  background: radial-gradient(closest-side, rgb(0 0 0 / .38), transparent);
+}
+
+/* Sat on the desk: the desk's top edge is at 66%, and each prop is anchored by
+   its bottom so it rests on that line rather than floating near it. */
+.intro-mug, .intro-plant {
+  position: absolute;
+  bottom: 34%;
+  height: auto;
+}
+.intro-mug {
+  left: 7%;
+  width: 11%;
+  animation: pop-spring .42s var(--ease-out-quint) .06s backwards;
+}
+.intro-plant {
+  right: 7%;
+  width: 13%;
+  animation: pop-spring .42s var(--ease-out-quint) .12s backwards;
+}
+
+/* Only the bezel is in normal flow here, and the stand hangs off the bottom
+   absolutely. That is load-bearing, not tidiness: translate(-50%,-50%) centres
+   whatever this box actually contains, and with the chin, neck and foot in
+   flow it would centre the whole assembly — putting the *screen* above the
+   camera's target and landing the zoom slightly off the viewport. With the
+   stand out of flow this box is exactly the bezel, whose padding is equal on
+   all four sides, so its centre is the screen's centre. */
+.intro-mac {
+  position: absolute;
+  left: 50%;
+  top: var(--intro-cy);
+  transform: translate(-50%, -50%);
+}
+
+.intro-stand {
+  position: absolute;
+  top: 100%;
+  left: 50%;
+  width: 100%;
+  transform: translateX(-50%);
+}
+
+/* Equal padding on all four sides, so the bezel's centre is exactly the
+   screen's centre — which is what the camera aims at. */
+.intro-bezel {
+  position: relative;
+  padding: calc(var(--intro-sh) * .05);
+  border-radius: .7rem;
+  background: linear-gradient(160deg, #3a3641, #24212b);
+  box-shadow: 0 0 0 1px rgb(255 255 255 / .16), 0 18px 40px -18px rgb(0 0 0 / .65);
+}
+
+.intro-screen {
+  width: var(--intro-sw);
+  height: var(--intro-sh);
+  border-radius: .3rem;
+  background: var(--color-cream);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+}
+
+/* A share of the screen's own height, so it sits correctly in the monitor at
+   any size. It is gone before the push ends, so how large it grows on the way
+   does not matter much. */
+.intro-logo {
+  width: calc(var(--intro-sh) * .34);
+  height: calc(var(--intro-sh) * .34);
+  border-radius: calc(var(--intro-sh) * .08);
+  animation: intro-mark-out .45s ease-in 1.35s both;
+}
+@keyframes intro-mark-out { from { opacity: 1; } to { opacity: 0; } }
+
+.intro-glare {
+  position: absolute;
+  inset: calc(var(--intro-sh) * .05);
+  border-radius: .3rem;
+  pointer-events: none;
+  background: linear-gradient(118deg, rgb(255 255 255 / .28) 18%, transparent 46%);
+  animation: intro-glare-out .9s ease-out .8s both;
+}
+@keyframes intro-glare-out { from { opacity: 1; } to { opacity: 0; } }
+
+/* The chin, neck and foot of an all-in-one. */
+.intro-neck {
+  height: calc(var(--intro-sh) * .16);
+  width: 13%;
+  margin: 0 auto;
+  background: linear-gradient(90deg, #8e8a97, #c2bec9, #8e8a97);
+}
+.intro-foot {
+  height: calc(var(--intro-sh) * .05);
+  width: 34%;
+  margin: 0 auto;
+  border-radius: 0 0 .35rem .35rem;
+  background: linear-gradient(90deg, #8e8a97, #cbc7d4, #8e8a97);
+  box-shadow: 0 8px 16px -8px rgb(0 0 0 / .7);
+}
 
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after { animation-duration: .01ms !important; animation-iteration-count: 1 !important; transition-duration: .01ms !important; }

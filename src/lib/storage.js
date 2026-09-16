@@ -36,6 +36,13 @@ export const DEFAULT_STATE = {
     theme: 'system', // 'system' | 'light' | 'dark'
     currentCourseId: null, // which course the hub last opened
     claude001DisclaimerSeen: false,
+    // What the app calls the learner, and the icon it shows for them. These
+    // live here, with the preferences, rather than only on the server: the app
+    // works fully signed-out, and a greeting that disappears the moment you
+    // have no account is worse than never having had one. When there *is* an
+    // account they ride along in the progress blob like everything else.
+    displayName: '',
+    avatarIcon: null, // a name from components/icons/names.js
     // When a setting was last changed on this device. Settings are
     // preferences, not achievements, so when two devices disagree the newer
     // choice simply wins — this is how sync knows which that is.

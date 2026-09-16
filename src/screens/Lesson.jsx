@@ -203,6 +203,52 @@ export default function Lesson({ lessonId, onExit, onNext }) {
 
 /* ------------------------------------------------------------- Completion */
 
+/**
+ * The confetti, laid out by hand rather than by Math.random(). Random looks
+ * noisy and changes on every re-render; a fixed set can be tuned until it
+ * looks designed, and it is the same small celebration every time — which is
+ * the point, for a learner who is meant to recognise it.
+ *
+ * Colours are tokens, so dark mode follows for free.
+ */
+const PARTICLES = [
+  { bx: '-96px', by: '-64px', br: '-38deg', tone: 'text-sun', bar: true },
+  { bx: '-58px', by: '-104px', br: '24deg', tone: 'text-brand', bar: false },
+  { bx: '-14px', by: '-120px', br: '-12deg', tone: 'text-berry', bar: true },
+  { bx: '36px', by: '-110px', br: '44deg', tone: 'text-grass', bar: false },
+  { bx: '84px', by: '-74px', br: '-26deg', tone: 'text-sun', bar: true },
+  { bx: '108px', by: '-18px', br: '60deg', tone: 'text-brand', bar: false },
+  { bx: '-108px', by: '-8px', br: '-54deg', tone: 'text-grass', bar: false },
+  { bx: '-74px', by: '44px', br: '18deg', tone: 'text-berry', bar: true },
+  { bx: '22px', by: '62px', br: '-40deg', tone: 'text-sun', bar: false },
+  { bx: '78px', by: '38px', br: '32deg', tone: 'text-brand', bar: true },
+]
+
+function Burst() {
+  return (
+    <div className="pointer-events-none absolute inset-0 flex items-center justify-center" aria-hidden="true">
+      <span className="anim-shock absolute h-28 w-28 rounded-full border-4 border-grass" />
+      {PARTICLES.map((p, i) => (
+        <span
+          key={i}
+          className={`anim-burst absolute ${p.tone}`}
+          style={{ '--bx': p.bx, '--by': p.by, '--br': p.br }}
+        >
+          {p.bar ? (
+            <svg viewBox="0 0 12 5" className="h-[5px] w-3" fill="currentColor">
+              <rect width="12" height="5" rx="2.5" />
+            </svg>
+          ) : (
+            <svg viewBox="0 0 10 10" className="h-2.5 w-2.5" fill="currentColor">
+              <path d="M5 0 10 5 5 10 0 5z" />
+            </svg>
+          )}
+        </span>
+      ))}
+    </div>
+  )
+}
+
 function Complete({ entry, perfect, nextId, onExit, onNext, wasReplay }) {
   const t = useT()
   const tx = useTx()
@@ -212,8 +258,11 @@ function Complete({ entry, perfect, nextId, onExit, onNext, wasReplay }) {
   return (
     <div className="mx-auto flex h-dvh max-w-lg flex-col justify-between px-6 pt-[max(2rem,env(safe-area-inset-top))] pb-[max(1.5rem,env(safe-area-inset-bottom))]">
       <div className="flex flex-1 flex-col items-center justify-center gap-5 text-center">
-        <div className="anim-pop flex h-28 w-28 items-center justify-center rounded-full bg-grass text-white shadow-[0_8px_0_var(--color-grass-dark)]">
-          <Check className="h-14 w-14" />
+        <div className="relative flex items-center justify-center">
+          <Burst />
+          <div className="anim-badge relative flex h-28 w-28 items-center justify-center rounded-full bg-grass text-white shadow-[0_8px_0_var(--color-grass-dark)]">
+            <Check className="h-14 w-14" pathClassName="anim-tick" />
+          </div>
         </div>
         <h1 className="text-[2rem] leading-tight font-extrabold tracking-tight text-balance">
           {t('lessonDoneTitle')}

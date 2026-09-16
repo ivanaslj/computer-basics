@@ -3,6 +3,7 @@ import { useApp } from '../state/store'
 import { useT, useTx } from '../i18n'
 import { Button, Card, Sheet, ProgressBar, Check, Lock, Gear, Flame, ChevronLeft } from '../components/ui'
 import Icon from '../components/icons'
+import { stagger } from '../lib/motion'
 
 /**
  * Home. Three jobs, in order of importance:
@@ -86,7 +87,7 @@ export default function Path({ onOpenLesson, onOpenSettings, onOpenHub }) {
                 {tx(next.module.title)}
               </p>
               <div className="flex items-center gap-3">
-                <span className="text-path">
+                <span className="anim-bob text-path">
                   <Icon name={next.lesson.icon} className="h-9 w-9" />
                 </span>
                 <div className="min-w-0">
@@ -129,8 +130,8 @@ export default function Path({ onOpenLesson, onOpenSettings, onOpenHub }) {
       )}
 
       {/* The path */}
-      {course.MODULES.map((mod) => (
-        <ModuleSection key={mod.id} mod={mod} onTapLesson={tapLesson} />
+      {course.MODULES.map((mod, i) => (
+        <ModuleSection key={mod.id} mod={mod} onTapLesson={tapLesson} delay={stagger(i)} />
       ))}
 
       <LockedSheet locked={locked} onClose={() => setLocked(null)} onOpenLesson={onOpenLesson} />
@@ -138,15 +139,18 @@ export default function Path({ onOpenLesson, onOpenSettings, onOpenHub }) {
   )
 }
 
-function ModuleSection({ mod, onTapLesson }) {
+function ModuleSection({ mod, onTapLesson, delay }) {
   const t = useT()
   const tx = useTx()
   const { moduleProgress, isCompleted, isUnlocked, nextLessonId } = useApp()
   const prog = moduleProgress(mod.id)
   const finished = prog.done === prog.total
 
+  // The module card carries the entrance; the lesson nodes inside it do not.
+  // Thirty-odd absolutely-positioned nodes animating on mount is the one thing
+  // guaranteed to drop frames on a cheap phone.
   return (
-    <section className="px-5 pt-8">
+    <section className="anim-enter px-5 pt-8" style={delay}>
       <div
         className={`rounded-3xl border-2 p-5 ${
           finished ? 'border-grass/25 bg-grass-soft' : 'border-line bg-surface'

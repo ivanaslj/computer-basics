@@ -13,6 +13,30 @@
     <link rel="icon" type="image/png" href="/icons/icon-192.png" />
     <link rel="apple-touch-icon" href="/icons/apple-touch-icon.png" />
     <title>Computer Basics</title>
+    <script>
+      // Theme and text size, before the first paint. The app sets both in an
+      // effect (see the display-preferences effect in src/state/store.jsx),
+      // which necessarily runs after the first frame — normally that costs one
+      // frame of the wrong colour, but the launch animation holds the screen
+      // for over two seconds, so a dark-mode user would watch a bright desk
+      // and then have it snap dark under them.
+      //
+      // Keep this in step with that effect. It is deliberately the only
+      // render-blocking script in the page: tiny, synchronous, and wrapped so
+      // that storage being unavailable simply falls through to the old
+      // behaviour rather than stopping the app from booting.
+      try {
+        var saved = JSON.parse(localStorage.getItem('computer-basics:v1') || '{}')
+        var s = saved.settings || {}
+        if (s.theme && s.theme !== 'system') {
+          document.documentElement.dataset.theme = s.theme
+          document.documentElement.style.colorScheme = s.theme
+        } else {
+          document.documentElement.style.colorScheme = 'light dark'
+        }
+        if (s.textSize) document.documentElement.dataset.textsize = s.textSize
+      } catch (e) {}
+    </script>
   </head>
   <body>
     <div id="root"></div>

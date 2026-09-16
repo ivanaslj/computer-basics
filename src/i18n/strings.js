@@ -38,6 +38,23 @@ export const STRINGS = {
     hubComingSoon: 'Coming soon',
     backToHub: 'All courses',
 
+    // Who the learner is. Kept deliberately light: a first name is plenty,
+    // and every one of these has to be true whether or not they have an
+    // account, because the name lives on the device either way.
+    profileTitle: 'You',
+    profileNameLabel: 'What should we call you?',
+    profileNameHint: 'A first name is plenty. Only you see it.',
+    profileNameUnset: 'No name yet',
+    profileAvatarLabel: 'Pick a picture',
+    profileAvatarHint: 'It shows at the top of your home screen.',
+    profileAvatarOption: 'Picture {n}',
+    profileLessonsDone: '{n} lessons finished',
+    profileLessonsDoneOne: '1 lesson finished',
+    profileStreakNone: 'No streak yet',
+    // Short on purpose: it shares a narrow header with the streak and the
+    // settings button, and the whole app can be set to much larger text.
+    helloNamed: 'Hi, {name}',
+
     // Path / home
     hello: 'Welcome back',
     helloFirst: 'Welcome',
@@ -283,6 +300,18 @@ export const STRINGS = {
     hubSubtitle: 'Elige uno para empezar. Siempre puedes volver aquí y cambiar.',
     hubComingSoon: 'Próximamente',
     backToHub: 'Todos los cursos',
+
+    profileTitle: 'Tú',
+    profileNameLabel: '¿Cómo te llamamos?',
+    profileNameHint: 'Con tu nombre basta. Solo tú lo ves.',
+    profileNameUnset: 'Todavía sin nombre',
+    profileAvatarLabel: 'Elige un dibujo',
+    profileAvatarHint: 'Aparece arriba en tu pantalla de inicio.',
+    profileAvatarOption: 'Dibujo {n}',
+    profileLessonsDone: '{n} lecciones terminadas',
+    profileLessonsDoneOne: '1 lección terminada',
+    profileStreakNone: 'Todavía sin racha',
+    helloNamed: 'Hola, {name}',
 
     hello: 'Qué bueno verte',
     helloFirst: 'Bienvenida',

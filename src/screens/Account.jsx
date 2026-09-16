@@ -2,7 +2,7 @@ import { useState } from 'react'
 import { useAuth } from '../state/auth'
 import { useApp } from '../state/store'
 import { useT } from '../i18n'
-import { Button, Card, Field, ChevronLeft, Check } from '../components/ui'
+import { Button, Card, Field, ChevronLeft, Check, Flame } from '../components/ui'
 import Icon from '../components/icons'
 
 /**
@@ -171,10 +171,39 @@ export default function Account({ onBack }) {
 function SignedIn({ onBack, syncState }) {
   const t = useT()
   const auth = useAuth()
+  // From local state, never from the profiles row. Reading the server copy
+  // would make this screen wrong with no network and would leave two versions
+  // of a name that the learner just edited on this device.
+  const { profile, totalLessonsDone, streak } = useApp()
   return (
     <div className="mx-auto min-h-dvh max-w-lg pb-16">
       <Header title={t('authAccountTitle')} onBack={onBack} t={t} />
       <div className="flex flex-col gap-5 px-5 pt-6">
+        <Card className="flex items-center gap-4">
+          <span className="flex h-14 w-14 shrink-0 items-center justify-center rounded-full bg-brand-soft text-brand">
+            <Icon name={profile.avatar || 'monitor'} className="h-8 w-8" />
+          </span>
+          <div className="min-w-0 flex-1">
+            <p className={`text-[1.1rem] leading-tight font-extrabold ${profile.name ? '' : 'text-ink-soft'}`}>
+              {profile.name || t('profileNameUnset')}
+            </p>
+            <div className="mt-1.5 flex flex-wrap gap-1.5">
+              <span className="rounded-full bg-cream-deep px-2.5 py-0.5 text-[0.85rem] font-bold text-ink-soft">
+                {totalLessonsDone === 1
+                  ? t('profileLessonsDoneOne')
+                  : t('profileLessonsDone', { n: totalLessonsDone })}
+              </span>
+              <span className="flex items-center gap-1 rounded-full bg-sun-soft px-2.5 py-0.5 text-[0.85rem] font-bold text-sun">
+                {streak.count > 0 && <Flame className="h-3.5 w-3.5" />}
+                {streak.count === 0
+                  ? t('profileStreakNone')
+                  : streak.count === 1
+                    ? t('dayStreakOne')
+                    : t('dayStreak', { n: streak.count })}
+              </span>
+            </div>
+          </div>
+        </Card>
         <Card className="flex flex-col gap-3">
           <p className="text-sm font-bold tracking-widest text-ink-soft uppercase">
             {t('authSignedInAs')}

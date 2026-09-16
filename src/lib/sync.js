@@ -1,5 +1,5 @@
 import { supabase } from './supabase.js'
-import { mergeStates, summarise } from './merge.js'
+import { mergeStates, summarise, identity } from './merge.js'
 
 /**
  * Moving a learner's progress to and from the server. The rules for combining
@@ -42,11 +42,19 @@ export async function push(userId, state) {
     .abortSignal(deadline())
   if (error) throw error
 
-  // Best-effort: the summary is a convenience for a feature that does not
+  // Best-effort: the profile row is a convenience for a feature that does not
   // exist yet, and is always rederivable from `state`. It must never be the
   // reason a learner's actual progress fails to save.
+  //
+  // Upsert rather than update: an update silently matches zero rows if the
+  // row is missing, which is a failure that looks exactly like success. The
+  // signup trigger should always have made one, but "should" is doing a lot of
+  // work there for an account created before that trigger existed.
   try {
-    await supabase.from('profiles').update(summarise(state)).eq('id', userId).abortSignal(deadline())
+    await supabase
+      .from('profiles')
+      .upsert({ id: userId, ...summarise(state), ...identity(state) }, { onConflict: 'id' })
+      .abortSignal(deadline())
   } catch {
     /* ignore */
   }

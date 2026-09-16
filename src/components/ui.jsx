@@ -279,11 +279,14 @@ export function Sheet({ open, onClose, title, children }) {
 
 /* ----------------------------------------------------------------- Icons */
 
-export function Check({ className = 'h-5 w-5' }) {
+// `pathClassName` exists so the completion screen can draw the tick on with a
+// stroke-dash animation. Every other caller ignores it.
+export function Check({ className = 'h-5 w-5', pathClassName = '' }) {
   return (
     <svg viewBox="0 0 24 24" fill="none" className={className} aria-hidden="true">
       <path
         d="M5 13l4.5 4.5L19 7"
+        className={pathClassName}
         stroke="currentColor"
         strokeWidth="3.2"
         strokeLinecap="round"

@@ -79,5 +79,15 @@ let reloading = false
 export function applyUpdate() {
   if (reloading) return
   reloading = true
+  // Tell the launch animation to sit this one out. The point of a silent
+  // update is that the learner never notices it happened; replaying the whole
+  // desk-and-zoom cinematic would announce it in the loudest way available.
+  // sessionStorage survives a same-tab reload and dies with the tab, which is
+  // exactly the question being asked: "was this a cold start?"
+  try {
+    sessionStorage.setItem('computer-basics:skip-intro', '1')
+  } catch {
+    // Storage disabled. They get an unexpected animation; nothing breaks.
+  }
   window.location.reload()
 }
