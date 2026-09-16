@@ -178,7 +178,7 @@ function Dots({ count, active }) {
 
 function LogoMark() {
   return (
-    <div className="flex h-24 w-24 items-center justify-center rounded-[1.8rem] bg-gradient-to-b from-brand to-[#6d28d9] shadow-[0_10px_24px_-10px_rgb(79_70_229_/_0.8)]">
+    <div className="flex h-24 w-24 items-center justify-center rounded-[1.8rem] bg-gradient-to-b from-brand to-brand-dark shadow-[0_10px_24px_-10px_rgb(var(--color-brand-rgb)/0.8)]">
       <div className="relative">
         <div className="h-11 w-16 rounded-md border-[3px] border-white bg-[#2e2a82]" />
         <div className="mx-auto mt-1 h-1.5 w-20 rounded-full bg-white" />

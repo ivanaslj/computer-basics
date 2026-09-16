@@ -58,6 +58,8 @@ export const STRINGS = {
     moduleDone: 'Finished',
     courseDoneTitle: 'You finished the whole course',
     courseDoneBody: 'That is a real achievement. Everything stays here if you want to go over it again.',
+    gotIt: 'Got it',
+    advancedBadge: 'Advanced',
 
     // Lesson player
     exit: 'Exit',
@@ -302,6 +304,8 @@ export const STRINGS = {
     courseDoneTitle: 'Terminaste el curso completo',
     courseDoneBody:
       'Eso es un verdadero logro. Todo se queda aquí por si quieres repasarlo.',
+    gotIt: 'Entendido',
+    advancedBadge: 'Avanzado',
 
     exit: 'Salir',
     exitTitle: '¿Salir de esta lección?',

@@ -212,6 +212,7 @@ export function Card({ children, className = '', tone = 'plain', ...props }) {
   const tones = {
     plain: 'bg-surface border-line',
     brand: 'bg-brand-soft border-brand/20',
+    path: 'bg-path-soft border-path/20',
     grass: 'bg-grass-soft border-grass/20',
     sun: 'bg-sun-soft border-sun/25',
     berry: 'bg-berry-soft border-berry/20',

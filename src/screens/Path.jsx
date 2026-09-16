@@ -17,7 +17,8 @@ const OFFSETS = [0, 54, 76, 54, 0, -54, -76, -54] // the gentle S-curve
 export default function Path({ onOpenLesson, onOpenSettings, onOpenHub }) {
   const t = useT()
   const tx = useTx()
-  const { course, overall, streak, nextLessonId, isUnlocked, courseFinished } = useApp()
+  const { course, overall, streak, nextLessonId, isUnlocked, courseFinished, settings, setSetting } =
+    useApp()
   const [locked, setLocked] = useState(null)
 
   const next = course.getLesson(nextLessonId)
@@ -80,12 +81,12 @@ export default function Path({ onOpenLesson, onOpenSettings, onOpenHub }) {
           </Card>
         ) : (
           next && (
-            <Card tone="brand" className="flex flex-col gap-3">
-              <p className="text-sm font-bold tracking-wide text-brand uppercase">
+            <Card tone="path" className="flex flex-col gap-3">
+              <p className="text-sm font-bold tracking-wide text-path uppercase">
                 {tx(next.module.title)}
               </p>
               <div className="flex items-center gap-3">
-                <span className="text-brand">
+                <span className="text-path">
                   <Icon name={next.lesson.icon} className="h-9 w-9" />
                 </span>
                 <div className="min-w-0">
@@ -104,6 +105,28 @@ export default function Path({ onOpenLesson, onOpenSettings, onOpenHub }) {
           )
         )}
       </div>
+
+      {course.disclaimer && !settings.claude001DisclaimerSeen && (
+        <div className="px-5 pt-5">
+          <Card tone="berry" className="flex flex-col gap-2">
+            <div className="flex items-center gap-2 text-berry">
+              <Icon name="warning" className="h-5 w-5" />
+              <p className="text-sm font-bold tracking-wide uppercase">{t('advancedBadge')}</p>
+            </div>
+            <p className="text-[0.95rem] leading-snug text-ink-soft text-pretty">
+              {tx(course.disclaimer)}
+            </p>
+            <Button
+              variant="danger"
+              size="sm"
+              className="self-start"
+              onClick={() => setSetting('claude001DisclaimerSeen', true)}
+            >
+              {t('gotIt')}
+            </Button>
+          </Card>
+        </div>
+      )}
 
       {/* The path */}
       {course.MODULES.map((mod) => (
@@ -130,16 +153,23 @@ function ModuleSection({ mod, onTapLesson }) {
         }`}
       >
         <div className="flex items-start gap-3">
-          <span className={finished ? 'text-grass' : 'text-brand'}>
+          <span className={finished ? 'text-grass' : 'text-path'}>
             <Icon name={mod.icon} className="h-8 w-8" />
           </span>
           <div className="min-w-0 flex-1">
             <p className="text-xs font-bold tracking-widest text-ink-soft uppercase">
               {tx({ en: `Module ${mod.number}`, es: `Módulo ${mod.number}` })}
             </p>
-            <h2 className="text-[1.25rem] leading-tight font-extrabold text-balance">
-              {tx(mod.title)}
-            </h2>
+            <div className="flex flex-wrap items-center gap-2">
+              <h2 className="text-[1.25rem] leading-tight font-extrabold text-balance">
+                {tx(mod.title)}
+              </h2>
+              {mod.id === 'c1-m4' && (
+                <span className="shrink-0 rounded-full bg-berry-soft px-2 py-0.5 text-xs font-bold text-berry">
+                  {t('advancedBadge')}
+                </span>
+              )}
+            </div>
             <p className="mt-0.5 text-[0.95rem] leading-snug text-ink-soft text-pretty">
               {tx(mod.subtitle)}
             </p>
@@ -195,7 +225,7 @@ function LessonNode({ lesson, x, y, done, current, unlocked, onTap }) {
   const face = done
     ? 'bg-grass text-white shadow-[0_5px_0_var(--color-grass-dark)]'
     : current
-      ? 'bg-brand text-white shadow-[0_5px_0_var(--color-brand-dark)]'
+      ? 'bg-path text-white shadow-[0_5px_0_var(--color-path-dark)]'
       : unlocked
         ? 'bg-surface text-ink border-2 border-line shadow-[0_5px_0_var(--color-line)]'
         : 'bg-cream-deep text-ink-soft/60 shadow-none'
@@ -210,7 +240,7 @@ function LessonNode({ lesson, x, y, done, current, unlocked, onTap }) {
         onClick={onTap}
         aria-label={`${title}${!unlocked ? ` — ${t('locked')}` : ''}`}
         className={`btn-3d relative flex h-[4.5rem] w-[4.5rem] items-center justify-center rounded-full text-[1.9rem] ${face} ${
-          current ? 'anim-halo' : ''
+          current ? 'anim-halo-path' : ''
         }`}
       >
         {unlocked ? (

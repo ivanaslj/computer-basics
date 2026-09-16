@@ -19,6 +19,10 @@ export default makeCourse(
       en: 'What Claude is, how to use it well, and five real things to try',
       es: 'Qué es Claude, cómo usarlo bien, y cinco cosas reales para probar',
     },
+    disclaimer: {
+      en: "This course moves faster than Computer Basics — it's fine to look things up as you go. The Claude Code & Design module especially assumes some comfort with computers.",
+      es: 'Este curso avanza más rápido que Computer Basics — está bien buscar cosas mientras avanzas. El módulo de Claude Code y Design en especial supone algo de comodidad con las computadoras.',
+    },
   },
   [module1, module2, module3, module4]
 )

@@ -19,9 +19,19 @@
   --color-ink-soft: #5b5563;
   --color-line: #e6ded1;
 
-  --color-brand: #4f46e5;
-  --color-brand-dark: #3f38bb;
-  --color-brand-soft: #eeecfe;
+  --color-brand: #1f7a4a;
+  --color-brand-dark: #155c38;
+  --color-brand-soft: #e3f3ea;
+  --color-brand-rgb: 31 122 74;
+
+  /* "Where you are on the path" — the current lesson/module marker. Its own
+     token, separate from --color-brand, so it can stay a contrasting warm
+     brown even now that brand itself is green (grass is also green, so two
+     greens plus this made the path screen read as all-one-color). */
+  --color-path: #7a5230;
+  --color-path-dark: #5c3d22;
+  --color-path-soft: #f3e8dc;
+  --color-path-rgb: 122 82 48;
 
   --color-grass: #14883f;
   --color-grass-dark: #0f6b31;
@@ -59,6 +69,12 @@
     --color-brand: #8b83ff;
     --color-brand-dark: #6a61e0;
     --color-brand-soft: #272441;
+    --color-brand-rgb: 139 131 255;
+
+    --color-path: #8b83ff;
+    --color-path-dark: #6a61e0;
+    --color-path-soft: #272441;
+    --color-path-rgb: 139 131 255;
 
     --color-grass: #43c46e;
     --color-grass-dark: #2c9950;
@@ -83,6 +99,12 @@
   --color-brand: #8b83ff;
   --color-brand-dark: #6a61e0;
   --color-brand-soft: #272441;
+  --color-brand-rgb: 139 131 255;
+
+  --color-path: #8b83ff;
+  --color-path-dark: #6a61e0;
+  --color-path-soft: #272441;
+  --color-path-rgb: 139 131 255;
 
   --color-grass: #43c46e;
   --color-grass-dark: #2c9950;
@@ -139,8 +161,12 @@ button, [role='button'] {
 .anim-rise { animation: rise .26s cubic-bezier(.2,.8,.3,1) both; }
 
 /* A soft halo that draws the eye to the thing they are meant to tap. */
-@keyframes halo { 0%,100% { box-shadow: 0 0 0 0 rgb(79 70 229 / .45); } 50% { box-shadow: 0 0 0 12px rgb(79 70 229 / 0); } }
+@keyframes halo { 0%,100% { box-shadow: 0 0 0 0 rgb(var(--color-brand-rgb) / .45); } 50% { box-shadow: 0 0 0 12px rgb(var(--color-brand-rgb) / 0); } }
 .anim-halo { animation: halo 1.8s ease-out infinite; }
+
+/* Same halo, tinted for the "current lesson" node on the path instead of brand. */
+@keyframes halo-path { 0%,100% { box-shadow: 0 0 0 0 rgb(var(--color-path-rgb) / .45); } 50% { box-shadow: 0 0 0 12px rgb(var(--color-path-rgb) / 0); } }
+.anim-halo-path { animation: halo-path 1.8s ease-out infinite; }
 
 @keyframes cursor-hint { 0%,100% { transform: translate(0,0); } 50% { transform: translate(0,-6px); } }
 .anim-cursor { animation: cursor-hint 1.4s ease-in-out infinite; }

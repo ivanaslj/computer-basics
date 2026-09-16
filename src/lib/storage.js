@@ -35,6 +35,7 @@ export const DEFAULT_STATE = {
     textSize: 'normal', // 'normal' | 'large' | 'xlarge'
     theme: 'system', // 'system' | 'light' | 'dark'
     currentCourseId: null, // which course the hub last opened
+    claude001DisclaimerSeen: false,
     // When a setting was last changed on this device. Settings are
     // preferences, not achievements, so when two devices disagree the newer
     // choice simply wins — this is how sync knows which that is.
