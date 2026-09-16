@@ -17,8 +17,8 @@ screen, and it works from then on with or without a connection.
   to AI: what Claude is, skills/plugins/connectors, and five real projects
   (install Claude, install a skill, install a connector, use Claude Design,
   run a Claude Code prompt).
-- **Claude Code** and **AI 001** — reserved slots, shown as "coming soon" in
-  the app; not written yet.
+- **Claude Code** — reserved slot, shown as "coming soon" in the app; not
+  written yet.
 
 A **Hub** screen — the first thing you see after picking a language — lists
 every course with its own progress, and stays reachable any time from a
@@ -259,8 +259,7 @@ src/
     makeCourse.js      turns a module list into {MODULES, LESSON_ORDER, getLesson, …}
     computer-basics/   one file per module, plain data (module1…7, moduleMouse, moduleJob1…7)
     claude-001/        same shape, different course
-    claude-code/        }  stubs — one placeholder lesson each, status: 'coming-soon'
-    ai-001/             }
+    claude-code/       stub — one placeholder lesson, status: 'coming-soon'
   components/
     sims/         the mock computer: desktop, windows, files, browser, keyboard
     practice/     the unlimited drills (click, drag, type) + typing word lists
