@@ -178,6 +178,33 @@ for (const course of COURSES) {
             }
             if (cfg.then === 'switcher' && !(cfg.apps || []).some((a) => a.id === cfg.target))
               fail(S, `switcher target "${cfg.target}" is not among the apps shown`)
+          } else if (step.sim === 'signup') {
+            if (!['fill', 'password'].includes(cfg.goal))
+              fail(S, `signup sim has unknown goal "${cfg.goal}"`)
+            if (!cfg.site?.url) fail(S, 'signup sim has no site.url to show in the address bar')
+            checkText(cfg.site?.name, `${S}.site.name`)
+
+            // "Show me how" has to have something to spell out. Same rule as
+            // newName below: a learner who cannot invent an email address on
+            // the spot otherwise has no way forward at all.
+            if (cfg.goal === 'fill' && !cfg.hintEmail)
+              fail(S, 'signup sim has no hintEmail for "Show me how" to spell out')
+            if (!cfg.hintPassword)
+              fail(S, 'signup sim has no hintPassword for "Show me how" to spell out')
+            checkText(cfg.hintEmail, `${S}.hintEmail`)
+            checkText(cfg.hintPassword, `${S}.hintPassword`)
+
+            if (cfg.minPassword != null && cfg.minPassword < 8)
+              fail(S, `minPassword ${cfg.minPassword} is weaker than the app's own rule of 8`)
+
+            // The whole point of the scam lesson. A practice step must never
+            // ask a beginner to type a password into a page the simulation is
+            // itself drawing as a fake — that trains the exact reflex m5-l3
+            // spends six minutes removing. To show a fake page, hang it off a
+            // choice step as a frozen `visual` instead, where the question is
+            // whether to type at all.
+            if (cfg.site?.secure === false)
+              fail(S, 'a signup practice step must not use an insecure site — make it a frozen visual on a choice step')
           } else if (TARGET_IN_CONFIG.has(cfg.goal)) {
             const ids = simTargets(cfg)
             if (!cfg.target) fail(S, `goal "${cfg.goal}" needs a target`)

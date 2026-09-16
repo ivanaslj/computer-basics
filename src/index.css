@@ -43,10 +43,19 @@
   --color-berry: #c0356b;
   --color-berry-soft: #fdeaf1;
 
-  /* The desk in the launch animation. A token like everything else, so a
-     night-time launch is a dim room rather than a floodlit one. */
-  --color-wood: #b07f4e;
-  --color-wood-dark: #8d6238;
+  /* The room in the launch animation. These do NOT change with the app's
+     theme, unlike everything above: it is a depicted evening room, and an
+     evening room looks the same whichever theme you read the app in. The one
+     exception is the monitor's screen, which must stay --color-cream so it
+     matches the real page it hands over to. */
+  --color-wood: #7d5836;
+  --color-wood-dark: #513825;
+  --color-room: #2b2836;
+  --color-room-dark: #1a1822;
+  --color-sky: #43536f;
+  --color-sky-dark: #232c40;
+  --color-frame: #6b5842;
+  --color-lamp: 255 190 120; /* rgb triplet — used at several opacities */
 
   --text-base: 1.125rem;
 
@@ -99,9 +108,6 @@
 
     --color-berry: #f0709e;
     --color-berry-soft: #331823;
-
-    --color-wood: #6b4c30;
-    --color-wood-dark: #46311d;
   }
 }
 
@@ -132,9 +138,6 @@
 
   --color-berry: #f0709e;
   --color-berry-soft: #331823;
-
-  --color-wood: #6b4c30;
-  --color-wood-dark: #46311d;
 }
 
 /* The "larger text" toggle scales the whole UI: every size in the app is in
@@ -209,6 +212,12 @@ button, [role='button'] {
    2. At most two infinite animations on screen at once, and transform/opacity
       only. The target device is a cheap Android and this app has a very long
       scrolling path screen.
+
+   The launch animation's rain is a deliberate, bounded exception to rule 2: it
+   runs six infinite animations at once. It gets away with it because that
+   overlay owns the whole screen for two and a half seconds, nothing else is
+   rendering behind it, and it unmounts completely afterwards — none of which is
+   true of the app's own screens. Do not treat it as a precedent.
 --------------------------------------------------------------------------- */
 
 /* "This is the thing to tap next." */
@@ -259,15 +268,18 @@ button, [role='button'] {
 .anim-burst { animation: burst .9s cubic-bezier(.16,.84,.44,1) .08s both; }
 
 /* ---------------------------------------------------------------------------
-   The launch animation. See components/Intro.jsx.
+   The launch animation. See components/Intro.jsx, which owns the geometry.
 
-   The whole thing rests on one idea: .intro-screen is an exact scaled copy of
-   the viewport — same aspect ratio on any phone, by construction, because both
-   of its sides are the viewport's own units times --intro-s. It sits centred
-   on the stage's transform-origin, so scaling the stage by the reciprocal of
-   that fraction lands the screen rectangle precisely on the viewport edges.
-   The desk and props are carried out of frame by the same transform. That is a
-   real camera push rather than a cross-fade pretending to be one.
+   A monitor stands on a desk in an evening room, and the camera pushes into its
+   screen until the screen is the app. One transform on one element carries the
+   whole room out of frame — a real camera push, not a cross-fade pretending to
+   be one.
+
+   The screen is a landscape 16:10 rectangle, like a computer and unlike the
+   phone it is viewed on, so how far to push is not a constant: Intro.jsx
+   measures the viewport and works out the scale that makes the screen cover it,
+   aiming at the monitor rather than the middle of the frame. Everything below
+   that depends on those numbers reads them from the custom properties it sets.
 
    Then the handover: at full zoom the screen is a flat --color-cream rectangle,
    which is exactly what the app's body already is. So fading the overlay out
@@ -282,12 +294,11 @@ button, [role='button'] {
   touch-action: none;
   animation: intro-exit .5s ease-out 2s both;
 
-  /* Fallbacks only. Intro.jsx measures the viewport and overwrites all three
-     the moment it mounts — see the comment there for why the zoom cannot be a
-     constant. */
+  /* Fallbacks only. Intro.jsx measures the viewport and overwrites these the
+     moment it mounts. --intro-z is not here at all any more: the zoom lives in
+     the sampled animation, not in CSS. */
   --intro-sw: 66vw;
   --intro-sh: 41vw;
-  --intro-z: 5;
   --intro-cy: 42%; /* the screen's centre, and so the camera's target */
 }
 @keyframes intro-exit { from { opacity: 1; } to { opacity: 0; } }
@@ -302,36 +313,120 @@ button, [role='button'] {
   animation: intro-exit .25s ease-out both;
 }
 
+/* The camera move is NOT defined here. It is sampled frame by frame in
+   Intro.jsx and played through the Web Animations API, because a CSS timing
+   function applies between each pair of keyframes rather than across the whole
+   animation — which made the zoom stall at every waypoint. The long comment on
+   buildCameraFrames explains it properly. Leave this element's transform to
+   JavaScript. */
 .intro-stage {
   position: absolute;
   inset: 0;
   transform-origin: 50% var(--intro-cy);
   will-change: transform;
-  animation:
-    intro-settle .8s var(--ease-out-quint) both,
-    intro-push 1.2s var(--ease-dolly) .8s both;
-}
-@keyframes intro-settle {
-  from { transform: scale(1.045) translateY(6px); }
-  to { transform: scale(1) translateY(0); }
-}
-/* The waypoints are powers of the final zoom, set in Intro.jsx — see the
-   comment there. With them doing the work of keeping the apparent speed even,
-   the curve itself only has to ease the start and the landing. */
-@keyframes intro-push {
-  0% { transform: scale(1); }
-  25% { transform: scale(var(--intro-z25)); }
-  50% { transform: scale(var(--intro-z50)); }
-  75% { transform: scale(var(--intro-z75)); }
-  100% { transform: scale(var(--intro-z)); }
+  transform: scale(1.045) translateY(6px);
 }
 
+/* Evening. The only light in the room comes from the lamp on the desk and from
+   the monitor itself — which is convenient as well as cosy, because the screen
+   being the brightest thing in frame points the eye at exactly where the camera
+   is about to go. */
 .intro-room {
   position: absolute;
   inset: 0;
   background:
-    radial-gradient(120% 90% at 50% 18%, rgb(255 255 255 / .55), transparent 62%),
-    linear-gradient(180deg, var(--color-cream-deep), var(--color-cream));
+    radial-gradient(90% 55% at 50% 80%, rgb(var(--color-lamp) / .16), transparent 70%),
+    linear-gradient(180deg, var(--color-room-dark), var(--color-room));
+}
+
+/* A pool of warm lamplight on the desk, sat between the desk and the props so
+   it washes over the surface but not over the monitor. */
+.intro-lamp {
+  position: absolute;
+  left: 50%;
+  top: 68%;
+  width: 96%;
+  height: 24%;
+  transform: translate(-50%, -50%);
+  background: radial-gradient(closest-side, rgb(var(--color-lamp) / .3), transparent);
+  pointer-events: none;
+}
+
+/* --- The window, and the weather outside it --- */
+
+.intro-window {
+  position: absolute;
+  left: 5%;
+  top: 10%;
+  width: 35%;
+  height: 33%;
+  border: .5rem solid var(--color-frame);
+  border-radius: .3rem;
+  overflow: hidden;
+  background: linear-gradient(180deg, var(--color-sky-dark), var(--color-sky));
+  box-shadow: 0 10px 30px -12px rgb(0 0 0 / .7), inset 0 0 40px rgb(0 0 0 / .35);
+}
+
+/* The glazing bars. Two thin crosses drawn with one element each. */
+.intro-window::before,
+.intro-window::after {
+  content: '';
+  position: absolute;
+  background: var(--color-frame);
+  opacity: .9;
+}
+.intro-window::before { left: 50%; top: 0; bottom: 0; width: .3rem; margin-left: -.15rem; }
+.intro-window::after { top: 50%; left: 0; right: 0; height: .3rem; margin-top: -.15rem; }
+
+/* Rain.
+   Tilted wrapper, upright streaks inside. Doing it this way means each layer
+   only has to travel straight down by exactly one pattern period to loop
+   seamlessly — at an angle the maths stops being a whole number and the loop
+   visibly jumps. Two layers at different speeds and weights read as depth. */
+.intro-rain {
+  position: absolute;
+  inset: -45% -35%;
+  transform: rotate(11deg);
+  pointer-events: none;
+}
+.intro-rain span {
+  position: absolute;
+  inset: 0;
+  animation: rain-fall var(--rain-t) linear infinite;
+  /* Columns for the streaks, a dashed mask to cut them into drops. Both belong
+     to the element, so one transform moves the whole pattern. */
+  -webkit-mask-image: repeating-linear-gradient(180deg, #000 0 26px, transparent 26px var(--rain-d));
+  mask-image: repeating-linear-gradient(180deg, #000 0 26px, transparent 26px var(--rain-d));
+}
+.intro-rain span:first-child {
+  --rain-d: 74px;
+  --rain-t: .62s;
+  background: repeating-linear-gradient(90deg, transparent 0 13px, rgb(212 230 255 / .5) 13px 14px);
+}
+.intro-rain span:last-child {
+  --rain-d: 96px;
+  --rain-t: .95s;
+  background: repeating-linear-gradient(90deg, transparent 0 23px, rgb(212 230 255 / .28) 23px 24px);
+}
+@keyframes rain-fall { to { transform: translateY(var(--rain-d)); } }
+
+/* Four drops making their way down the inside of the glass. */
+.intro-drip {
+  position: absolute;
+  top: var(--dt);
+  left: var(--dl);
+  width: .22rem;
+  height: .22rem;
+  border-radius: 50%;
+  background: rgb(226 240 255 / .8);
+  box-shadow: 0 -.4rem .3rem -.25rem rgb(226 240 255 / .45);
+  animation: drip-run var(--dd) linear var(--delay) infinite;
+}
+@keyframes drip-run {
+  0% { transform: translateY(0); opacity: 0; }
+  12% { opacity: .85; }
+  88% { opacity: .7; }
+  100% { transform: translateY(var(--dy)); opacity: 0; }
 }
 
 /* Two bands, not one flat slab: a bright lip along the front edge where the

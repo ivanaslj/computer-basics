@@ -239,6 +239,14 @@ export const STRINGS = {
     authSendReset: 'Send me a link',
     authSentTitle: 'Check your email',
     authSentBody: 'We sent a link to {email}. Open it and you can choose a new password. It can take a minute to arrive.',
+    // The practice sign-up form in the lessons (components/sims/SignupSim).
+    signupStrengthShort: 'Too short',
+    signupStrengthOk: 'Good',
+    signupStrengthStrong: 'Very good',
+    signupAddressLabel: 'Address bar: {url}',
+
+    authConfirmTitle: 'One more step',
+    authConfirmBody: 'Your account is made. We sent a message to {email} — open it and tap the link inside, and then you can sign in. It can take a minute to arrive.',
     authBackToSignIn: 'Back to sign in',
     authSignedInAs: 'Signed in as',
     authSignOut: 'Sign out',
@@ -493,6 +501,13 @@ export const STRINGS = {
     authSendReset: 'Mándame un enlace',
     authSentTitle: 'Revisa tu correo',
     authSentBody: 'Mandamos un enlace a {email}. Ábrelo y podrás elegir una contraseña nueva. Puede tardar un minuto en llegar.',
+    signupStrengthShort: 'Muy corta',
+    signupStrengthOk: 'Bien',
+    signupStrengthStrong: 'Muy bien',
+    signupAddressLabel: 'Barra de dirección: {url}',
+
+    authConfirmTitle: 'Un paso más',
+    authConfirmBody: 'Tu cuenta ya está hecha. Mandamos un mensaje a {email} — ábrelo y toca el enlace que trae, y ya podrás entrar. Puede tardar un minuto en llegar.',
     authBackToSignIn: 'Volver a entrar',
     authSignedInAs: 'Sesión iniciada como',
     authSignOut: 'Cerrar sesión',

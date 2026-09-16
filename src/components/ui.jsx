@@ -196,8 +196,11 @@ export function Field({
         )}
       </div>
       {error ? (
+        // Through RichText so a message can emphasise the character it is
+        // talking about — "an email always has one **@** in it" is the whole
+        // point of that sentence. Plain messages pass through unchanged.
         <p id={`${id}-error`} className="text-[0.9rem] leading-snug font-semibold text-berry" role="alert">
-          {error}
+          <RichText>{error}</RichText>
         </p>
       ) : hint ? (
         <p id={`${id}-hint`} className="text-[0.9rem] leading-snug text-ink-soft">

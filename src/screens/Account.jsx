@@ -56,11 +56,16 @@ export default function Account({ onBack }) {
           : mode === 'forgot'
             ? auth.requestPasswordReset(email)
             : auth.updatePassword(password)
-    const { error: key } = await run
+    const { error: key, needsConfirmation } = await run
     setBusy(false)
 
     if (key) return setError(t(key))
     if (mode === 'forgot') return go('sent')
+    // Signing up without being signed in afterwards means the project wants
+    // the address confirmed first. That is a success, so there is no error to
+    // show — but closing the screen here would drop her back on Settings still
+    // signed out, with nothing at all having appeared to happen.
+    if (mode === 'up' && needsConfirmation) return go('confirm')
     // Signing in or setting a new password lands them back in the app; the
     // store notices the new session and folds their progress together.
     onBack()
@@ -68,20 +73,22 @@ export default function Account({ onBack }) {
 
   if (auth.session && mode !== 'reset') return <SignedIn onBack={onBack} syncState={syncState} />
 
-  const titleKey = { in: 'authSignIn', up: 'authCreate', forgot: 'authForgotTitle', sent: 'authSentTitle', reset: 'authNewPasswordTitle' }[mode]
+  const titleKey = { in: 'authSignIn', up: 'authCreate', forgot: 'authForgotTitle', sent: 'authSentTitle', confirm: 'authConfirmTitle', reset: 'authNewPasswordTitle' }[mode]
 
   return (
     <div className="mx-auto min-h-dvh max-w-lg pb-16">
       <Header title={t(titleKey)} onBack={onBack} t={t} />
 
       <div className="flex flex-col gap-5 px-5 pt-6">
-        {mode === 'sent' ? (
+        {mode === 'sent' || mode === 'confirm' ? (
           <>
             <Card tone="grass" className="flex flex-col gap-2">
               <span className="text-grass">
                 <Icon name="mail" className="h-8 w-8" />
               </span>
-              <p className="leading-snug">{t('authSentBody', { email })}</p>
+              <p className="leading-snug">
+                {t(mode === 'confirm' ? 'authConfirmBody' : 'authSentBody', { email })}
+              </p>
             </Card>
             <Button full onClick={() => go('in')}>
               {t('authBackToSignIn')}

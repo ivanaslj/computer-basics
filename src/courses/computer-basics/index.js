@@ -4,6 +4,7 @@ import moduleMouse from './moduleMouse.js'
 import module3 from './module3.js'
 import module4 from './module4.js'
 import module5 from './module5.js'
+import moduleAccounts from './moduleAccounts.js'
 import module6 from './module6.js'
 import module7 from './module7.js'
 import job1 from './moduleJob1.js'
@@ -48,6 +49,12 @@ export default makeCourse(
     module3,
     module4,
     module5,
+    // Accounts come straight after the scam module, and not by coincidence: a
+    // sign-up form is the most worthwhile thing in the world to fake, so
+    // "read the address before you type" needs to be fresh before anyone is
+    // taught to fill one in. It also has to land before job2 "Work email",
+    // which quietly assumes an inbox already exists.
+    moduleAccounts,
     module6,
     module7,
     job1,

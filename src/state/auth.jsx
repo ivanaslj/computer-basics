@@ -89,15 +89,28 @@ export function AuthProvider({ children }) {
       loading,
       recovering,
 
-      signUp: (email, password) =>
-        wrap(() =>
-          supabase.auth.signUp({
+      // Unlike the others this one cannot just report an error, because its
+      // most confusing outcome is not an error. When the project requires email
+      // confirmation, signUp succeeds and returns a user with *no session* —
+      // the account exists but nobody is signed in, and there is nothing to
+      // report. A screen that only checks `error` sees success, closes itself,
+      // and leaves the learner signed out with no explanation at all. So say
+      // which of the two kinds of success it was.
+      signUp: async (email, password) => {
+        if (!supabase) return { error: 'authGeneric' }
+        try {
+          const { data, error } = await supabase.auth.signUp({
             email: email.trim(),
             password,
             // Where the confirmation link brings them back to.
             options: { emailRedirectTo: window.location.origin },
           })
-        ),
+          if (error) return { error: messageKey(error) }
+          return { error: null, needsConfirmation: !data?.session }
+        } catch (err) {
+          return { error: messageKey(err) }
+        }
+      },
 
       signIn: (email, password) =>
         wrap(() => supabase.auth.signInWithPassword({ email: email.trim(), password })),

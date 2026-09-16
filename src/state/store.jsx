@@ -232,7 +232,13 @@ export function AppProvider({ children }) {
     const order = course?.LESSON_ORDER || []
     const firstUnfinishedIndex = order.findIndex((id) => !courseCompleted[id])
     const frontier = firstUnfinishedIndex === -1 ? order.length - 1 : firstUnfinishedIndex
-    const isUnlocked = (id) => order.indexOf(id) <= frontier
+    // Anything already finished stays open, whatever the frontier says. Without
+    // that second clause the frontier is purely positional, so inserting a
+    // lesson into the middle of a course drags it backwards and re-locks work
+    // the learner has already done — she would open the path screen to find
+    // lessons marked green and padlocked at the same time, and tapping one
+    // would offer to unlock it. Finished is finished.
+    const isUnlocked = (id) => order.indexOf(id) <= frontier || Boolean(courseCompleted[id])
 
     const nextLessonId = order[frontier]
 

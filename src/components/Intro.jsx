@@ -28,6 +28,84 @@ const SKIP_KEY = 'computer-basics:skip-intro'
 // match the `inset` on .intro-desk in index.css.
 const DESK_TOP = 0.66
 
+// The camera move, in milliseconds from the moment the overlay mounts: hold on
+// the desk, then push in. The overlay's own fade-out is CSS and starts at
+// PUSH_END.
+const SETTLE_END = 800
+const PUSH_END = 2000
+
+// One sample per ~8ms — comfortably finer than a 16.7ms frame at 60fps, so a
+// rendered frame never straddles a long straight segment. Sampling coarser
+// than the frame rate reintroduces exactly the kind of small speed jumps this
+// whole approach exists to remove.
+const FRAMES = 240
+
+// Drops on the inside of the glass. Laid out by hand rather than randomly, for
+// the same reason as the lesson-complete confetti: a fixed set can be nudged
+// until it looks unforced, and it does not reshuffle on every render.
+const DRIPS = [
+  { '--dl': '22%', '--dt': '8%', '--dy': '150px', '--dd': '5.5s', '--delay': '0s' },
+  { '--dl': '64%', '--dt': '4%', '--dy': '170px', '--dd': '7s', '--delay': '1.4s' },
+  { '--dl': '41%', '--dt': '26%', '--dy': '110px', '--dd': '6.2s', '--delay': '2.9s' },
+  { '--dl': '81%', '--dt': '18%', '--dy': '130px', '--dd': '8s', '--delay': '.6s' },
+]
+
+const easeOutQuint = (t) => 1 - Math.pow(1 - t, 5)
+
+// Sine, not cubic. Cubic ease-in-out makes the middle of the push roughly
+// three and a half times faster than its start, which on a 5x zoom reads as a
+// lurch; sine keeps that ratio nearer to one and a half, so the move is still
+// clearly eased at both ends but never appears to surge.
+const easeInOutSine = (t) => -(Math.cos(Math.PI * t) - 1) / 2
+
+/**
+ * The whole camera move as one densely sampled list of transforms.
+ *
+ * This is sampled in JavaScript rather than written as CSS keyframes because of
+ * a rule that is easy to forget: a CSS `animation-timing-function` applies
+ * *between each pair of keyframes*, not across the animation as a whole. The
+ * first version of this had waypoints at 25/50/75% and one ease-in-out curve,
+ * which meant the curve ran four separate times — the zoom decelerated to a
+ * near-stop at every waypoint and accelerated out of it again. Measured, the
+ * perceived speed swung by 72% of its own mean and hit zero four times. It
+ * looked like the app was stuttering.
+ *
+ * The waypoints themselves were right: perceived zoom speed is logarithmic, so
+ * covering equal *ratios* per unit of time is what looks steady, and that means
+ * scale has to grow as a power. The mistake was asking CSS to interpolate
+ * between them. So: sample the curve here, emit it as many small linear
+ * segments, and let the animation run with `linear` easing so nothing can
+ * re-apply a curve per segment.
+ *
+ * The settle and the push are one timeline for the same reason — a CSS
+ * animation handing over to a JS one at 800ms is another seam to get wrong.
+ */
+function buildCameraFrames(z) {
+  const frames = []
+  for (let i = 0; i <= FRAMES; i++) {
+    const offset = i / FRAMES
+    const t = offset * PUSH_END
+    let scale
+    let y
+    if (t <= SETTLE_END) {
+      // Drifting to rest, as if the camera has just been set down.
+      const p = easeOutQuint(t / SETTLE_END)
+      scale = 1.045 + (1 - 1.045) * p
+      y = 6 * (1 - p)
+    } else {
+      // Equal ratios per unit time, eased once so it starts and lands softly.
+      const p = easeInOutSine((t - SETTLE_END) / (PUSH_END - SETTLE_END))
+      scale = Math.pow(z, p)
+      y = 0
+    }
+    // Both parts in every frame, always in the same order: a transform list
+    // that changes shape partway through forces a different interpolation and
+    // would put a visible kink at the junction.
+    frames.push({ offset, transform: `scale(${scale}) translateY(${y}px)` })
+  }
+  return frames
+}
+
 /** Did we arrive here by the service worker silently reloading the page? */
 function arrivedFromReload() {
   try {
@@ -108,18 +186,35 @@ export default function Intro() {
       const z = Math.max(vw / sw, (2 * Math.max(cy, vh - cy)) / sh) * 1.02
       el.style.setProperty('--intro-z', String(z))
 
-      // Waypoints for the push, spaced so the zoom *looks* like it is moving
-      // at a steady speed. Interpolating scale linearly does not: going from
-      // 1x to 2x covers as much apparent distance as 2x to 4x, so a straight
-      // ramp appears to bolt away at the start and crawl at the end. Equal
-      // ratios per unit of time is the fix, which means powers, not fractions.
-      for (const f of [25, 50, 75]) {
-        el.style.setProperty(`--intro-z${f}`, String(Math.pow(z, f / 100)))
-      }
+      return z
     }
-    measure()
-    window.addEventListener('resize', measure)
-    return () => window.removeEventListener('resize', measure)
+
+    const stage = el.querySelector('.intro-stage')
+    let camera = null
+
+    const run = () => {
+      const z = measure()
+      if (!stage?.animate) return
+      // Keep our place across a resize, so rotating the phone mid-zoom
+      // re-aims the camera instead of restarting the move.
+      const at = camera?.currentTime ?? 0
+      camera?.cancel()
+      camera = stage.animate(buildCameraFrames(z), {
+        duration: PUSH_END,
+        easing: 'linear', // the shaping is in the samples; see buildCameraFrames
+        fill: 'forwards',
+      })
+      camera.currentTime = at
+    }
+
+    run()
+    window.addEventListener('resize', run)
+    return () => {
+      window.removeEventListener('resize', run)
+      // Not cancelled on skip — only on unmount. Cancelling mid-fade would
+      // snap the scene back to its starting size behind the fading overlay.
+      camera?.cancel()
+    }
   }, [phase])
 
   // Skipping does not unmount on the spot. The overlay stays up, still
@@ -172,7 +267,19 @@ export default function Intro() {
     >
       <div className="intro-stage">
         <div className="intro-room" />
+
+        <div className="intro-window">
+          <div className="intro-rain">
+            <span />
+            <span />
+          </div>
+          {DRIPS.map((d, i) => (
+            <span key={i} className="intro-drip" style={d} />
+          ))}
+        </div>
+
         <div className="intro-desk" />
+        <div className="intro-lamp" />
         <div className="intro-contact" />
 
         {/* Props, so it reads as somebody's desk rather than a product shot. */}
