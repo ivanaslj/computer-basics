@@ -1,6 +1,11 @@
 import { useCallback, useEffect, useLayoutEffect, useRef, useState } from 'react'
 import LogoMark from './LogoMark'
 import { reducedMotion } from '../lib/motion'
+import { launchScreen } from '../lib/launch'
+import { useApp } from '../state/store'
+import Onboarding from '../screens/Onboarding'
+import Hub from '../screens/Hub'
+import Path from '../screens/Path'
 
 /**
  * The launch animation: a computer on a desk, and the camera pushes into its
@@ -13,8 +18,11 @@ import { reducedMotion } from '../lib/motion'
  * staring at a pretty desk while something silently fails is the worst
  * version of both ideas.
  *
- * It subscribes to no context on purpose. No useApp(), no useAuth() — so the
- * two and a half seconds cost exactly zero re-renders of anything else.
+ * What is on the monitor is the real app — the actual screen it is about to
+ * open, rendered at true device size and scaled down, so the camera zooms into
+ * the running app rather than into a picture of one. At the end of the push the
+ * screen has become the viewport and the preview is at 1:1, which is what makes
+ * the handover invisible.
  */
 
 // Module-level, matching the `reloading` flag in lib/updates.js: StrictMode
@@ -24,9 +32,18 @@ let played = false
 
 const SKIP_KEY = 'computer-basics:skip-intro'
 
-// Where the desk's front edge sits, as a share of the viewport height. Must
-// match the `inset` on .intro-desk in index.css.
-const DESK_TOP = 0.66
+/**
+ * The screen's size as a fraction of the viewport, and the one number the whole
+ * scene is built from. It sets how deep the zoom is (1/S), how big the monitor
+ * is, and therefore where the desk has to be. Tune it by eye.
+ */
+const S = 0.3
+
+// Everything below the screen, as fractions of the screen's own height. These
+// mirror the stylesheet, and the desk is positioned from them — see measure().
+const CHIN = 0.14
+const NECK = 0.16
+const FOOT = 0.05
 
 // The camera move, in milliseconds from the moment the overlay mounts: hold on
 // the desk, then push in. The overlay's own fade-out is CSS and starts at
@@ -119,6 +136,38 @@ function arrivedFromReload() {
   }
 }
 
+const NOOP = () => {}
+
+/**
+ * The app, on the monitor.
+ *
+ * Rendered at true device size and scaled down by CSS rather than laid out
+ * inside a ~120px box: every screen here is `max-w-lg` with its own padding and
+ * `min-h-dvh`, so reflowing it into something phone-sized would produce a
+ * squashed layout that looks nothing like the app. At full size and scaled, it
+ * is the app exactly, and `dvh` and the safe-area insets resolve to the same
+ * values they will after the handover.
+ *
+ * `inert` rather than just `pointer-events: none`: this contains real buttons,
+ * and neither pointer-events nor the overlay's aria-hidden takes them out of
+ * the tab order.
+ */
+function Preview() {
+  const { settings } = useApp()
+  const screen = launchScreen(settings)
+  return (
+    <div className="intro-preview" inert aria-hidden="true">
+      {screen === 'onboarding' ? (
+        <Onboarding onDone={NOOP} />
+      ) : screen === 'path' ? (
+        <Path onOpenLesson={NOOP} onOpenSettings={NOOP} onOpenHub={NOOP} />
+      ) : (
+        <Hub onOpenCourse={NOOP} onOpenSettings={NOOP} onOpenPractice={NOOP} />
+      )}
+    </div>
+  )
+}
+
 export default function Intro() {
   const [phase, setPhase] = useState(() => {
     if (played) return 'done'
@@ -143,12 +192,10 @@ export default function Intro() {
     return () => clearTimeout(timer)
   }, [phase])
 
-  // The screen is a landscape monitor — 16:10, like a computer, not like the
-  // phone it is being viewed on. That shape is the whole reason this cannot be
-  // a fixed percentage: to end with the screen covering a tall portrait
-  // viewport, the camera has to push in by however much *this* screen's aspect
-  // differs from *this* device's, which is a number only the device knows.
-  // So measure, then hand CSS the answer.
+  // The screen is an exact scaled copy of the viewport, so the app inside it
+  // is never distorted and the push can land on it precisely. Measured rather
+  // than written in CSS because the desk's position depends on the monitor's
+  // size, which depends on the viewport — one chain, resolved here.
   const root = useRef(null)
   useLayoutEffect(() => {
     if (phase !== 'play') return
@@ -157,33 +204,36 @@ export default function Intro() {
     const measure = () => {
       const vw = window.innerWidth
       const vh = window.innerHeight
-      const sw = Math.round(vw * 0.66)
-      const sh = Math.round(sw / 1.6)
+      const sw = vw * S
+      const sh = vh * S
       el.style.setProperty('--intro-sw', `${sw}px`)
       el.style.setProperty('--intro-sh', `${sh}px`)
+      el.style.setProperty('--intro-s', String(S))
 
-      // Stand the monitor *on* the desk rather than near it. These three
-      // fractions mirror the bezel padding, neck and foot in the stylesheet;
-      // if those change, change these. Doing it here rather than in CSS
-      // because the desk's height is a share of the viewport while the
-      // monitor's is a share of the screen, and only one of them can be the
-      // unit that decides where they meet.
-      const deskTop = vh * DESK_TOP
-      const bezelHalf = (sh * 1.1) / 2
-      const standHeight = sh * 0.21
-      const cy = Math.round(deskTop - standHeight - bezelHalf)
+      // The camera aims at the middle of the viewport, and this is the reason
+      // the whole scene is laid out from the monitor outwards rather than the
+      // other way round.
+      //
+      // The stage scales about the screen's centre, so that one point never
+      // moves; at the end the screen spans cy ± vh/2. It can only land flush on
+      // the viewport if cy *is* the viewport's centre. Put the monitor lower —
+      // which is what standing it on a desk used to do — and the landing is off
+      // by however far down it sits, which then has to be papered over by
+      // zooming further than necessary.
+      const cy = vh / 2
       el.style.setProperty('--intro-cy', `${cy}px`)
 
-      // How far to push, so that the screen ends up covering the viewport.
-      //
-      // The camera aims at the screen's centre, which sits at cy — not at the
-      // middle of the viewport, because the monitor stands on a desk in the
-      // lower half. So the screen has to grow until its half-height clears
-      // whichever viewport edge is *farther* from cy, rather than merely half
-      // the viewport. Using vh / sh here instead leaves a sliver of bezel
-      // showing along the top edge at the end of the push. The 1.02 is slack
-      // against sub-pixel rounding.
-      const z = Math.max(vw / sw, (2 * Math.max(cy, vh - cy)) / sh) * 1.02
+      // So the desk is positioned from the monitor, not the monitor from the
+      // desk: put its surface exactly where the foot of the stand lands. These
+      // fractions mirror the stylesheet.
+      const deskTop = cy + sh / 2 + sh * (CHIN + NECK + FOOT)
+      el.style.setProperty('--intro-desk', `${deskTop}px`)
+
+      // With the screen the viewport's shape and centred on the camera, the
+      // zoom that makes it cover the viewport is simply its reciprocal. The 1%
+      // is slack: at exactly 1/S a sub-pixel rounding error could flash a
+      // hairline of bezel down one edge on the final frame.
+      const z = (1 / S) * 1.01
       el.style.setProperty('--intro-z', String(z))
 
       return z
@@ -299,11 +349,12 @@ export default function Intro() {
         <div className="intro-mac">
           <div className="intro-bezel">
             <div className="intro-screen">
-              <LogoMark className="intro-logo" />
+              <Preview />
             </div>
             <div className="intro-glare" />
           </div>
           <div className="intro-stand">
+            <div className="intro-chin" />
             <div className="intro-neck" />
             <div className="intro-foot" />
           </div>

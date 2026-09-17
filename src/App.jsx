@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useRef, useState } from 'react'
 import { useApp } from './state/store'
 import { useAppUpdate, applyUpdate } from './lib/updates'
+import { launchScreen } from './lib/launch'
 import { useAuth } from './state/auth'
 import Onboarding from './screens/Onboarding'
 import Hub from './screens/Hub'
@@ -71,7 +72,10 @@ export default function App() {
   // Language is asked during onboarding; "what program" is the very next
   // screen the learner sees, and stays reachable forever after from Path's
   // header — this is the Hub.
-  if (!settings.onboarded) return <Onboarding onDone={() => go('hub')} />
+  // launchScreen decides this, not an inline check, because the launch
+  // animation has to show the same screen on the monitor that this is about to
+  // render. See lib/launch.js.
+  if (launchScreen(settings) === 'onboarding') return <Onboarding onDone={() => go('hub')} />
 
   switch (route.name) {
     case 'hub':
@@ -103,7 +107,7 @@ export default function App() {
     case 'account':
       return <Account onBack={() => go('settings')} />
     default:
-      return settings.currentCourseId ? (
+      return launchScreen(settings) === 'path' ? (
         <Path
           onOpenLesson={(id) => go('lesson', { lessonId: id })}
           onOpenSettings={() => go('settings')}

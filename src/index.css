@@ -294,12 +294,14 @@ button, [role='button'] {
   touch-action: none;
   animation: intro-exit .5s ease-out 2s both;
 
-  /* Fallbacks only. Intro.jsx measures the viewport and overwrites these the
-     moment it mounts. --intro-z is not here at all any more: the zoom lives in
-     the sampled animation, not in CSS. */
-  --intro-sw: 66vw;
-  --intro-sh: 41vw;
-  --intro-cy: 42%; /* the screen's centre, and so the camera's target */
+  /* Fallbacks only. Intro.jsx measures the viewport and overwrites all of
+     these the moment it mounts — see the geometry comment there. --intro-z is
+     not among them: the zoom lives in the sampled animation, not in CSS. */
+  --intro-s: .3;
+  --intro-sw: 30vw;
+  --intro-sh: 30dvh;
+  --intro-cy: 50%; /* the screen's centre, and so the camera's target */
+  --intro-desk: 75%;
 }
 @keyframes intro-exit { from { opacity: 1; } to { opacity: 0; } }
 
@@ -344,7 +346,7 @@ button, [role='button'] {
 .intro-lamp {
   position: absolute;
   left: 50%;
-  top: 68%;
+  top: var(--intro-desk);
   width: 96%;
   height: 24%;
   transform: translate(-50%, -50%);
@@ -356,10 +358,10 @@ button, [role='button'] {
 
 .intro-window {
   position: absolute;
-  left: 5%;
-  top: 10%;
-  width: 35%;
-  height: 33%;
+  left: 4%;
+  top: 8%;
+  width: 30%;
+  height: 25%;
   border: .5rem solid var(--color-frame);
   border-radius: .3rem;
   overflow: hidden;
@@ -434,7 +436,9 @@ button, [role='button'] {
    as a brown wall rather than a surface with a near edge. */
 .intro-desk {
   position: absolute;
-  inset: 66% 0 0 0;
+  /* Set by Intro.jsx from the monitor's own height, so the two can never drift
+     apart and leave it floating. */
+  inset: var(--intro-desk) 0 0 0;
   background:
     linear-gradient(180deg,
       color-mix(in srgb, var(--color-wood) 82%, white) 0 1.2%,
@@ -446,7 +450,7 @@ button, [role='button'] {
 .intro-contact {
   position: absolute;
   left: 50%;
-  top: 66%;
+  top: var(--intro-desk);
   width: 46%;
   height: 2.2%;
   transform: translate(-50%, -55%);
@@ -454,11 +458,13 @@ button, [role='button'] {
   background: radial-gradient(closest-side, rgb(0 0 0 / .38), transparent);
 }
 
-/* Sat on the desk: the desk's top edge is at 66%, and each prop is anchored by
-   its bottom so it rests on that line rather than floating near it. */
+/* Sat on the desk: anchored by the bottom so each prop rests on the surface
+   rather than floating near it. Expressed as a distance from the bottom rather
+   than a translate, because both of these are mid-entrance on their own
+   transform when the scene opens. */
 .intro-mug, .intro-plant {
   position: absolute;
-  bottom: 34%;
+  bottom: calc(100% - var(--intro-desk));
   height: auto;
 }
 .intro-mug {
@@ -495,11 +501,15 @@ button, [role='button'] {
 }
 
 /* Equal padding on all four sides, so the bezel's centre is exactly the
-   screen's centre — which is what the camera aims at. */
+   screen's centre — which is what the camera aims at. The chin that makes this
+   read as a monitor rather than a phone hangs below in .intro-stand, where it
+   does not move that centre. */
 .intro-bezel {
   position: relative;
-  padding: calc(var(--intro-sh) * .05);
-  border-radius: .7rem;
+  padding: calc(var(--intro-sh) * .045);
+  /* Squarer than a phone. Along with the chin and the stand, the corner radius
+     is most of what tells you which object you are looking at. */
+  border-radius: .3rem;
   background: linear-gradient(160deg, #3a3641, #24212b);
   box-shadow: 0 0 0 1px rgb(255 255 255 / .16), 0 18px 40px -18px rgb(0 0 0 / .65);
 }
@@ -507,29 +517,42 @@ button, [role='button'] {
 .intro-screen {
   width: var(--intro-sw);
   height: var(--intro-sh);
-  border-radius: .3rem;
+  border-radius: .15rem;
   background: var(--color-cream);
-  display: flex;
-  align-items: center;
-  justify-content: center;
   overflow: hidden;
 }
 
-/* A share of the screen's own height, so it sits correctly in the monitor at
-   any size. It is gone before the push ends, so how large it grows on the way
-   does not matter much. */
-.intro-logo {
-  width: calc(var(--intro-sh) * .34);
-  height: calc(var(--intro-sh) * .34);
-  border-radius: calc(var(--intro-sh) * .08);
-  animation: intro-mark-out .45s ease-in 1.35s both;
+/* The app itself, at true device size, shrunk to fit the screen. Scaling from
+   the top left means the corner it grows out of is the viewport's own corner,
+   so at the end of the push it sits exactly where the real app is. */
+.intro-preview {
+  width: 100vw;
+  height: 100dvh;
+  transform: scale(var(--intro-s));
+  transform-origin: top left;
+  pointer-events: none;
 }
-@keyframes intro-mark-out { from { opacity: 1; } to { opacity: 0; } }
+
+/* Freeze it. This is a picture of the app, not a copy of it running.
+   - `animation` stops the idle bob (an infinite animation, and the rain has
+     already spent this file's budget of two) and the staggered card entrances,
+     which would play again inside the little screen and pull the eye away from
+     the camera move.
+   - `backdrop-filter` is the one that matters for performance: the hub's
+     sticky header blurs what is behind it, and a backdrop filter inside an
+     element being scaled three times over, on a layer already promoted with
+     will-change, is the most expensive thing that could be in here. */
+.intro-screen * {
+  animation: none !important;
+  transition: none !important;
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+}
 
 .intro-glare {
   position: absolute;
-  inset: calc(var(--intro-sh) * .05);
-  border-radius: .3rem;
+  inset: calc(var(--intro-sh) * .045); /* matches the bezel padding */
+  border-radius: .15rem;
   pointer-events: none;
   background: linear-gradient(118deg, rgb(255 255 255 / .28) 18%, transparent 46%);
   animation: intro-glare-out .9s ease-out .8s both;
@@ -537,18 +560,39 @@ button, [role='button'] {
 @keyframes intro-glare-out { from { opacity: 1; } to { opacity: 0; } }
 
 /* The chin, neck and foot of an all-in-one. */
+/* The deep lower bezel every monitor has and no phone does, with the little
+   maker's dot in the middle of it. Its height is one of the three fractions
+   Intro.jsx uses to work out where the desk goes. */
+.intro-chin {
+  position: relative;
+  height: calc(var(--intro-sh) * .14);
+  margin-top: calc(var(--intro-sh) * -.045);
+  border-radius: 0 0 .3rem .3rem;
+  background: linear-gradient(180deg, #322e3a, #221f2a);
+}
+.intro-chin::after {
+  content: '';
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: calc(var(--intro-sh) * .022);
+  height: calc(var(--intro-sh) * .022);
+  transform: translate(-50%, -50%);
+  border-radius: 50%;
+  background: rgb(255 255 255 / .3);
+}
 .intro-neck {
   height: calc(var(--intro-sh) * .16);
-  width: 13%;
+  width: 22%;
   margin: 0 auto;
-  background: linear-gradient(90deg, #8e8a97, #c2bec9, #8e8a97);
+  background: linear-gradient(90deg, #7d7987, #bdb9c6, #7d7987);
 }
 .intro-foot {
   height: calc(var(--intro-sh) * .05);
-  width: 34%;
+  width: 52%;
   margin: 0 auto;
-  border-radius: 0 0 .35rem .35rem;
-  background: linear-gradient(90deg, #8e8a97, #cbc7d4, #8e8a97);
+  border-radius: .1rem .1rem .3rem .3rem;
+  background: linear-gradient(90deg, #7d7987, #cbc7d4, #7d7987);
   box-shadow: 0 8px 16px -8px rgb(0 0 0 / .7);
 }
 

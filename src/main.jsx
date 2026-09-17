@@ -15,11 +15,18 @@ createRoot(document.getElementById('root')).render(
     <AuthProvider>
       <AppProvider>
         <App />
+        {/* Inside the providers, but still outside the router. It has to be
+            inside: the animation now shows the real app on the monitor's
+            screen, and every screen — even through useT/useTx — reads the
+            store. It stays outside App so a route change cannot remount it
+            mid-zoom, and so it still covers onboarding.
+
+            The cost is that it re-renders when auth or sync state changes.
+            That is harmless: the camera is a Web Animations object attached to
+            a DOM node, and its effect is keyed on the phase, so a re-render
+            never restarts the move. */}
+        <Intro />
       </AppProvider>
     </AuthProvider>
-    {/* Outside the providers, and outside the router: the launch animation
-        needs to cover onboarding too, and it deliberately subscribes to no
-        context, so a route change can never remount it mid-zoom. */}
-    <Intro />
   </StrictMode>
 )
