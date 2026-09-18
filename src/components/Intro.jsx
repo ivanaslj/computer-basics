@@ -341,34 +341,55 @@ export default function Intro() {
         {/* Props, so it reads as somebody's desk rather than a product shot.
             The lamp earns its place twice over: it is also the reason there is
             a pool of warm light on the desk, which until now came from
-            nothing at all. */}
-        <svg className="intro-lampobj" viewBox="0 0 60 120" aria-hidden="true">
-          <ellipse cx="18" cy="114" rx="17" ry="5" fill="#4a4550" />
-          <rect x="15" y="34" width="5" height="78" rx="2.5" fill="#5d5764" />
-          <path d="M17 36 L46 22" stroke="#5d5764" strokeWidth="5" strokeLinecap="round" />
-          {/* The shade, angled in over the desk. */}
-          <path d="M38 8 L58 20 L45 34 L31 20z" fill="#6b6474" />
-          <path d="M45 34 L31 20 L38 26z" fill="#544e5e" />
-          <ellipse cx="44" cy="30" rx="7" ry="3.5" fill="rgb(255 214 150 / .9)" />
-        </svg>
+            nothing at all.
 
-        <svg className="intro-books" viewBox="0 0 74 34" aria-hidden="true">
-          <rect x="2" y="24" width="70" height="9" rx="1.6" fill="#8d5a4a" />
-          <rect x="2" y="24" width="6" height="9" fill="#a56a57" />
-          <rect x="5" y="15" width="64" height="9" rx="1.6" fill="#3f6b7d" />
-          <rect x="5" y="15" width="6" height="9" fill="#4e8298" />
-          <rect x="9" y="6" width="56" height="9" rx="1.6" fill="#7d6a3f" />
-          <rect x="9" y="6" width="6" height="9" fill="#9a8450" />
-        </svg>
+            Each one is wrapped, and the wrapper carries the contact shadow as
+            an ::after. That shadow is the whole difference between an object
+            standing on a desk and an object hanging in front of one — the
+            monitor has always had one, which is why the monitor never looked
+            wrong. A pseudo-element cannot hang off an <svg>, hence the div. */}
+        <div className="intro-prop intro-prop--lamp">
+          <svg viewBox="0 0 60 120" aria-hidden="true">
+            {/* Base and pole are lit from the shade above them rather than
+                left flat grey. Against a dark wall a flat grey base simply
+                disappears, and an object with no visible bottom reads as
+                floating — which is exactly what happened. */}
+            <ellipse cx="18" cy="114" rx="18" ry="5.5" fill="#6f6879" />
+            <ellipse cx="18" cy="112" rx="18" ry="5.5" fill="#8e8698" />
+            <ellipse cx="18" cy="111" rx="12" ry="3" fill="#a9a1b2" />
+            <rect x="15" y="34" width="5" height="78" rx="2.5" fill="#6d6676" />
+            <rect x="15" y="34" width="2" height="78" fill="#8f8799" />
+            <path d="M17 36 L46 22" stroke="#6d6676" strokeWidth="5" strokeLinecap="round" />
+            <path d="M17 35 L46 21" stroke="#8f8799" strokeWidth="1.6" strokeLinecap="round" />
+            {/* The shade, angled in over the desk. */}
+            <path d="M38 8 L58 20 L45 34 L31 20z" fill="#7b7486" />
+            <path d="M45 34 L31 20 L38 26z" fill="#5a5466" />
+            <ellipse cx="44" cy="30" rx="7" ry="3.5" fill="rgb(255 214 150 / .95)" />
+          </svg>
+        </div>
 
-        <svg className="intro-laptop" viewBox="0 0 86 54" aria-hidden="true">
-          {/* Open, turned slightly away, with a screen that is on but dim. */}
-          <path d="M20 4h50a2 2 0 0 1 2 2v34H18V6a2 2 0 0 1 2-2z" fill="#2f2b38" />
-          <path d="M22 7h46v30H22z" fill="#3c4a63" />
-          <path d="M22 7h46v30z" fill="rgb(150 190 255 / .18)" />
-          <path d="M8 40h76l4 8a2 2 0 0 1-2 3H6a2 2 0 0 1-2-3z" fill="#4a4550" />
-          <rect x="30" y="43" width="32" height="2.6" rx="1.3" fill="#6b6474" />
-        </svg>
+        <div className="intro-prop intro-prop--books">
+          <svg viewBox="0 0 74 34" aria-hidden="true">
+            <rect x="2" y="24" width="70" height="9" rx="1.6" fill="#8d5a4a" />
+            <rect x="2" y="24" width="6" height="9" fill="#a56a57" />
+            <rect x="5" y="15" width="64" height="9" rx="1.6" fill="#3f6b7d" />
+            <rect x="5" y="15" width="6" height="9" fill="#4e8298" />
+            <rect x="9" y="6" width="56" height="9" rx="1.6" fill="#7d6a3f" />
+            <rect x="9" y="6" width="6" height="9" fill="#9a8450" />
+          </svg>
+        </div>
+
+        <div className="intro-prop intro-prop--laptop">
+          <svg viewBox="0 0 86 54" aria-hidden="true">
+            {/* Open, turned slightly away, with a screen that is on but dim. */}
+            <path d="M20 4h50a2 2 0 0 1 2 2v34H18V6a2 2 0 0 1 2-2z" fill="#2f2b38" />
+            <path d="M22 7h46v30H22z" fill="#3c4a63" />
+            <path d="M22 7h46v30z" fill="rgb(150 190 255 / .18)" />
+            <path d="M8 40h76l4 8a2 2 0 0 1-2 3H6a2 2 0 0 1-2-3z" fill="#5a5466" />
+            <path d="M8 40h76l1 2H7z" fill="#837c90" />
+            <rect x="30" y="43" width="32" height="2.6" rx="1.3" fill="#6b6474" />
+          </svg>
+        </div>
 
         <div className="intro-mac">
           <div className="intro-bezel">
