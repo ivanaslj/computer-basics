@@ -341,14 +341,15 @@ button, [role='button'] {
     linear-gradient(180deg, var(--color-room-dark), var(--color-room));
 }
 
-/* A pool of warm lamplight on the desk, sat between the desk and the props so
-   it washes over the surface but not over the monitor. */
+/* The pool of warm lamplight on the desk. Anchored under the lamp's shade
+   rather than in the middle of the desk, so the light has a visible source and
+   falls off across the surface the way it would in the room. */
 .intro-lamp {
   position: absolute;
-  left: 50%;
+  left: 14%;
   top: var(--intro-desk);
-  width: 96%;
-  height: 24%;
+  width: 82%;
+  height: 26%;
   transform: translate(-50%, -50%);
   background: radial-gradient(closest-side, rgb(var(--color-lamp) / .3), transparent);
   pointer-events: none;
@@ -460,22 +461,30 @@ button, [role='button'] {
 
 /* Sat on the desk: anchored by the bottom so each prop rests on the surface
    rather than floating near it. Expressed as a distance from the bottom rather
-   than a translate, because both of these are mid-entrance on their own
-   transform when the scene opens. */
-.intro-mug, .intro-plant {
+   than a translate, because all three are mid-entrance on their own transform
+   when the scene opens.
+
+   The monitor takes the middle third, so these live in the outer thirds: lamp
+   at the far left, books tucked beside it, laptop on the right. */
+.intro-lampobj, .intro-books, .intro-laptop {
   position: absolute;
   bottom: calc(100% - var(--intro-desk));
   height: auto;
 }
-.intro-mug {
-  left: 7%;
-  width: 11%;
+.intro-lampobj {
+  left: 2%;
+  width: 15%;
   animation: pop-spring .42s var(--ease-out-quint) .06s backwards;
 }
-.intro-plant {
-  right: 7%;
-  width: 13%;
+.intro-books {
+  left: 17%;
+  width: 14%;
   animation: pop-spring .42s var(--ease-out-quint) .12s backwards;
+}
+.intro-laptop {
+  right: 4%;
+  width: 21%;
+  animation: pop-spring .42s var(--ease-out-quint) .18s backwards;
 }
 
 /* Only the bezel is in normal flow here, and the stand hangs off the bottom
@@ -598,6 +607,47 @@ button, [role='button'] {
 
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after { animation-duration: .01ms !important; animation-iteration-count: 1 !important; transition-duration: .01ms !important; }
+}
+
+/* ---------------------------------------------------------------------------
+   The backdrop. See components/Backdrop.jsx.
+
+   Contour rings, as three sets of concentric hairlines anchored off different
+   corners so they interfere where they overlap rather than reading as targets.
+
+   The numbers are the safety mechanism, not decoration, so they are worth
+   stating plainly. A pattern behind text is dangerous in two specific ways, and
+   each is answered here:
+
+   1. A fine pitch lands in the same spatial frequency band as letter stems and
+      shimmers against type — which a reader with poor eyesight cannot filter
+      out. So the rings are spaced 46-56px apart, far coarser than any letter,
+      and each is a single pixel. Coverage works out around 2%.
+   2. A pattern that varies across the page changes text contrast *unevenly* —
+      comfortable in one paragraph and not the next, which is worse than a
+      pattern that is simply present. So this is deliberately uniform and very
+      faint rather than masked or vignetted. Boring, and predictable, is the
+      point.
+
+   If it ever needs to be quieter, raise the spacing before lowering the alpha:
+   coarser is what protects legibility, fainter only hides the symptom.
+
+   Nothing animates. index.css allows two infinite animations on screen and the
+   launch animation's rain already spends both, and a moving backdrop would
+   repaint continuously behind the very long path screen on a cheap phone.
+--------------------------------------------------------------------------- */
+.backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+  background-image:
+    repeating-radial-gradient(circle at 14% 6%,
+      transparent 0 46px, rgb(var(--color-brand-rgb) / .075) 46px 47px),
+    repeating-radial-gradient(circle at 92% 38%,
+      transparent 0 54px, rgb(var(--color-brand-rgb) / .06) 54px 55px),
+    repeating-radial-gradient(circle at 30% 98%,
+      transparent 0 50px, rgb(var(--color-brand-rgb) / .055) 50px 51px);
 }
 
 /* Horizontal scrollers (device pickers, key rows) shouldn't show a bar. */

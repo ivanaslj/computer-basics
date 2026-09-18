@@ -10,6 +10,7 @@ import Lesson from './screens/Lesson'
 import Settings from './screens/Settings'
 import Account from './screens/Account'
 import Practice from './screens/Practice'
+import Backdrop from './components/Backdrop'
 
 /**
  * Screen routing. Deliberately not a router library: there are five screens,
@@ -75,50 +76,52 @@ export default function App() {
   // launchScreen decides this, not an inline check, because the launch
   // animation has to show the same screen on the monitor that this is about to
   // render. See lib/launch.js.
-  if (launchScreen(settings) === 'onboarding') return <Onboarding onDone={() => go('hub')} />
+  const hub = (
+    <Hub
+      onOpenCourse={() => go('path')}
+      onOpenSettings={() => go('settings')}
+      onOpenPractice={(m) => go('practice', { mode: m })}
+    />
+  )
 
-  switch (route.name) {
-    case 'hub':
-      return (
-        <Hub
-          onOpenCourse={() => go('path')}
-          onOpenSettings={() => go('settings')}
-          onOpenPractice={(m) => go('practice', { mode: m })}
-        />
-      )
-    case 'practice':
-      return <Practice key={route.mode} mode={route.mode} onExit={() => go('hub')} />
-    case 'lesson':
-      return (
-        <Lesson
-          key={route.lessonId}
-          lessonId={route.lessonId}
-          onExit={() => go('path')}
-          onNext={(id) => go('lesson', { lessonId: id })}
-        />
-      )
-    case 'settings':
-      return (
-        <Settings
-          onBack={() => go(settings.currentCourseId ? 'path' : 'hub')}
-          onOpenAccount={() => go('account')}
-        />
-      )
-    case 'account':
-      return <Account onBack={() => go('settings')} />
-    default:
-      return launchScreen(settings) === 'path' ? (
-        <Path
-          onOpenLesson={(id) => go('lesson', { lessonId: id })}
-          onOpenSettings={() => go('settings')}
-          onOpenHub={() => go('hub')}
-        />
-      ) : (
-        <Hub
-          onOpenCourse={() => go('path')}
-          onOpenSettings={() => go('settings')}
-          onOpenPractice={(m) => go('practice', { mode: m })}
-        />
-      )
-  }
+  const screen =
+    launchScreen(settings) === 'onboarding' ? (
+      <Onboarding onDone={() => go('hub')} />
+    ) : route.name === 'hub' ? (
+      hub
+    ) : route.name === 'practice' ? (
+      <Practice key={route.mode} mode={route.mode} onExit={() => go('hub')} />
+    ) : route.name === 'lesson' ? (
+      <Lesson
+        key={route.lessonId}
+        lessonId={route.lessonId}
+        onExit={() => go('path')}
+        onNext={(id) => go('lesson', { lessonId: id })}
+      />
+    ) : route.name === 'settings' ? (
+      <Settings
+        onBack={() => go(settings.currentCourseId ? 'path' : 'hub')}
+        onOpenAccount={() => go('account')}
+      />
+    ) : route.name === 'account' ? (
+      <Account onBack={() => go('settings')} />
+    ) : launchScreen(settings) === 'path' ? (
+      <Path
+        onOpenLesson={(id) => go('lesson', { lessonId: id })}
+        onOpenSettings={() => go('settings')}
+        onOpenHub={() => go('hub')}
+      />
+    ) : (
+      hub
+    )
+
+  // The backdrop sits behind everything except a lesson. A lesson is the one
+  // place someone is meant to be concentrating on a single instruction, and a
+  // pattern behind that is the opposite of help.
+  return (
+    <>
+      {route.name !== 'lesson' && <Backdrop />}
+      {screen}
+    </>
+  )
 }

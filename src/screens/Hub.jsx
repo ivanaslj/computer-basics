@@ -54,14 +54,9 @@ export default function Hub({ onOpenCourse, onOpenSettings, onOpenPractice }) {
         >
           <Icon name={profile.avatar || 'monitor'} className="h-6 w-6" />
         </button>
-        {/* Wraps rather than truncates. A name is the one piece of text here
-            that belongs to the reader, and clipping it is worse than a second
-            line — especially at the larger text sizes. */}
-        <h1 className="min-w-0 flex-1 text-[1.1rem] leading-tight font-extrabold tracking-tight">
-          {greeting}
-        </h1>
+        <span className="flex-1" />
         {streak.count > 0 && (
-          <span className="flex items-center gap-1 rounded-full bg-sun-soft px-3 py-1 text-sm font-extrabold text-sun">
+          <span className="flex shrink-0 items-center gap-1 rounded-full bg-sun-soft px-3 py-1 text-sm font-extrabold text-sun">
             <Flame className="h-4 w-4" />
             {streak.count}
           </span>
@@ -70,11 +65,21 @@ export default function Hub({ onOpenCourse, onOpenSettings, onOpenPractice }) {
           type="button"
           onClick={onOpenSettings}
           aria-label={t('settings')}
-          className="rounded-full p-1.5 text-ink-soft active:bg-cream-deep"
+          className="shrink-0 rounded-full p-1.5 text-ink-soft active:bg-cream-deep"
         >
           <Gear />
         </button>
       </header>
+
+      {/* The greeting sits below the header rather than inside it. At the
+          largest text size on a narrow phone the header cannot hold an avatar,
+          a name, a streak and a gear on one line: flexbox squeezed the name to
+          25px and the text spilled out underneath the streak. Down here it has
+          the full width, can wrap to as many lines as a long name needs, and
+          nothing can collide with it. It also simply reads better large. */}
+      <h1 className="px-5 pt-5 text-[1.45rem] leading-tight font-extrabold tracking-tight text-balance">
+        {greeting}
+      </h1>
 
       <h2 className="px-5 pt-5 text-sm font-bold tracking-widest text-ink-soft uppercase">
         {t('hubTitle')}

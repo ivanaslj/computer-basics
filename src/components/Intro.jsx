@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useLayoutEffect, useRef, useState } from 'react'
 import LogoMark from './LogoMark'
+import Backdrop from './Backdrop'
 import { reducedMotion } from '../lib/motion'
 import { launchScreen } from '../lib/launch'
 import { useApp } from '../state/store'
@@ -157,6 +158,11 @@ function Preview() {
   const screen = launchScreen(settings)
   return (
     <div className="intro-preview" inert aria-hidden="true">
+      {/* The same backdrop App draws. Without it the pattern would appear out
+          of nowhere at the handover, which is the seam this preview exists to
+          remove. It is `fixed`, and the preview's own transform makes it the
+          containing block, so it fills the preview rather than the viewport. */}
+      <Backdrop />
       {screen === 'onboarding' ? (
         <Onboarding onDone={NOOP} />
       ) : screen === 'path' ? (
@@ -332,18 +338,36 @@ export default function Intro() {
         <div className="intro-lamp" />
         <div className="intro-contact" />
 
-        {/* Props, so it reads as somebody's desk rather than a product shot. */}
-        <svg className="intro-mug" viewBox="0 0 40 34" aria-hidden="true">
-          <path d="M4 6h26v18a8 8 0 0 1-8 8h-10a8 8 0 0 1-8-8z" fill="#c9613f" />
-          <path d="M30 11h3a5 5 0 0 1 0 10h-3" fill="none" stroke="#c9613f" strokeWidth="3.5" />
-          <ellipse cx="17" cy="6" rx="13" ry="3.4" fill="#e8d9cf" />
+        {/* Props, so it reads as somebody's desk rather than a product shot.
+            The lamp earns its place twice over: it is also the reason there is
+            a pool of warm light on the desk, which until now came from
+            nothing at all. */}
+        <svg className="intro-lampobj" viewBox="0 0 60 120" aria-hidden="true">
+          <ellipse cx="18" cy="114" rx="17" ry="5" fill="#4a4550" />
+          <rect x="15" y="34" width="5" height="78" rx="2.5" fill="#5d5764" />
+          <path d="M17 36 L46 22" stroke="#5d5764" strokeWidth="5" strokeLinecap="round" />
+          {/* The shade, angled in over the desk. */}
+          <path d="M38 8 L58 20 L45 34 L31 20z" fill="#6b6474" />
+          <path d="M45 34 L31 20 L38 26z" fill="#544e5e" />
+          <ellipse cx="44" cy="30" rx="7" ry="3.5" fill="rgb(255 214 150 / .9)" />
         </svg>
-        <svg className="intro-plant" viewBox="0 0 44 54" aria-hidden="true">
-          <path d="M22 30c-1-9-6-14-13-17 6 9 7 13 8 17z" fill="#3f8f57" />
-          <path d="M22 30c1-10 6-16 14-19-7 10-9 14-10 19z" fill="#4fa868" />
-          <path d="M22 30c0-7 2-12 5-16-2 7-3 11-3 16z" fill="#5cb877" />
-          <path d="M9 32h26l-3 20a2 2 0 0 1-2 2H14a2 2 0 0 1-2-2z" fill="#b5763f" />
-          <rect x="7" y="29" width="30" height="6" rx="2" fill="#c98850" />
+
+        <svg className="intro-books" viewBox="0 0 74 34" aria-hidden="true">
+          <rect x="2" y="24" width="70" height="9" rx="1.6" fill="#8d5a4a" />
+          <rect x="2" y="24" width="6" height="9" fill="#a56a57" />
+          <rect x="5" y="15" width="64" height="9" rx="1.6" fill="#3f6b7d" />
+          <rect x="5" y="15" width="6" height="9" fill="#4e8298" />
+          <rect x="9" y="6" width="56" height="9" rx="1.6" fill="#7d6a3f" />
+          <rect x="9" y="6" width="6" height="9" fill="#9a8450" />
+        </svg>
+
+        <svg className="intro-laptop" viewBox="0 0 86 54" aria-hidden="true">
+          {/* Open, turned slightly away, with a screen that is on but dim. */}
+          <path d="M20 4h50a2 2 0 0 1 2 2v34H18V6a2 2 0 0 1 2-2z" fill="#2f2b38" />
+          <path d="M22 7h46v30H22z" fill="#3c4a63" />
+          <path d="M22 7h46v30z" fill="rgb(150 190 255 / .18)" />
+          <path d="M8 40h76l4 8a2 2 0 0 1-2 3H6a2 2 0 0 1-2-3z" fill="#4a4550" />
+          <rect x="30" y="43" width="32" height="2.6" rx="1.3" fill="#6b6474" />
         </svg>
 
         <div className="intro-mac">
