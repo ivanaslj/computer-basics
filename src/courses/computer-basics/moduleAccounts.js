@@ -307,7 +307,11 @@ export default {
             goal: 'password',
             site: {
               name: { en: 'Computer Basics', es: 'Computación Básica' },
-              url: 'computer-basics-nine.vercel.app',
+              // Must match the address the app actually lives at. This lesson
+              // is the one that teaches reading the address bar, so a practice
+              // form showing a different address from the real one would be
+              // teaching the wrong thing in the worst possible place.
+              url: 'computerbasics.app',
               secure: true,
             },
             hintPassword: { en: 'my kitchen window', es: 'la ventana de mi cocina' },

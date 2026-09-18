@@ -362,10 +362,41 @@ overwrite and delete another's data through the real API. The secret /
 `service_role` key bypasses those policies entirely and must never appear in
 the app, in `.env`, or in git.
 
-`profiles` also carries `streak_count` and `lessons_done`, denormalised from
-the progress blob on each sync. Nothing reads them yet — they exist so that
-comparing streaks between people later is one indexed query rather than a scan
-over everyone's JSON.
+`profiles` also carries `streak_count`, `lessons_done`, `display_name` and
+`avatar_icon`, denormalised from the progress blob on each sync. Nothing reads
+them yet — they exist so that comparing streaks between people later is one
+indexed query rather than a scan over everyone's JSON. The name and picture the
+app shows always come from the device's own copy, so they are still right with
+no network.
+
+#### Sending email
+
+Signup needs a confirmation email, and this is the part that is easy to get
+wrong in a way nothing reports.
+
+**Without custom SMTP, Supabase refuses to deliver to anyone who is not a member
+of the project's team.** Not rate-limited — refused. So it works perfectly for
+whoever owns the project and silently fails for every real user, which is the
+most misleading possible combination. The symptom is not an error: `signUp`
+succeeds with no session, and a screen that only checks for an error sees
+success. `src/state/auth.jsx` therefore returns `needsConfirmation` alongside
+`error`, and `Account.jsx` says "check your email" rather than quietly closing.
+
+Mail goes out through **Resend**, from `hola@computerbasics.app`. SMTP settings
+live in the Supabase dashboard under Authentication → SMTP Settings:
+`smtp.resend.com`, port 465, username the literal string `resend`, password a
+Resend API key. Two things to know afterwards:
+
+- Saving those settings imposes a **30 emails/hour** limit to protect a new
+  sender's reputation. Raise it under Authentication → Rate Limits.
+- **Site URL and Additional Redirect URLs must list the app's real address.**
+  `auth.jsx` passes `window.location.origin` as `emailRedirectTo`, and Supabase
+  rejects any redirect target not on that list — so a domain change that forgets
+  this leaves every confirmation link doing nothing at all.
+
+The two email templates are checked into `supabase/email-templates/`, for the
+same reason the schema is: otherwise they exist only inside a dashboard. They
+are Spanish first with English underneath.
 
 #### Merging, and why it never subtracts
 
