@@ -349,22 +349,32 @@ export default function Intro() {
             monitor has always had one, which is why the monitor never looked
             wrong. A pseudo-element cannot hang off an <svg>, hence the div. */}
         <div className="intro-prop intro-prop--lamp">
-          <svg viewBox="0 0 60 120" aria-hidden="true">
-            {/* Base and pole are lit from the shade above them rather than
-                left flat grey. Against a dark wall a flat grey base simply
-                disappears, and an object with no visible bottom reads as
-                floating — which is exactly what happened. */}
-            <ellipse cx="18" cy="114" rx="18" ry="5.5" fill="#6f6879" />
-            <ellipse cx="18" cy="112" rx="18" ry="5.5" fill="#8e8698" />
-            <ellipse cx="18" cy="111" rx="12" ry="3" fill="#a9a1b2" />
-            <rect x="15" y="34" width="5" height="78" rx="2.5" fill="#6d6676" />
-            <rect x="15" y="34" width="2" height="78" fill="#8f8799" />
-            <path d="M17 36 L46 22" stroke="#6d6676" strokeWidth="5" strokeLinecap="round" />
-            <path d="M17 35 L46 21" stroke="#8f8799" strokeWidth="1.6" strokeLinecap="round" />
-            {/* The shade, angled in over the desk. */}
-            <path d="M38 8 L58 20 L45 34 L31 20z" fill="#7b7486" />
-            <path d="M45 34 L31 20 L38 26z" fill="#5a5466" />
-            <ellipse cx="44" cy="30" rx="7" ry="3.5" fill="rgb(255 214 150 / .95)" />
+          {/* The beam. A separate element rather than a shape in the SVG,
+              because light has to spread wider than the lamp and spill across
+              the desk, and an <svg> clips to its own viewBox. */}
+          <span className="intro-beam" />
+          <svg viewBox="0 0 72 120" aria-hidden="true">
+            {/* A flat-bottomed base, and that matters more than it sounds.
+                This used to be stacked ellipses — but an ellipse is a circle
+                seen from above, while the books, the laptop, the desk and the
+                monitor are all drawn straight on. The lamp was being viewed
+                from a different camera than the room it stands in. An ellipse
+                also meets a flat surface at a single tangent point, so it
+                perched on the desk instead of resting on it. */}
+            <path d="M2 120 L9 112 H27 L34 120 Z" fill="#5f5869" />
+            <path d="M9 112 H27 L28.6 114 H7.4 Z" fill="#8e8698" />
+            <rect x="15.4" y="50" width="5.2" height="62" rx="2.2" fill="#6d6676" />
+            <rect x="15.4" y="50" width="1.8" height="62" fill="#8f8799" />
+            <circle cx="18" cy="52" r="4.2" fill="#7b7486" />
+            <path d="M18 52 L46 31" stroke="#6d6676" strokeWidth="5.5" strokeLinecap="round" />
+            <path d="M18 50.6 L46 29.6" stroke="#8f8799" strokeWidth="1.8" strokeLinecap="round" />
+            {/* Narrow where it meets the arm, wide at the mouth, so it is
+                obvious which end the light comes out of. A thin warm rim on
+                that mouth, rather than a glowing blob floating in the middle
+                of it. */}
+            <path d="M41 27 H51 L58 46 H34 Z" fill="#7b7486" />
+            <path d="M41 27 H45 L42 46 H34 Z" fill="#5a5466" />
+            <path d="M34.6 45.4 H57.4" stroke="rgb(255 216 158 / .95)" strokeWidth="2.4" strokeLinecap="round" />
           </svg>
         </div>
 
