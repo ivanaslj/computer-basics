@@ -126,6 +126,39 @@ eq(
   null
 )
 
+console.log('\n10. starting a course over is not undone by the server copy')
+// The server still holds three lessons; this device started the course over
+// at t=1000 and has nothing. Before resets were recorded, the union put all
+// three straight back on the next sync.
+const serverOld = base({ completed: { cb: { l1: { completedAt: 100, perfect: true, times: 1 }, l2: { completedAt: 200, perfect: true, times: 1 }, l3: { completedAt: 300, perfect: false, times: 1 } } } })
+const afterReset = base({ completed: {}, resets: { cb: 1000 } })
+const r1 = mergeStates(serverOld, afterReset)
+eq('reset beats a stale server copy', r1.completed.cb, {})
+eq('either way round', mergeStates(afterReset, serverOld).completed.cb, {})
+eq('the reset itself is kept', r1.resets, { cb: 1000 })
+
+// After the reset she redoes l1 at t=1500. The server still has l1 from t=100.
+// Merging first would keep the earlier date (100), which is before the reset,
+// and the lesson she just finished would disappear.
+const redone = base({ completed: { cb: { l1: { completedAt: 1500, perfect: false, times: 1 } } }, resets: { cb: 1000 } })
+eq('a lesson redone after the reset survives', Object.keys(mergeStates(serverOld, redone).completed.cb), ['l1'])
+eq('with its new date, not the stale one', mergeStates(serverOld, redone).completed.cb.l1.completedAt, 1500)
+
+// Another device reset long ago (t=50); this one has lessons from after that.
+const oldReset = base({ completed: {}, resets: { cb: 50 } })
+eq('an older reset does not wipe newer lessons', Object.keys(mergeStates(oldReset, serverOld).completed.cb).sort(), ['l1', 'l2', 'l3'])
+
+const rOnce = mergeStates(serverOld, redone)
+eq('IDEMPOTENT with resets', mergeStates(mergeStates(rOnce, serverOld), redone), rOnce)
+eq('the latest reset wins', mergeStates(base({ resets: { cb: 10 } }), base({ resets: { cb: 20 } })).resets, { cb: 20 })
+eq('a reset only touches its own course', Object.keys(mergeStates(base({ completed: { other: { x: { completedAt: 5, perfect: true, times: 1 } } } }), afterReset).completed.other), ['x'])
+
+console.log('\n11. waving the save card off sticks across devices')
+const wavedTwice = base({ saveNudge: { dismissals: 2, atLessons: 9 } })
+const neverSaw = base({ saveNudge: { dismissals: 0, atLessons: 0 } })
+eq('the most-dismissed copy wins', mergeStates(neverSaw, wavedTwice).saveNudge, { dismissals: 2, atLessons: 9 })
+eq('a copy without the field is fine', mergeStates(base(), wavedTwice).saveNudge, { dismissals: 2, atLessons: 9 })
+
 console.log('\n9. null/garbage inputs do not throw')
 eq('null a', mergeStates(null, phone), phone)
 eq('null b', mergeStates(phone, null), phone)

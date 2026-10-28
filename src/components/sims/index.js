@@ -6,6 +6,7 @@ import BrowserSim from './BrowserSim'
 import KeysSim from './KeysSim'
 import { ScrollSim, AISim } from './MiscSims'
 import SignupSim from './SignupSim'
+import PhoneSim from './PhoneSim'
 import { SIMS as SIM_NAMES } from './registry'
 
 /**
@@ -25,6 +26,7 @@ export const SIMS = {
   scroll: ScrollSim,
   ai: AISim,
   signup: SignupSim,
+  phone: PhoneSim,
 }
 
 export function getSim(name) {

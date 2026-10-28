@@ -13,7 +13,18 @@ import { SyncLine } from './Account'
  * gets its own (a Discord server is the next one planned, plus Instagram),
  * add them to LINKS below and swap the address on this line.
  */
-const CONTACT_EMAIL = 'ivanmartinezmedina97@gmail.com'
+const CONTACT_EMAIL = 'itsmamut97@gmail.com'
+
+/**
+ * Written install steps, only the ones for this browser (lib/install.js works
+ * out which). A browser that offers its own install prompt gets a real button
+ * instead, and 'other' keeps the general wording.
+ */
+const INSTALL_STEPS = {
+  'ios-safari': ['installIOS1', 'installIOS2', 'installIOS3'],
+  'android-chrome': ['installAndroid1', 'installAndroid2', 'installAndroid3'],
+  'desktop-chromium': ['installDesktop1', 'installDesktop2', 'installDesktop3'],
+}
 
 const LINKS = [
   { id: 'source', icon: 'code', url: 'https://github.com/ivanaslj/computer-basics', labelKey: 'linkSource' },
@@ -102,6 +113,21 @@ export default function Settings({ onBack, onOpenAccount }) {
           />
         </Group>
 
+        {/* Only once a phone has been picked (by the phone-video course),
+            so learners who never open that course never see the question. */}
+        {settings.phone && (
+          <Group label={t('phoneLabel')}>
+            <Choices
+              value={settings.phone}
+              onChange={(v) => setSetting('phone', v)}
+              options={[
+                { value: 'iphone', label: t('iphone'), icon: 'apple' },
+                { value: 'android', label: t('android'), icon: 'phone' },
+              ]}
+            />
+          </Group>
+        )}
+
         <Group label={t('langLabel')}>
           <Choices
             value={settings.language}
@@ -159,9 +185,30 @@ export default function Settings({ onBack, onOpenAccount }) {
                 <Button size="md" onClick={install.prompt}>
                   {t('installBtn')}
                 </Button>
+              ) : INSTALL_STEPS[install.platform] ? (
+                <ol className="flex flex-col gap-2.5">
+                  {INSTALL_STEPS[install.platform].map((key, i) => (
+                    <li
+                      key={key}
+                      className="flex items-start gap-3 rounded-2xl bg-surface/70 p-3 text-[1rem] leading-snug font-semibold"
+                    >
+                      <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-brand text-[0.9rem] font-extrabold text-white">
+                        {i + 1}
+                      </span>
+                      <span className="flex-1 pt-0.5">{t(key)}</span>
+                      {/* The one button worth a picture: Safari's Share icon
+                          is easy to miss, and nothing about it says "install". */}
+                      {key === 'installIOS1' && (
+                        <span className="shrink-0 rounded-lg border-2 border-brand/30 p-1 text-brand" aria-hidden="true">
+                          <Icon name="ios-share" className="h-7 w-7" />
+                        </span>
+                      )}
+                    </li>
+                  ))}
+                </ol>
               ) : (
                 <p className="rounded-2xl bg-surface/70 p-3 text-[0.95rem] leading-snug font-semibold">
-                  {install.isIOS ? t('installIOS') : t('installOther')}
+                  {t('installOther')}
                 </p>
               )}
             </Card>
@@ -220,17 +267,35 @@ export default function Settings({ onBack, onOpenAccount }) {
             single seam that has to change to support them. */}
       </div>
 
-      <Sheet open={confirmReset} onClose={() => setConfirmReset(false)} title={t('resetConfirmTitle')}>
-        <p className="mb-5 leading-snug text-ink-soft">
-          {t('resetConfirmBody', { course: course ? tx(course.title) : '' })}
-        </p>
-        <div className="flex flex-col gap-3">
-          <Button full onClick={() => setConfirmReset(false)}>
-            {t('cancel')}
+      {/* Keeping is the big, focused, first button and starting over the small
+          one: a stray tap or an Enter key should never cost someone their
+          progress. With an account, the reset is recorded as well as applied
+          (see mergeResets in lib/merge.js), so the online copy clears with the
+          local one on the next sync instead of putting the lessons back. */}
+      <Sheet
+        open={confirmReset}
+        onClose={() => setConfirmReset(false)}
+        title={t('resetConfirmTitle', { course: course ? tx(course.title) : '' })}
+      >
+        <div className="mb-6 flex flex-col gap-2 text-[1.1rem] leading-snug">
+          <p className="font-bold">
+            {overall.done === 0
+              ? t('resetConfirmBodyNone')
+              : overall.done === 1
+                ? t('resetConfirmBodyOne')
+                : t('resetConfirmBody', { n: overall.done })}
+          </p>
+          <p className="text-ink-soft">{t('resetConfirmOthers')}</p>
+          {auth.session && <p className="text-ink-soft">{t('resetConfirmAccount')}</p>}
+        </div>
+        <div className="flex flex-col items-center gap-4">
+          <Button full autoFocus onClick={() => setConfirmReset(false)}>
+            {t('resetKeep')}
           </Button>
           <Button
-            full
-            variant="danger"
+            variant="neutral"
+            size="md"
+            className="min-h-12"
             onClick={() => {
               resetProgress()
               setConfirmReset(false)
@@ -246,17 +311,21 @@ export default function Settings({ onBack, onOpenAccount }) {
 }
 
 /**
- * Twelve of the icons the app already draws. A curated subset rather than the
- * whole registry: most of those icons mean something specific inside a lesson
- * (a folder, a printer), and picking your own face out of a list of eighty is
- * a chore rather than a treat.
+ * Twenty everyday things to pick as a profile picture, drawn for this purpose
+ * (see "profile pictures" in components/icons). Kept apart from the lesson
+ * icons on purpose: those mean something specific inside a lesson (a folder,
+ * a printer), and picking your own face out of a list of a hundred is a chore
+ * rather than a treat.
  *
- * Tapping one twice clears it, which is the only way back to no picture.
+ * Tapping one twice clears it, which is the only way back to no picture. A
+ * picture chosen from the old set still shows until a new one is picked.
  */
 const AVATARS = [
-  'sprout', 'heart', 'star', 'sun',
-  'moon', 'rocket', 'sparkle', 'trophy',
-  'bulb', 'palette', 'globe', 'monitor',
+  'mug', 'cat', 'dog', 'cactus',
+  'house', 'tree', 'mountain', 'sailboat',
+  'bicycle', 'guitar', 'camera', 'book',
+  'butterfly', 'fish', 'sunflower', 'hummingbird',
+  'teapot', 'lighthouse', 'paper-plane', 'chili',
 ]
 
 function AvatarPicker({ value, onChange, t }) {
@@ -278,7 +347,7 @@ function AvatarPicker({ value, onChange, t }) {
                 active ? 'border-brand bg-brand-soft text-brand' : 'border-line bg-surface text-ink-soft'
               }`}
             >
-              <Icon name={name} className="h-7 w-7" />
+              <Icon name={name} className="h-9 w-9" />
             </button>
           )
         })}

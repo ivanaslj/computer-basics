@@ -566,6 +566,50 @@ const Phone = (p) => (
   </Svg>
 )
 
+/**
+ * The phone-video course's mark. Square corners, square caps and mitred joins
+ * on purpose — the one icon drawn that way — so the newest course reads apart
+ * from the rest on the picker while keeping the same 1.9 stroke and no fill.
+ */
+const PhoneVideo = ({ className = 'h-6 w-6' }) => (
+  <svg viewBox="0 0 24 24" className={className} aria-hidden="true" fill="none" stroke="currentColor"
+    strokeWidth={1.9} strokeLinecap="square" strokeLinejoin="miter">
+    <rect x="5.6" y="2.6" width="12.8" height="18.8" />
+    <path d="M5.6 17.4h12.8" />
+    <circle cx="12" cy="10" r="3.2" />
+  </svg>
+)
+
+const Video = (p) => (
+  <Svg {...p}>
+    <rect x="2.8" y="6.4" width="12.6" height="11.2" rx="2" />
+    <path d="M15.4 10.4l5.2-3v9.2l-5.2-3" />
+  </Svg>
+)
+
+const Play = (p) => (
+  <Svg {...p}>
+    <circle cx="12" cy="12" r="8.8" />
+    <path d="M10.2 8.6v6.8l5.4-3.4z" />
+  </Svg>
+)
+
+const Trash = (p) => (
+  <Svg {...p}>
+    <path d="M4.4 6.8h15.2M9.4 6.8V4.6h5.2v2.2" />
+    <path d="M6.4 6.8l.9 12.6h9.4l.9-12.6" />
+    <path d="M10.2 10.6v5.2M13.8 10.6v5.2" />
+  </Svg>
+)
+
+/** Safari's Share button: a box with an arrow leaving through its top. */
+const IosShare = (p) => (
+  <Svg {...p}>
+    <path d="M8.4 9.2H6.6v11h10.8v-11h-1.8" />
+    <path d="M12 3.4v10.4M8.8 6.6L12 3.4l3.2 3.2" />
+  </Svg>
+)
+
 const Heart = (p) => (
   <Svg {...p}>
     <path d="M12 20.4S3.6 15.6 3.6 9.9a4.5 4.5 0 0 1 8.4-2.3 4.5 4.5 0 0 1 8.4 2.3c0 5.7-8.4 10.5-8.4 10.5Z" />
@@ -613,6 +657,160 @@ const Youtube = (p) => (
 )
 
 /* ---------------------------------------------------------------- registry */
+
+/* ------------------------------------------------------- profile pictures */
+// The "Pick a picture" set in Settings: everyday things rather than app
+// symbols, so a learner picks something that feels like theirs. Same 24-grid,
+// stroke and line weight as everything above.
+
+const Mug = (p) => (
+  <Svg {...p}>
+    <path d="M4.4 9.2h10.4v8.4a2.6 2.6 0 0 1-2.6 2.6H7a2.6 2.6 0 0 1-2.6-2.6z" />
+    <path d="M14.8 11h1.4a2.6 2.6 0 0 1 0 5.2h-1.4" />
+    <path d="M7.4 3.4c-.9 1 .9 1.9 0 2.9M10.2 3.4c-.9 1 .9 1.9 0 2.9M13 3.4c-.9 1 .9 1.9 0 2.9" />
+  </Svg>
+)
+
+const Cat = (p) => (
+  <Svg {...p}>
+    <path d="M9.2 7.6 8.6 3l2.6 2.2a4 4 0 0 1 1.6 0L15.4 3l-.6 4.6" />
+    <path d="M9.2 7.6a3.6 3.6 0 1 0 5.6 0" />
+    <path d="M9.6 11.2c-2.4 2-3 5.6-2.2 9.2h9.2c.8-3.6.2-7.2-2.2-9.2" />
+    <path d="M16.6 19.4c2.6.4 4.2-1.4 3.6-3.8" />
+  </Svg>
+)
+
+const Dog = (p) => (
+  <Svg {...p}>
+    <path d="M7.2 6.4C8.6 5 10.2 4.4 12 4.4s3.4.6 4.8 2l.6 8.6c-.6 3.4-2.8 5-5.4 5s-4.8-1.6-5.4-5z" />
+    <path d="M7.2 6.4C5 5.6 3 7.6 3.4 10.8c.2 1.6 1.4 2.4 2.8 1.6L7 9.4M16.8 6.4c2.2-.8 4.2 1.2 3.8 4.4-.2 1.6-1.4 2.4-2.8 1.6L17 9.4" />
+    <path d="M9.6 10.6h.01M14.4 10.6h.01" />
+    <path d="M10.9 14h2.2L12 15.2zM12 15.2v1.2M10.4 17c.9.6 2.3.6 3.2 0" />
+  </Svg>
+)
+
+const Cactus = (p) => (
+  <Svg {...p}>
+    <path d="M10 20.6V5.4a2 2 0 0 1 4 0v15.2" />
+    <path d="M10 13.4H7.8a1.8 1.8 0 0 1-1.8-1.8V8.6M14 11.4h2.2a1.8 1.8 0 0 0 1.8-1.8V6.8" />
+    <path d="M5.6 20.6h12.8" />
+  </Svg>
+)
+
+const House = (p) => (
+  <Svg {...p}>
+    <path d="M3.4 11.6 12 4l8.6 7.6" />
+    <path d="M5.6 10v10.4h12.8V10" />
+    <path d="M10.2 20.4v-5.2h3.6v5.2M15.8 6.2V3.6h2v4.4" />
+  </Svg>
+)
+
+const Tree = (p) => (
+  <Svg {...p}>
+    <path d="M8.2 15.6a4 4 0 0 1-1.4-7.6 5.2 5.2 0 0 1 10.2-.8 4.2 4.2 0 0 1-.6 8.4z" />
+    <path d="M12 20.6v-8.2M12 15l-2.4-2M12 13.6l2.2-1.8M9 20.6h6" />
+  </Svg>
+)
+
+const Mountain = (p) => (
+  <Svg {...p}>
+    <path d="M2.6 20.2 9.4 8.8l4.4 7.4 2.6-4.2 5 8.2z" />
+    <path d="M7.4 12.2l1.2 1 1-1.2 1.4 1.2" />
+    <circle cx="18" cy="5.6" r="1.8" />
+    <path d="M18 2v.6M21.6 5.6H21M15 5.6h-.6M20.6 3l-.4.4M15.4 3l.4.4" />
+  </Svg>
+)
+
+const Sailboat = (p) => (
+  <Svg {...p}>
+    <path d="M3.4 16.8h17.2L18 20.4H6z" />
+    <path d="M11.6 3v13.8M11.6 5 5.6 14.6h6M13.2 7.4l4.8 7.2h-4.8M11.6 3h2.8l-1 1.2 1 1.2h-2.8" />
+  </Svg>
+)
+
+const Bicycle = (p) => (
+  <Svg {...p}>
+    <circle cx="5.8" cy="16" r="3.6" />
+    <circle cx="18.2" cy="16" r="3.6" />
+    <path d="M5.8 16 9.8 9h5.8l2.6 7M9.8 9l2.8 7 3-7M12.6 16H5.8M9.8 9l-.6-1.8M8 7.2h2.6M15.6 9l-.8-2.4h2" />
+  </Svg>
+)
+
+const Guitar = (p) => (
+  <Svg {...p}>
+    <path d="M13.2 10.8a4.6 4.6 0 0 0-6.4-.2c-.8.8-.8 1.8-.6 2.6-1.4-.2-2.4.4-3 1.4-1.4 2.2-.4 5 1.8 6.2 1.6.8 3.6.4 4.8-1.2.6-.8.8-1.8.6-2.6.8.2 1.8.2 2.6-.6a4.6 4.6 0 0 0 .2-5.6z" />
+    <circle cx="9.4" cy="14.6" r="1.4" />
+    <path d="M12.6 11.4 19 5M18.2 3.8l2 2M6.8 17.2l1.4 1.4" />
+  </Svg>
+)
+
+const Book = (p) => (
+  <Svg {...p}>
+    <path d="M12 6.6C10.2 5.1 7.6 4.7 3.4 5v13.6c4.2-.3 6.8.1 8.6 1.6 1.8-1.5 4.4-1.9 8.6-1.6V5c-4.2-.3-6.8.1-8.6 1.6z" />
+    <path d="M12 6.6v13.6" />
+  </Svg>
+)
+
+const Butterfly = (p) => (
+  <Svg {...p}>
+    <path d="M12 8.4C10.4 5 6.2 3.4 4.2 4.8s-.6 6.4 3.4 7.4c-3.8 1.4-2.8 6.8.6 6.4 2-.2 3.2-2.4 3.8-4.2" />
+    <path d="M12 8.4c1.6-3.4 5.8-5 7.8-3.6s.6 6.4-3.4 7.4c3.8 1.4 2.8 6.8-.6 6.4-2-.2-3.2-2.4-3.8-4.2" />
+    <path d="M12 8v10M12 8 10.6 5.4M12 8l1.4-2.6" />
+  </Svg>
+)
+
+const Fish = (p) => (
+  <Svg {...p}>
+    <path d="M6.6 12c2.4-3.4 5.4-5 8.4-5 3 0 5.2 2 6.2 5-1 3-3.2 5-6.2 5-3 0-6-1.6-8.4-5z" />
+    <path d="M6.6 12 2.8 8.6v6.8zM13.4 9.4c.8 1.6.8 3.6 0 5.2M17.4 11h.01" />
+  </Svg>
+)
+
+const Sunflower = (p) => (
+  <Svg {...p}>
+    <circle cx="12" cy="12" r="3" />
+    {[0, 45, 90, 135, 180, 225, 270, 315].map((a) => (
+      <ellipse key={a} cx="12" cy="5.2" rx="1.4" ry="2.4" transform={`rotate(${a} 12 12)`} />
+    ))}
+  </Svg>
+)
+
+const Hummingbird = (p) => (
+  <Svg {...p}>
+    <path d="M4.2 18.4c2.6-.4 4.8-1.8 6.4-4l2.2-1.8c1.2-.9 2.8-.8 3.6.3l5-1-5 1.6c-.3 2.4-2.2 4.4-4.8 5.2-2.6.8-5.2.4-7.4-.3z" />
+    <path d="M10.8 13.6 6.6 4.4c3.6.4 6.6 3 7.4 6.6" />
+    <path d="M4.2 18.4 2.6 21.4M5.6 18.6l-.6 2.8" />
+  </Svg>
+)
+
+const Teapot = (p) => (
+  <Svg {...p}>
+    <path d="M5.4 11.2h13.2c0 4.6-3 8.4-6.6 8.4s-6.6-3.8-6.6-8.4z" />
+    <path d="M8.6 11.2a3.4 3.4 0 0 1 6.8 0M18.2 13.8c1.8-.2 2.6-1.6 3.2-3.6M5.6 13.2c-2.4-.4-3.2 2.8-.6 3.8" />
+    <circle cx="12" cy="6.4" r="1.1" />
+  </Svg>
+)
+
+const Lighthouse = (p) => (
+  <Svg {...p}>
+    <path d="M9 20.6 10.4 8.8h3.2L15 20.6M9.8 8.8V5.8h4.4v3M9.4 5.8 12 3.2l2.6 2.6" />
+    <path d="M9.8 14 14.2 12.4M9.4 17.8l5.2-2M11.2 20.6v-2h1.6v2M7 20.6h10" />
+  </Svg>
+)
+
+const PaperPlane = (p) => (
+  <Svg {...p}>
+    <path d="M21.4 3.2 2.8 10.4l6.8 2.8 2.6 7.4z" />
+    <path d="M21.4 3.2 9.6 13.2v6.6l2.8-4" />
+  </Svg>
+)
+
+const Chili = (p) => (
+  <Svg {...p}>
+    <path d="M4.6 19.4c4.6 1.2 9.6-1.4 11.8-6.6.9-2.2.3-4.2-1.7-4.6-1.8-.4-3 1-3.6 3-1 3.2-3.4 5.4-6.4 6.4-1.4.4-1.4 1.6-.1 1.8z" />
+    <path d="M14.6 8.2c.4-1.8 1.4-3.2 3.2-4M13.6 8.6c1-.6 2.4-.6 3.4.2" />
+  </Svg>
+)
 
 export const ICONS = {
   monitor: Monitor,
@@ -687,6 +885,30 @@ export const ICONS = {
   bulb: Bulb,
   gear: Gear,
   phone: Phone,
+  'phone-video': PhoneVideo,
+  video: Video,
+  play: Play,
+  trash: Trash,
+  'ios-share': IosShare,
+  mug: Mug,
+  cat: Cat,
+  dog: Dog,
+  cactus: Cactus,
+  house: House,
+  tree: Tree,
+  mountain: Mountain,
+  sailboat: Sailboat,
+  bicycle: Bicycle,
+  guitar: Guitar,
+  book: Book,
+  butterfly: Butterfly,
+  fish: Fish,
+  sunflower: Sunflower,
+  hummingbird: Hummingbird,
+  teapot: Teapot,
+  lighthouse: Lighthouse,
+  'paper-plane': PaperPlane,
+  chili: Chili,
   heart: Heart,
   windows: Windows,
   apple: Apple,

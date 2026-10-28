@@ -3,6 +3,7 @@ import { useT, useTx } from '../i18n'
 import { ProgressBar, Gear, Flame } from '../components/ui'
 import Icon from '../components/icons'
 import { stagger } from '../lib/motion'
+import SaveNudge from '../components/SaveNudge'
 
 /**
  * The very first real choice after onboarding ("what do you want to learn?"),
@@ -20,10 +21,13 @@ const PRACTICE_MODES = [
   { id: 'type', icon: 'keyboard', titleKey: 'practiceType', blurbKey: 'practiceTypeBlurb' },
 ]
 
-export default function Hub({ onOpenCourse, onOpenSettings, onOpenPractice }) {
+export default function Hub({ onOpenCourse, onOpenSettings, onOpenPractice, onOpenAccount }) {
   const t = useT()
   const tx = useTx()
-  const { courses, streak, openCourse, profile, totalLessonsDone } = useApp()
+  const { courses: allCourses, streak, openCourse, profile, totalLessonsDone } = useApp()
+  // `hidden: true` in a course's meta takes it off the picker without deleting
+  // it, so it comes back by flipping one value.
+  const courses = allCourses.filter((c) => !c.hidden)
 
   const pick = (course) => {
     if (course.status !== 'available') return
@@ -70,6 +74,8 @@ export default function Hub({ onOpenCourse, onOpenSettings, onOpenPractice }) {
           <Gear />
         </button>
       </header>
+
+      <SaveNudge onOpenAccount={onOpenAccount} />
 
       {/* The greeting sits below the header rather than inside it. At the
           largest text size on a narrow phone the header cannot hold an avatar,

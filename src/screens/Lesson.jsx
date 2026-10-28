@@ -1,4 +1,4 @@
-import { useMemo, useRef, useState } from 'react'
+import { useEffect, useMemo, useRef, useState } from 'react'
 import { useApp } from '../state/store'
 import { useT, useTx } from '../i18n'
 import StepView from '../components/StepView'
@@ -23,8 +23,19 @@ const FRESH_STEP = { index: 0, solved: false, feedback: null, misses: 0, showHin
 export default function Lesson({ lessonId, onExit, onNext }) {
   const t = useT()
   const tx = useTx()
-  const { course, completeLesson, isCompleted } = useApp()
+  const { course, completeLesson, isCompleted, setTextBoost } = useApp()
   const entry = course.getLesson(lessonId)
+
+  // A course can ask for bigger text in its lessons (the phone-video course
+  // asks for the largest). Only here, and only on a phone: a touch screen with
+  // no mouse. On a computer, and on the path or the picker, the learner's own
+  // size stands. The finish screen is part of this component, so it stays big.
+  const boost = course.textSize
+  useEffect(() => {
+    if (!boost || !window.matchMedia('(hover: none) and (pointer: coarse)').matches) return
+    setTextBoost(boost)
+    return () => setTextBoost(null)
+  }, [boost, setTextBoost])
 
   // All per-step state moves together, so advancing a step resets it in one
   // update rather than through an effect that fires after a stale render.
@@ -95,7 +106,7 @@ export default function Lesson({ lessonId, onExit, onNext }) {
   return (
     <div className="mx-auto flex h-dvh max-w-lg flex-col">
       {/* Header: a way out, and how far along they are */}
-      <header className="flex items-center gap-4 px-4 pt-[max(0.8rem,env(safe-area-inset-top))] pb-3">
+      <header className="lesson-bar flex items-center gap-4 px-4 pt-[max(0.8rem,env(safe-area-inset-top))] pb-3">
         <button
           type="button"
           onClick={() => setConfirmExit(true)}
@@ -117,7 +128,7 @@ export default function Lesson({ lessonId, onExit, onNext }) {
 
       {/* Step */}
       <main ref={scrollRef} className="min-h-0 flex-1 overflow-y-auto px-5 pt-2 pb-6">
-        <div key={index} className="anim-pop">
+        <div key={index} className="lesson-panel anim-pop">
           <StepView
             step={step}
             solved={solved}
@@ -257,7 +268,7 @@ function Complete({ entry, perfect, nextId, onExit, onNext, wasReplay }) {
 
   return (
     <div className="mx-auto flex h-dvh max-w-lg flex-col justify-between px-6 pt-[max(2rem,env(safe-area-inset-top))] pb-[max(1.5rem,env(safe-area-inset-bottom))]">
-      <div className="flex flex-1 flex-col items-center justify-center gap-5 text-center">
+      <div className="lesson-panel flex flex-1 flex-col items-center justify-center gap-5 text-center">
         <div className="relative flex items-center justify-center">
           <Burst />
           <div className="anim-badge relative flex h-28 w-28 items-center justify-center rounded-full bg-grass text-white shadow-[0_8px_0_var(--color-grass-dark)]">

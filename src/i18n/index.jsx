@@ -3,7 +3,7 @@ import { STRINGS } from './strings'
 import { useApp } from '../state/store'
 import { resolve } from './content'
 
-export { dev, resolve } from './content'
+export { dev, phone, resolve } from './content'
 
 /** UI chrome strings, with `{name}` placeholders. */
 export function useT() {
@@ -21,16 +21,17 @@ export function useT() {
   )
 }
 
-/** Resolves lesson content for the current language + device. */
+/** Resolves lesson content for the current language, computer and phone. */
 export function useTx() {
   const { settings } = useApp()
   const lang = settings.language
   const device = settings.device || 'windows'
-  return useCallback((node) => resolve(node, lang, device), [lang, device])
+  const handset = settings.phone || 'iphone'
+  return useCallback((node) => resolve(node, lang, device, handset), [lang, device, handset])
 }
 
-/** The raw language/device pair, for components that branch on it. */
+/** The raw language/device/phone, for components that branch on it. */
 export function useLocale() {
   const { settings } = useApp()
-  return { lang: settings.language, device: settings.device || 'windows' }
+  return { lang: settings.language, device: settings.device || 'windows', phone: settings.phone || 'iphone' }
 }

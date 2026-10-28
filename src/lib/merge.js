@@ -39,13 +39,41 @@ function mergeLessonRecord(a, b) {
   }
 }
 
-/** Union of every course, and within a course, every lesson. */
-function mergeCompleted(rawA, rawB) {
+/**
+ * The one deliberate exception to "a merge never takes anything away": starting
+ * a course over. A reset is recorded as a time, and the latest one per course
+ * wins — a fact about the past, so taking the max is still idempotent.
+ */
+function mergeResets(rawA, rawB) {
   const [a, b] = [obj(rawA), obj(rawB)]
   const out = {}
   for (const courseId of new Set([...Object.keys(a), ...Object.keys(b)])) {
-    const ca = obj(a[courseId])
-    const cb = obj(b[courseId])
+    const at = maxOf(a[courseId], b[courseId])
+    if (at) out[courseId] = at
+  }
+  return out
+}
+
+/**
+ * Lessons finished after the course was started over. Applied to each copy
+ * *before* the two are merged, not after: mergeLessonRecord keeps the earliest
+ * completedAt, so merging first would let a stale copy's old date drag a lesson
+ * redone after the reset back behind it, and the lesson would vanish.
+ */
+function since(bucket, resetAt) {
+  if (!resetAt) return bucket
+  return Object.fromEntries(
+    Object.entries(bucket).filter(([, rec]) => num(rec?.completedAt) > resetAt)
+  )
+}
+
+/** Union of every course, and within a course, every lesson — minus resets. */
+function mergeCompleted(rawA, rawB, resets = {}) {
+  const [a, b] = [obj(rawA), obj(rawB)]
+  const out = {}
+  for (const courseId of new Set([...Object.keys(a), ...Object.keys(b)])) {
+    const ca = since(obj(a[courseId]), resets[courseId])
+    const cb = since(obj(b[courseId]), resets[courseId])
     const bucket = {}
     for (const lessonId of new Set([...Object.keys(ca), ...Object.keys(cb)])) {
       bucket[lessonId] = mergeLessonRecord(ca[lessonId], cb[lessonId])
@@ -53,6 +81,12 @@ function mergeCompleted(rawA, rawB) {
     out[courseId] = bucket
   }
   return out
+}
+
+/** Waving the save card off is never undone by a device that saw it fewer times. */
+function mergeSaveNudge(rawA, rawB) {
+  const [a, b] = [obj(rawA), obj(rawB)]
+  return { dismissals: maxOf(a.dismissals, b.dismissals), atLessons: maxOf(a.atLessons, b.atLessons) }
 }
 
 /** Whole days from `a` to `b`, both YYYY-MM-DD. Negative if b is earlier. */
@@ -133,14 +167,17 @@ function mergeSettings(rawA, rawB) {
 export function mergeStates(a, b) {
   if (!a) return b
   if (!b) return a
+  const resets = mergeResets(a.resets, b.resets)
   return {
     ...a,
     ...b,
     version: DEFAULT_STATE.version,
     settings: mergeSettings(a.settings, b.settings),
-    completed: mergeCompleted(a.completed, b.completed),
+    completed: mergeCompleted(a.completed, b.completed, resets),
     streak: mergeStreak(a.streak, b.streak),
     practice: mergePractice(a.practice, b.practice),
+    resets,
+    saveNudge: mergeSaveNudge(a.saveNudge, b.saveNudge),
   }
 }
 

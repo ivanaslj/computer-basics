@@ -9,6 +9,9 @@ export default makeCourse(
   {
     id: 'claude-code',
     status: 'coming-soon',
+    // Off the home picker for now. Flip to false (or delete the line) to bring
+    // the "coming soon" card back; nothing else needs to change.
+    hidden: true,
     icon: 'code',
     title: { en: 'Claude Code', es: 'Claude Code' },
     subtitle: {

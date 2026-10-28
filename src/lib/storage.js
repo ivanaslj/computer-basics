@@ -31,6 +31,9 @@ export const DEFAULT_STATE = {
   settings: {
     onboarded: false,
     device: null, // 'windows' | 'mac'
+    // Asked by the phone-video course the first time it opens, the same way
+    // onboarding asks for the computer.
+    phone: null, // 'iphone' | 'android'
     language: 'en', // 'en' | 'es'
     textSize: 'normal', // 'normal' | 'large' | 'xlarge'
     theme: 'system', // 'system' | 'light' | 'dark'
@@ -64,6 +67,13 @@ export const DEFAULT_STATE = {
   // way either way; an account only decides whether it is also kept on a
   // server so it can follow the person to another device.
   account: null,
+  // courseId -> when that course was last started over (ms). A merge drops any
+  // lesson finished at or before it, from either copy, so a reset on one
+  // device is not undone by the server copy the next time they sync.
+  resets: {},
+  // The "save your progress" card on the home screen (lib/nudge.js): how many
+  // times it has been waved off, and how many lessons were done the last time.
+  saveNudge: { dismissals: 0, atLessons: 0 },
 }
 
 export function load() {
@@ -128,6 +138,8 @@ function migrate(saved) {
       drag: { ...base.practice.drag, ...(saved.practice?.drag || {}) },
       type: { ...base.practice.type, ...(saved.practice?.type || {}) },
     },
+    resets: { ...(saved.resets || {}) },
+    saveNudge: { ...base.saveNudge, ...(saved.saveNudge || {}) },
   }
 }
 

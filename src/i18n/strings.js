@@ -113,19 +113,46 @@ export const STRINGS = {
     themeDark: 'Dark',
     progressLabel: 'Progress',
     resetProgress: 'Start this course over',
-    resetConfirmTitle: 'Start over?',
-    resetConfirmBody:
-      'This clears every checkmark in {course} and takes you back to its first lesson. Your other courses are not affected. It cannot be undone.',
+    resetConfirmTitle: 'Start {course} over?',
+    resetConfirmBody: 'Your {n} finished lessons will be cleared.',
+    resetConfirmBodyOne: 'Your 1 finished lesson will be cleared.',
+    resetConfirmBodyNone: 'You haven’t finished any lessons in it yet.',
+    resetConfirmOthers: 'Your other courses stay as they are.',
+    resetConfirmAccount:
+      'This also clears the copy saved in your account, so every phone and computer you use stays the same.',
+    resetKeep: 'Keep my progress',
     cancel: 'Cancel',
-    resetYes: 'Yes, start over',
+    resetYes: 'Start over',
     installTitle: 'Add to your home screen',
     installBody:
       'Keep this app one tap away, and it will work even without internet.',
-    installBtn: 'Add to home screen',
-    installIOS:
-      'Tap the Share button at the bottom of Safari, then choose “Add to Home Screen”.',
+    installBtn: 'Install app',
+    installIOS1: 'Tap the Share button at the bottom of Safari. If you don’t see it, tap ••• first.',
+    installIOS2: 'Scroll down and tap “Add to Home Screen”.',
+    installIOS3: 'Tap “Add” at the top right.',
+    installAndroid1: 'Tap the three dots ⋮ at the top right of Chrome.',
+    installAndroid2: 'Tap “Add to Home screen” or “Install app”.',
+    installAndroid3: 'Tap “Install”.',
+    installDesktop1: 'Look at the right end of the address bar for the install icon: a small screen with an arrow.',
+    installDesktop2: 'Click it, then click “Install”.',
+    installDesktop3: 'Don’t see it? Open the browser menu (⋮ in Chrome, ··· in Edge) and look for “Install”.',
     installOther:
       'Open your browser’s menu — the three dots or lines — and look for “Install app” or “Add to Home screen”.',
+
+    // The "save your progress" card on the home screen
+    saveNudgeTitle: 'Want to keep your progress?',
+    saveNudgeBody:
+      'Right now your lessons are saved only on this device. If you ever switch phones, a free account brings them with you.',
+    saveNudgeLater: 'Not now',
+
+    // The phone-video course asks this first
+    phoneQ: 'Is your phone an iPhone or an Android?',
+    phoneSub: 'Pick the one that looks like yours. You can change it later in Settings.',
+    phoneLabel: 'My phone',
+    iphone: 'iPhone',
+    iphoneHint: 'Made by Apple',
+    android: 'Android',
+    androidHint: 'Samsung, Motorola, Xiaomi, Google Pixel…',
     aboutTitle: 'About',
     aboutBody:
       'Computer Basics is a free course for people who are just getting started. Your progress is kept on this device. If you make an account, a copy is also saved online so it follows you to another device — that is the only thing that ever leaves your phone, and only while you are signed in.',
@@ -378,18 +405,44 @@ export const STRINGS = {
     themeDark: 'Oscuro',
     progressLabel: 'Progreso',
     resetProgress: 'Empezar este curso de nuevo',
-    resetConfirmTitle: '¿Empezar de nuevo?',
-    resetConfirmBody:
-      'Esto borra todas las palomitas de {course} y te regresa a su primera lección. Tus otros cursos no se ven afectados. No se puede deshacer.',
+    resetConfirmTitle: '¿Empezar {course} de nuevo?',
+    resetConfirmBody: 'Se van a borrar tus {n} lecciones terminadas.',
+    resetConfirmBodyOne: 'Se va a borrar tu lección terminada.',
+    resetConfirmBodyNone: 'Todavía no terminas ninguna lección de este curso.',
+    resetConfirmOthers: 'Tus otros cursos se quedan como están.',
+    resetConfirmAccount:
+      'También se borra la copia guardada en tu cuenta, para que todos tus celulares y computadoras queden igual.',
+    resetKeep: 'Conservar mi progreso',
     cancel: 'Cancelar',
-    resetYes: 'Sí, empezar de nuevo',
+    resetYes: 'Empezar de nuevo',
     installTitle: 'Agregar a la pantalla de inicio',
     installBody: 'Ten la app a un toque, y funcionará incluso sin internet.',
-    installBtn: 'Agregar a inicio',
-    installIOS:
-      'Toca el botón Compartir abajo en Safari y elige «Agregar a inicio».',
+    installBtn: 'Instalar app',
+    installIOS1: 'Toca el botón Compartir abajo en Safari. Si no lo ves, toca primero •••.',
+    installIOS2: 'Baja un poco y toca «Agregar a inicio».',
+    installIOS3: 'Toca «Agregar» arriba a la derecha.',
+    installAndroid1: 'Toca los tres puntitos ⋮ arriba a la derecha de Chrome.',
+    installAndroid2: 'Toca «Agregar a la pantalla principal» o «Instalar app».',
+    installAndroid3: 'Toca «Instalar».',
+    installDesktop1: 'Busca al final de la barra de direcciones el ícono para instalar: una pantallita con una flecha.',
+    installDesktop2: 'Dale clic y luego clic en «Instalar».',
+    installDesktop3: '¿No lo ves? Abre el menú del navegador (⋮ en Chrome, ··· en Edge) y busca «Instalar».',
     installOther:
       'Abre el menú de tu navegador — los tres puntos o rayitas — y busca «Instalar app» o «Agregar a la pantalla de inicio».',
+
+    saveNudgeTitle: '¿Quieres guardar tu progreso?',
+    saveNudgeBody:
+      'Por ahora tus lecciones están guardadas solo en este aparato. Si algún día cambias de celular, con una cuenta gratis te las llevas contigo.',
+    saveNudgeLater: 'Ahorita no',
+
+    phoneQ: '¿Tu celular es iPhone o Android?',
+    phoneSub: 'Escoge el que se parezca al tuyo. Lo puedes cambiar después en Ajustes.',
+    phoneLabel: 'Mi celular',
+    iphone: 'iPhone',
+    iphoneHint: 'De la marca Apple',
+    android: 'Android',
+    androidHint: 'Samsung, Motorola, Xiaomi, Oppo…',
+
     aboutTitle: 'Acerca de',
     aboutBody:
       'Computación Básica es un curso gratuito para quien apenas empieza. Tu progreso se guarda solo en este dispositivo — sin cuenta, sin enviar nada a ningún lado.',

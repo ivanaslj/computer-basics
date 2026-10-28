@@ -10,12 +10,29 @@ import { STRINGS } from '../src/i18n/strings.js'
 import { SIMS } from '../src/components/sims/registry.js'
 import { ART_NAMES } from '../src/components/art-names.js'
 import { ICON_NAMES } from '../src/components/icons/names.js'
+import { PHONE_SCREENS } from '../src/components/sims/phone-screens.js'
 
 const problems = []
 const fail = (where, msg) => problems.push(`${where}: ${msg}`)
 
 const LANGS = ['en', 'es']
 const DEV = '__dev__'
+const PHONE = '__phone__'
+
+/** A phone simulation must name a real screen, and a target that is on it. */
+function checkPhone(cfg, where, { needsTarget }) {
+  const screen = cfg.screen
+  if (!PHONE_SCREENS[screen]) return fail(where, `unknown phone screen "${screen}"`)
+  if (needsTarget && !cfg.target) fail(where, 'phone step has no target')
+  if (cfg.target && !PHONE_SCREENS[screen].includes(cfg.target))
+    fail(where, `target "${cfg.target}" is not on the "${screen}" screen (has: ${PHONE_SCREENS[screen].join(', ')})`)
+  if (cfg.highlight && !PHONE_SCREENS[screen].includes(cfg.highlight))
+    fail(where, `highlight "${cfg.highlight}" is not on the "${screen}" screen`)
+  // The whole teaching model for this course: a wrong tap gets a warm nudge
+  // toward the right thing, written for the step, never a bare "wrong".
+  if (needsTarget && !cfg.nudge) fail(where, 'phone step has no nudge for a wrong tap')
+  checkText(cfg.nudge, `${where}.nudge`)
+}
 
 /** Walks a content value and reports any language that is missing or empty. */
 function checkText(node, where) {
@@ -25,6 +42,12 @@ function checkText(node, where) {
     if (!('windows' in node) || !('mac' in node)) fail(where, 'dev() is missing a platform')
     checkText(node.windows, `${where}[windows]`)
     checkText(node.mac, `${where}[mac]`)
+    return
+  }
+  if (node[PHONE]) {
+    if (!('iphone' in node) || !('android' in node)) fail(where, 'phone() is missing iPhone or Android')
+    checkText(node.iphone, `${where}[iphone]`)
+    checkText(node.android, `${where}[android]`)
     return
   }
   if ('en' in node || 'es' in node) {
@@ -106,6 +129,7 @@ for (const course of COURSES) {
         if (step.visual.sim && !SIMS.includes(step.visual.sim))
           fail(S, `unknown sim "${step.visual.sim}"`)
         if (!step.visual.art && !step.visual.sim) fail(S, 'visual has neither art nor sim')
+        if (step.visual.sim === 'phone') checkPhone(step.visual.config || {}, `${S}.visual`, { needsTarget: false })
       }
 
       switch (step.type) {
@@ -164,7 +188,9 @@ for (const course of COURSES) {
           checkText(step.footerHint, `${S}.footerHint`)
           if (!SIMS.includes(step.sim)) fail(S, `unknown sim "${step.sim}"`)
           const cfg = step.config || {}
-          if (step.sim === 'keys') {
+          if (step.sim === 'phone') {
+            checkPhone(cfg, S, { needsTarget: true })
+          } else if (step.sim === 'keys') {
             if (!cfg.combo) fail(S, 'keys sim has no combo')
             const combos = cfg.combo?.[DEV] ? [cfg.combo.windows, cfg.combo.mac] : [cfg.combo]
             for (const combo of combos) {

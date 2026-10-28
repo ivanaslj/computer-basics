@@ -11,6 +11,8 @@ import Settings from './screens/Settings'
 import Account from './screens/Account'
 import Practice from './screens/Practice'
 import Backdrop from './components/Backdrop'
+import MetalBackdrop from './components/MetalBackdrop'
+import { useDarkTheme } from './lib/theme'
 
 /**
  * Screen routing. Deliberately not a router library: there are five screens,
@@ -23,6 +25,7 @@ export default function App() {
   const auth = useAuth()
   const [route, setRoute] = useState({ name: 'path' })
   const updateReady = useAppUpdate()
+  const dark = useDarkTheme(settings.theme)
 
   const go = useCallback((name, params = {}) => {
     setRoute({ name, ...params })
@@ -81,6 +84,7 @@ export default function App() {
       onOpenCourse={() => go('path')}
       onOpenSettings={() => go('settings')}
       onOpenPractice={(m) => go('practice', { mode: m })}
+      onOpenAccount={() => go('account', { from: 'hub' })}
     />
   )
 
@@ -104,23 +108,36 @@ export default function App() {
         onOpenAccount={() => go('account')}
       />
     ) : route.name === 'account' ? (
-      <Account onBack={() => go('settings')} />
+      // Back goes to wherever the account screen was opened from: Settings,
+      // or the "save your progress" card on a home screen.
+      <Account onBack={() => go(route.from || 'settings')} />
     ) : launchScreen(settings) === 'path' ? (
       <Path
         onOpenLesson={(id) => go('lesson', { lessonId: id })}
         onOpenSettings={() => go('settings')}
         onOpenHub={() => go('hub')}
+        onOpenAccount={() => go('account', { from: 'path' })}
       />
     ) : (
       hub
     )
 
-  // The backdrop sits behind everything except a lesson. A lesson is the one
-  // place someone is meant to be concentrating on a single instruction, and a
-  // pattern behind that is the opposite of help.
+  // The light backdrop sits behind everything except a lesson. A lesson is the
+  // one place someone is meant to be concentrating on a single instruction, and
+  // a pattern behind that is the opposite of help. The dark theme's metal is the
+  // page itself rather than a pattern on it, so it stays, and in a lesson it
+  // flows faster and brighter — fastest of all in the Claude Code course. The
+  // lesson's text sits on dark glass there (.lesson-panel in index.css), so it
+  // reads the same either way.
+  const pace =
+    route.name !== 'lesson' ? 'app' : settings.currentCourseId === 'claude-code' ? 'code' : 'lesson'
   return (
     <>
-      {route.name !== 'lesson' && <Backdrop />}
+      {dark ? (
+        <MetalBackdrop pace={pace} />
+      ) : (
+        route.name !== 'lesson' && <Backdrop />
+      )}
       {screen}
     </>
   )

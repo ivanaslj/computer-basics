@@ -4,6 +4,7 @@ import { useT, useTx } from '../i18n'
 import { Button, Card, Sheet, ProgressBar, Check, Lock, Gear, Flame, ChevronLeft } from '../components/ui'
 import Icon from '../components/icons'
 import { stagger } from '../lib/motion'
+import SaveNudge from '../components/SaveNudge'
 
 /**
  * Home. Three jobs, in order of importance:
@@ -15,7 +16,7 @@ import { stagger } from '../lib/motion'
 const ROW = 142 // px between lesson nodes — enough for a two-line title under each
 const OFFSETS = [0, 54, 76, 54, 0, -54, -76, -54] // the gentle S-curve
 
-export default function Path({ onOpenLesson, onOpenSettings, onOpenHub }) {
+export default function Path({ onOpenLesson, onOpenSettings, onOpenHub, onOpenAccount }) {
   const t = useT()
   const tx = useTx()
   const { course, overall, streak, nextLessonId, isUnlocked, courseFinished, settings, setSetting } =
@@ -29,6 +30,12 @@ export default function Path({ onOpenLesson, onOpenSettings, onOpenHub }) {
     if (isUnlocked(lesson.id)) return onOpenLesson(lesson.id)
     const blockerId = course.LESSON_ORDER[course.LESSON_ORDER.indexOf(lesson.id) - 1]
     setLocked({ lesson, blocker: course.getLesson(blockerId) })
+  }
+
+  // A course about a phone has to know which phone before its first lesson,
+  // the same way onboarding asks which computer before the first one.
+  if (course.askPhone && !settings.phone) {
+    return <PhoneQuestion onPick={(v) => setSetting('phone', v)} onBack={onOpenHub} />
   }
 
   return (
@@ -69,6 +76,8 @@ export default function Path({ onOpenLesson, onOpenSettings, onOpenHub }) {
           </span>
         </div>
       </header>
+
+      <SaveNudge onOpenAccount={onOpenAccount} />
 
       {/* Continue card */}
       <div className="px-5 pt-5">
@@ -243,7 +252,7 @@ function LessonNode({ lesson, x, y, done, current, unlocked, onTap }) {
         type="button"
         onClick={onTap}
         aria-label={`${title}${!unlocked ? ` — ${t('locked')}` : ''}`}
-        className={`btn-3d relative flex h-[4.5rem] w-[4.5rem] items-center justify-center rounded-full text-[1.9rem] ${face} ${
+        className={`path-node btn-3d relative flex h-[4.5rem] w-[4.5rem] items-center justify-center rounded-full text-[1.9rem] ${face} ${
           current ? 'anim-halo-path' : ''
         }`}
       >
@@ -265,6 +274,53 @@ function LessonNode({ lesson, x, y, done, current, unlocked, onTap }) {
       >
         {title}
       </span>
+    </div>
+  )
+}
+
+/**
+ * "Is your phone an iPhone or an Android?" Two big buttons and nothing else:
+ * one tap answers it and opens the course. Stored in settings.phone, beside
+ * settings.device, and changeable later in Settings.
+ */
+function PhoneQuestion({ onPick, onBack }) {
+  const t = useT()
+  const options = [
+    { value: 'iphone', label: t('iphone'), hint: t('iphoneHint'), icon: 'apple' },
+    { value: 'android', label: t('android'), hint: t('androidHint'), icon: 'phone' },
+  ]
+  return (
+    <div className="mx-auto flex min-h-dvh max-w-lg flex-col gap-6 px-6 pt-[max(1rem,env(safe-area-inset-top))] pb-10">
+      <button
+        type="button"
+        onClick={onBack}
+        aria-label={t('backToHub')}
+        className="-ml-2 self-start rounded-full p-1.5 text-ink-soft active:bg-cream-deep"
+      >
+        <ChevronLeft />
+      </button>
+      <div className="flex flex-col gap-2">
+        <h1 className="text-[1.8rem] leading-[1.15] font-extrabold tracking-tight text-balance">{t('phoneQ')}</h1>
+        <p className="leading-snug text-ink-soft text-pretty">{t('phoneSub')}</p>
+      </div>
+      <div className="flex flex-col gap-4">
+        {options.map((o) => (
+          <button
+            key={o.value}
+            type="button"
+            onClick={() => onPick(o.value)}
+            className="btn-3d flex items-center gap-4 rounded-3xl border-2 border-b-4 border-line bg-surface px-6 py-6 text-left"
+          >
+            <span className="text-brand">
+              <Icon name={o.icon} className="h-10 w-10" />
+            </span>
+            <span className="min-w-0 flex-1">
+              <span className="block text-[1.5rem] leading-tight font-extrabold">{o.label}</span>
+              <span className="block text-[1rem] leading-snug text-ink-soft">{o.hint}</span>
+            </span>
+          </button>
+        ))}
+      </div>
     </div>
   )
 }

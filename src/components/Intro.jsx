@@ -1,6 +1,8 @@
 import { useCallback, useEffect, useLayoutEffect, useRef, useState } from 'react'
 import LogoMark from './LogoMark'
 import Backdrop from './Backdrop'
+import MetalBackdrop from './MetalBackdrop'
+import { useDarkTheme } from '../lib/theme'
 import { reducedMotion } from '../lib/motion'
 import { launchScreen } from '../lib/launch'
 import { useApp } from '../state/store'
@@ -156,13 +158,17 @@ const NOOP = () => {}
 function Preview() {
   const { settings } = useApp()
   const screen = launchScreen(settings)
+  const dark = useDarkTheme(settings.theme)
   return (
     <div className="intro-preview" inert aria-hidden="true">
       {/* The same backdrop App draws. Without it the pattern would appear out
           of nowhere at the handover, which is the seam this preview exists to
           remove. It is `fixed`, and the preview's own transform makes it the
-          containing block, so it fills the preview rather than the viewport. */}
-      <Backdrop />
+          containing block, so it fills the preview rather than the viewport.
+          In the dark theme that is the metal, as its still gradient: the live
+          one is already running behind this overlay and shows through as it
+          fades. */}
+      {dark ? <MetalBackdrop preview /> : <Backdrop />}
       {screen === 'onboarding' ? (
         <Onboarding onDone={NOOP} />
       ) : screen === 'path' ? (

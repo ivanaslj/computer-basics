@@ -81,11 +81,29 @@ function reducer(state, action) {
     // Resets only the *current* course's checkmarks — resetting your Computer
     // Basics progress shouldn't silently wipe Claude 001 too. Settings and
     // every other course are left untouched.
+    //
+    // The time is recorded as well as the lessons dropped: with an account,
+    // the server still holds the old lessons, and without the time the next
+    // sync would union them straight back (see mergeResets in lib/merge.js).
     case 'reset-course': {
       if (!action.courseId) return state
       const { [action.courseId]: _dropped, ...rest } = state.completed
-      return { ...state, completed: rest }
+      return {
+        ...state,
+        completed: rest,
+        resets: { ...state.resets, [action.courseId]: Date.now() },
+      }
     }
+
+    // The "save your progress" card: see lib/nudge.js for when it shows.
+    case 'nudge-dismissed':
+      return {
+        ...state,
+        saveNudge: { dismissals: (state.saveNudge?.dismissals || 0) + 1, atLessons: action.atLessons },
+      }
+
+    case 'nudge-reset':
+      return { ...state, saveNudge: { dismissals: 0, atLessons: 0 } }
 
     // The result of folding this device's progress together with the copy on
     // the server. Replaces state wholesale because the merge has already
@@ -189,9 +207,19 @@ export function AppProvider({ children }) {
   // Reflect the display preferences on <html>: the rem scale moves with the
   // text-size choice, and the theme choice — unless it is "match my device",
   // which is the media query in index.css doing the work — overrides it.
+  //
+  // A screen can ask for a bigger size for as long as it is open (textBoost):
+  // the phone-video course's lessons do, on a phone, for a learner in her late
+  // seventies. The bigger of the two applies and the learner's own setting is
+  // never changed, so the path, the picker and every other course look exactly
+  // as they chose. It was once tied to "the open course" instead, which also
+  // zoomed the path and the picker, on computers too.
+  const [textBoost, setTextBoost] = useState(null)
   useEffect(() => {
     const html = document.documentElement
-    html.dataset.textsize = state.settings.textSize
+    const sizes = ['normal', 'large', 'xlarge']
+    const own = state.settings.textSize
+    html.dataset.textsize = sizes.indexOf(textBoost) > sizes.indexOf(own) ? textBoost : own
     html.lang = state.settings.language
 
     const theme = state.settings.theme
@@ -215,7 +243,7 @@ export function AppProvider({ children }) {
       meta.content = theme === 'dark' ? '#17161c' : '#faf7f2'
       document.head.prepend(meta)
     }
-  }, [state.settings.textSize, state.settings.language, state.settings.theme])
+  }, [state.settings.textSize, state.settings.language, state.settings.theme, textBoost])
 
   const value = useMemo(() => {
     const { completed, settings, streak, practice } = state
@@ -300,6 +328,10 @@ export function AppProvider({ children }) {
         dispatch({ type: 'complete-lesson', lessonId, perfect }),
       recordPractice: (mode, scores) => dispatch({ type: 'record-practice', mode, scores }),
       resetProgress: () => dispatch({ type: 'reset-course', courseId: settings.currentCourseId }),
+      saveNudge: state.saveNudge,
+      dismissSaveNudge: () => dispatch({ type: 'nudge-dismissed', atLessons: totalLessonsDone }),
+      resetSaveNudge: () => dispatch({ type: 'nudge-reset' }),
+      setTextBoost,
     }
   }, [state, syncState, userId])
 

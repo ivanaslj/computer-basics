@@ -80,65 +80,155 @@
    hardcoded colours on purpose: a simulated file explorer should look like a
    real one whatever theme the app around it is wearing.
 --------------------------------------------------------------------------- */
+/* The dark theme sits on moving metal (components/MetalBackdrop.jsx), so its
+   surfaces are dark glass rather than solid colour: translucent enough to show
+   the metal through, opaque enough that text on them never depends on what is
+   passing behind. The alphas are not arbitrary — they hold every text colour
+   here at WCAG AA over the brightest pixel the metal reaches after its wash.
+
+   Fills that carry white text (brand, grass, path, berry) are mid-tones, dark
+   enough for white to pass AA on them. That makes them too dark to use as text
+   on dark glass, so the --text-* values below give text in those colours a
+   lighter shade of its own. Light mode never sets them, so it is unchanged. */
 @media (prefers-color-scheme: dark) {
   :root:not([data-theme='light']) {
-    --color-cream: #17161c;
-    --color-cream-deep: #21202a;
-    --color-surface: #23212c;
+    --color-cream: #0c0c0d;
+    --color-cream-deep: rgb(46 46 50 / .8);
+    --color-surface: rgb(22 22 24 / .74);
     --color-ink: #f2eee9;
-    --color-ink-soft: #a49dae;
-    --color-line: #34313f;
+    --color-ink-soft: #b0aab8;
+    --color-line: rgb(255 255 255 / .13);
 
-    --color-brand: #8b83ff;
-    --color-brand-dark: #6a61e0;
-    --color-brand-soft: #272441;
-    --color-brand-rgb: 139 131 255;
+    --color-brand: #1d8550;
+    --color-brand-dark: #125a35;
+    --color-brand-soft: rgb(22 52 37 / .82);
+    --color-brand-rgb: 29 133 80;
 
-    --color-path: #8b83ff;
-    --color-path-dark: #6a61e0;
-    --color-path-soft: #272441;
-    --color-path-rgb: 139 131 255;
+    --color-path: #6a61e0;
+    --color-path-dark: #4a42b0;
+    --color-path-soft: rgb(38 35 66 / .82);
+    --color-path-rgb: 106 97 224;
 
-    --color-grass: #43c46e;
-    --color-grass-dark: #2c9950;
-    --color-grass-soft: #17301f;
+    --color-grass: #178040;
+    --color-grass-dark: #0e5a2c;
+    --color-grass-soft: rgb(20 46 30 / .82);
 
     --color-sun: #f0a338;
-    --color-sun-soft: #33260f;
+    --color-sun-soft: rgb(51 38 15 / .82);
 
-    --color-berry: #f0709e;
-    --color-berry-soft: #331823;
+    --color-berry: #b3245c;
+    --color-berry-soft: rgb(51 24 35 / .82);
+
+    --text-brand: #5fd08f;
+    --text-grass: #6fdc8f;
+    --text-grass-dark: #8fe6a8;
+    --text-path: #a49dff;
+    --text-berry: #f58ab0;
+    --border-brand: #3fb877;
+    --ink-fill: #0c0c0e;
+    --node-surface: #141416;
+    --node-locked: #2a2a2e;
+    --lesson-bar-bg: rgb(12 12 13 / .85);
+    --lesson-panel-bg: rgb(22 22 24 / .74);
+    --lesson-panel-edge: var(--color-line);
+    --lesson-panel-pad: 1.1rem;
+    --glass-blur: blur(18px) saturate(130%);
   }
 }
 
 :root[data-theme='dark'] {
-  --color-cream: #17161c;
-  --color-cream-deep: #21202a;
-  --color-surface: #23212c;
+  --color-cream: #0c0c0d;
+  --color-cream-deep: rgb(46 46 50 / .8);
+  --color-surface: rgb(22 22 24 / .74);
   --color-ink: #f2eee9;
-  --color-ink-soft: #a49dae;
-  --color-line: #34313f;
+  --color-ink-soft: #b0aab8;
+  --color-line: rgb(255 255 255 / .13);
 
-  --color-brand: #8b83ff;
-  --color-brand-dark: #6a61e0;
-  --color-brand-soft: #272441;
-  --color-brand-rgb: 139 131 255;
+  --color-brand: #1d8550;
+  --color-brand-dark: #125a35;
+  --color-brand-soft: rgb(22 52 37 / .82);
+  --color-brand-rgb: 29 133 80;
 
-  --color-path: #8b83ff;
-  --color-path-dark: #6a61e0;
-  --color-path-soft: #272441;
-  --color-path-rgb: 139 131 255;
+  --color-path: #6a61e0;
+  --color-path-dark: #4a42b0;
+  --color-path-soft: rgb(38 35 66 / .82);
+  --color-path-rgb: 106 97 224;
 
-  --color-grass: #43c46e;
-  --color-grass-dark: #2c9950;
-  --color-grass-soft: #17301f;
+  --color-grass: #178040;
+  --color-grass-dark: #0e5a2c;
+  --color-grass-soft: rgb(20 46 30 / .82);
 
   --color-sun: #f0a338;
-  --color-sun-soft: #33260f;
+  --color-sun-soft: rgb(51 38 15 / .82);
 
-  --color-berry: #f0709e;
-  --color-berry-soft: #331823;
+  --color-berry: #b3245c;
+  --color-berry-soft: rgb(51 24 35 / .82);
+
+  --text-brand: #5fd08f;
+  --text-grass: #6fdc8f;
+  --text-grass-dark: #8fe6a8;
+  --text-path: #a49dff;
+  --text-berry: #f58ab0;
+  --border-brand: #3fb877;
+  --ink-fill: #0c0c0e;
+  --node-surface: #141416;
+  --node-locked: #2a2a2e;
+  --lesson-bar-bg: rgb(12 12 13 / .85);
+  --lesson-panel-bg: rgb(22 22 24 / .74);
+  --lesson-panel-edge: var(--color-line);
+  --lesson-panel-pad: 1.1rem;
+  --glass-blur: blur(18px) saturate(130%);
 }
+
+/* Read the dark-only values above. Unlayered, so they outrank Tailwind's
+   utilities of the same name; each falls back to exactly what the utility
+   already does, so in light mode nothing changes. */
+.text-brand { color: var(--text-brand, var(--color-brand)); }
+.text-grass { color: var(--text-grass, var(--color-grass)); }
+.text-grass-dark { color: var(--text-grass-dark, var(--color-grass-dark)); }
+.text-path { color: var(--text-path, var(--color-path)); }
+.text-berry { color: var(--text-berry, var(--color-berry)); }
+.border-brand { border-color: var(--border-brand, var(--color-brand)); }
+
+/* "ink" as a fill (the sheet's scrim, a few dark chips in the lessons) carries
+   white text. In dark mode ink is near-white, so those became white on white;
+   they get a near-black fill instead. */
+.bg-ink { background-color: var(--ink-fill, var(--color-ink)); }
+.bg-ink\/75 { background-color: color-mix(in oklab, var(--ink-fill, var(--color-ink)) 75%, transparent); }
+.bg-ink\/45 { background-color: color-mix(in oklab, var(--ink-fill, var(--color-ink)) 45%, transparent); }
+
+/* Frosted cards, like the dashboard's — on a desktop. A phone gets the same
+   glass without the blur: every blurred card re-blurs on every frame the metal
+   draws, and on the long path screen that is a dozen cards on a cheap GPU. The
+   glass is opaque enough to read on without it. */
+@media (hover: hover) and (pointer: fine) {
+  .bg-surface, .lesson-panel {
+    -webkit-backdrop-filter: var(--glass-blur);
+    backdrop-filter: var(--glass-blur);
+  }
+}
+
+/* A lesson's own glass. The metal is brighter in a lesson than anywhere else
+   (.metal-wash--lesson), too bright for text straight on it, so the step sits
+   on a glass panel and the bar above it is near-opaque. The metal shows in the
+   margins and below the step, which in most steps is half the screen.
+   Light mode sets none of these, so there the panel has no fill, no edge and
+   no padding: exactly the layout it always had. The edge is an inset shadow
+   rather than a border for the same reason — even a transparent border would
+   move things by 2px. */
+.lesson-bar { background: var(--lesson-bar-bg, transparent); }
+.lesson-panel {
+  border-radius: 1.5rem;
+  padding: var(--lesson-panel-pad, 0);
+  background: var(--lesson-panel-bg, transparent);
+  box-shadow: inset 0 0 0 2px var(--lesson-panel-edge, transparent);
+}
+
+/* The path's lesson circles stay solid: the dotted joins run underneath them,
+   and through glass they showed as stray dots inside the circle. */
+.path-node.bg-surface { background-color: var(--node-surface, var(--color-surface)); }
+.path-node.bg-cream-deep { background-color: var(--node-locked, var(--color-cream-deep)); }
+
 
 /* The "larger text" toggle scales the whole UI: every size in the app is in
    rem, so moving the root size moves type, padding and controls together. */
@@ -728,6 +818,50 @@ button, [role='button'] {
   0%, 100% { transform: translate3d(0, 0, 0) scale(1); }
   50% { transform: translate3d(-3%, 2.5%, 0) scale(1.05); }
 }
+
+/* ---------------------------------------------------------------------------
+   The dark theme's backdrop. See components/MetalBackdrop.jsx.
+
+   The gradient is what shows without WebGL (and for the instant before the
+   first frame): the same palette, standing still.
+
+   The wash is sized from a measurement of the shader rather than by eye. Over
+   120 sampled frames the metal's brightest pixel reached 184/255, and 99.9% of
+   pixels stayed at or under 133.
+     - .65 everywhere but a lesson caps the backdrop at ~64/255. Text sits
+       straight on the metal there (the hub's headings and the grey lines under
+       them, settings' section labels, the path's lesson names), and at .65
+       even --color-ink-soft stays above 4.5:1 with a highlight right behind it.
+       A dark text halo would let the wash be lighter, and was tried: with the
+       metal animating behind it, it caused 250ms stalls while scrolling.
+     - .35 in a lesson caps it at ~120/255, so the metal is properly visible
+       there. Nothing in a lesson sits straight on it: the step is on
+       .lesson-panel's glass, which holds every text colour at AA over that.
+   The wash is flat, not a vignette, for the reason given for the contour
+   backdrop: uneven contrast is worse than contrast that is merely lower.
+
+   100lvh, the largest the viewport gets, so a phone's address bar sliding in
+   and out never resizes the canvas.
+--------------------------------------------------------------------------- */
+.metal {
+  position: fixed;
+  inset: 0 0 auto 0;
+  height: 100lvh;
+  z-index: -1;
+  pointer-events: none;
+  background:
+    radial-gradient(ellipse at 30% 20%, #4e4949 0%, transparent 55%),
+    radial-gradient(ellipse at 75% 80%, #312e2e 0%, transparent 60%),
+    #020202;
+}
+.metal canvas { display: block; width: 100%; height: 100%; }
+.metal-wash {
+  position: absolute;
+  inset: 0;
+  background: rgb(6 6 7 / .65);
+  transition: background-color .5s ease;
+}
+.metal-wash--lesson { background: rgb(6 6 7 / .35); }
 
 /* Horizontal scrollers (device pickers, key rows) shouldn't show a bar. */
 .no-scrollbar { scrollbar-width: none; }
